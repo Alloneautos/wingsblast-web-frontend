@@ -1,0 +1,13 @@
+.pac-container {
+  z-index: 1000 !important;
+  position: absolute !important;
+}
+.modal-box {
+  position: relative;
+  overflow: visible;
+}
+
+
+.tex{
+  color: red;
+}

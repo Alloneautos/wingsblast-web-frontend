@@ -1,0 +1,29 @@
+@import url('https://fonts.cdnfonts.com/css/futura-std-4');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.tabs {
+  position: sticky;
+  top: 80px;
+  background-color: white;
+  z-index: 50;
+  box-shadow: 0 4px 2px -2px gray;
+}
+
+body {
+  font-family: 'Futura Std', sans-serif;
+  
+}
+
+.z-high {
+  z-index: 100 !important;
+}
+.z-medium {
+  z-index: 50 !important;
+}
+.pac-container {
+  z-index: 9999 !important; /* Ensure it shows above everything */
+  position: absolute !important;
+}
