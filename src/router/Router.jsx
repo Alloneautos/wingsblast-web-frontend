@@ -24,6 +24,7 @@ import EmailOTP from "../pages/ForgetPassword/EmailOTP";
 import NewPassword from "../pages/ForgetPassword/NewPassword";
 import ModelLocation from "../pages/myCart/ModelLocation";
 import PrivetProductRoute from "./PrivetProductRoute";
+import PrivetRoute from "./PrivetRoute";
 
 const Router = createBrowserRouter([
   {
@@ -72,11 +73,19 @@ const Router = createBrowserRouter([
       },
       {
         path: "/userprofile",
-        element: <UserProfile></UserProfile>,
+        element: (
+          <PrivetRoute>
+            <UserProfile />
+          </PrivetRoute>
+        ),
       },
       {
         path: "/myorder",
-        element: <MyOrder></MyOrder>,
+        element: (
+          <PrivetRoute>
+            <MyOrder />
+          </PrivetRoute>
+        ),
       },
       {
         path: "/termsofuser",
