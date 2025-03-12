@@ -16,7 +16,9 @@ body {
   font-family: 'Futura Std', sans-serif;
   
 }
-
+.react-multiple-carousel__arrow{
+  z-index: 10 !important;
+}
 .z-high {
   z-index: 100 !important;
 }

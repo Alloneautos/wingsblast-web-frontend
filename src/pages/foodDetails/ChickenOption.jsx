@@ -61,7 +61,13 @@ const ChickenOption = ({ categoryID }) => {
             showDots={false}
           >
             {reletiveFood.map((foodMenu) => (
-              <Link key={foodMenu.id} to={`/food-details/${foodMenu.id}`}>
+              <Link
+                key={foodMenu.id}
+                to={`/food-details/${foodMenu.id}`}
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              >
                 <div className="p-4 cursor-pointer hover:scale-105 transition-transform duration-300">
                   <div className="h-full border border-gray-200 rounded-lg shadow-md bg-white overflow-hidden">
                     <img

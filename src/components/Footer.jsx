@@ -48,7 +48,8 @@ const Footer = () => {
         {/* Social Icons Section */}
         <nav className="flex justify-center space-x-4 md:space-x-6 mb-6">
           <a
-            href="https://www.facebook.com/profile.php?id=61565532726434"
+            href="https://www.facebook.com/wingblastny"
+            target="_blank"
             className="text-xl md:text-2xl hover:text-gray-400"
           >
             <FaFacebook />

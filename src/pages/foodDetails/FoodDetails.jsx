@@ -16,10 +16,12 @@ import BakerySection from "./BakerySection";
 import Swal from "sweetalert2";
 import ToppingSection from "./ToppingSection";
 import SanwichSection from "./SandwichSection";
-import RicePlattarCostom from "./RicePlattarCostom";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+// import RicePlattarCostom from "./RicePlattarCostom";
+import { FaArrowLeft } from "react-icons/fa";
+import { useQueryClient } from "@tanstack/react-query";
 
 const FoodDetails = () => {
+  const queryClient = useQueryClient();
   const { guestUser } = useGuestUser();
   const { user } = useUserProfile();
   const { foodDetailsID } = useParams();
@@ -210,6 +212,8 @@ const FoodDetails = () => {
       };
 
       const response = await API.post("/card/add", data);
+      queryClient.invalidateQueries(["wishListVechile", guestUser]);
+
       if (response.status == 200) {
         setCartLoading(false);
         Swal.fire({
@@ -222,6 +226,7 @@ const FoodDetails = () => {
         navigate("/foodmenu");
       }
     } catch (error) {
+      console.log(error);
       Swal.fire({
         title: "Add to Cart Failed",
         text: "Failed Add to Cart.",
@@ -291,7 +296,7 @@ const FoodDetails = () => {
               </h1>
               <p className="text-black text-lg md:text-xl font-medium mb-4">
                 ${foodDetails.price}
-                <span className="text-sm text-gray-700">{foodDetails.cal}</span>
+                <span className="text-sm text-gray-700">{" "} {foodDetails.cal}</span>
               </p>
               <p className="text-gray-600 mb-6 leading-relaxed text-sm md:text-base lg:text-base">
                 {foodDetails.description}
@@ -318,7 +323,21 @@ const FoodDetails = () => {
                 </div>
 
                 {/* Total Price and Add to Cart Button */}
-                <div className="flex flex-col md:flex-row items-center bg-gray-100 px-5 py-0.5 md:justify-end gap-3">
+                <div className=" flex items-center bg-gray-100 pl-5 md:justify-end rounded-l-md gap-3">
+                  <div className="text-lg md:text-xl font-bold text-gray-800">
+                    ${totalPrice}
+                  </div>
+                  <button
+                    onClick={handleAddToBag}
+                    className={`flex items-center justify-center py-2 px-6 md:py-3 text-white font-semibold rounded-r-md bg-ButtonColor transition duration-300 ease-in-out transform hover:scale-105 hover:bg-ButtonHover ${
+                      cartLoading ? "opacity-70 cursor-not-allowed" : ""
+                    }`}
+                    disabled={cartLoading}
+                  >
+                    {cartLoading ? "Adding..." : "Add To Cart"}
+                  </button>
+                </div>
+                {/* <div className="flex flex-col md:flex-row items-center bg-gray-100 px-5 py-0.5 md:justify-end gap-3">
                   <div className="text-lg md:text-xl font-bold text-gray-800">
                     ${totalPrice}
                   </div>
@@ -331,7 +350,7 @@ const FoodDetails = () => {
                   >
                     {cartLoading ? "Adding..." : "Add To Cart"}
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

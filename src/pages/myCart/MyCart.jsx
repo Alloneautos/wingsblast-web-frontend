@@ -19,7 +19,7 @@ import { RiEdit2Fill } from "react-icons/ri";
 import { LuBadgeInfo } from "react-icons/lu";
 import OrderTips from "./OrderTips";
 import { MdEditNote } from "react-icons/md";
-import Loader from "../../assets/images/loader.gif"
+import Loader from "../../assets/images/loader.gif";
 
 const MyCart = () => {
   const { tax, isTaxLoading } = useTax();
@@ -49,12 +49,10 @@ const MyCart = () => {
 
   const [openNotes, setOpenNotes] = useState({});
   const [note, setNote] = useState({});
-  const [firstLine, setFirstLine] = useState("")
-  const [secondLine, setSecondLine] = useState("")
-
+  const [firstLine, setFirstLine] = useState("");
+  const [secondLine, setSecondLine] = useState("");
 
   console.log(mycard);
-
 
   const handleOpenNote = (id) => {
     setOpenNotes((prev) => ({
@@ -335,7 +333,7 @@ const MyCart = () => {
     setSelectTipsRate(data);
   };
 
-   useEffect(() => {
+  useEffect(() => {
     if (orderStatus === "Delivery") {
       const splitAddress = (savedAddress) => {
         if (!savedAddress || typeof savedAddress !== "string") {
@@ -351,13 +349,11 @@ const MyCart = () => {
       };
 
       const { firstLine, secondLine } = splitAddress(savedAddress);
-      
+
       setFirstLine(firstLine);
       setSecondLine(secondLine);
     }
   }, [orderStatus, savedAddress]);
-    
-  
 
   return (
     <section className="text-gray-600 body-font mx-auto">
@@ -365,7 +361,7 @@ const MyCart = () => {
         <div className="lg:w-4/6 md:w-1/2 w-full  rounded-lg mb-10 lg:mb-0">
           <NewFoodAddCard />
           <div>
-            <h1 className="text-4xl text-center font-semibold text-black mt-3 ml-3">
+            <h1 className="text-4xl font-sans font-semibold text-black mt-3 ml-3">
               Review Order
             </h1>
 
@@ -378,16 +374,14 @@ const MyCart = () => {
                 <div key={item.id} className="my-3 mx-4 text-black">
                   <div className="divider"></div>
                   <div className="flex justify-between text-xl sm:text-2xl">
-                    <h2>
-                      {item.food_name}   <span title="Quantity" className="font-semibold">(X{quantities[item.id]})</span>
-                    </h2>
-                    <div className="join">
-                      <button className="btn join-item">
+                    <h2 className="text-lg font-semibold">{item.food_name}</h2>
+                    <div className="flex gap-2">
+                      <button className="">
                         <Link to={`/food-details/${item.food_details_id}`}>
                           <BiEdit className="text-2xl" />
                         </Link>
                       </button>
-                      <button className="btn join-item">
+                      <button className="">
                         <RiDeleteBin6Line
                           onClick={() => handleDelete(item.id)}
                           className="text-2xl text-red-600"
@@ -656,7 +650,7 @@ const MyCart = () => {
           <div className="divider "></div>
 
           {/* Pricing Table */}
-          <table className="w-full text-lg text-gray-700 mb-6">
+          <table className="w-full text-lg text-gray-700 mb-3">
             <tbody>
               <tr>
                 <td className="py-2">Subtotal</td>
@@ -748,6 +742,7 @@ const MyCart = () => {
             </tbody>
           </table>
           {error && <p className="text-red-500">{error}</p>}
+          <div className="divider "></div>
           {/* Checkout Button */}
           {!isASAP && (!selectedDate || !selectedTime) && (
             <p className="text-red-600 text-base font-semibold mb-4 bg-gray-200 p-3 rounded">

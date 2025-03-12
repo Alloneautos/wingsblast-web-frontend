@@ -203,7 +203,7 @@ export const useFoodSearch = (searchText) => {
         const menuData = await getFoodSearch();
         setFoodSearch(menuData || []);
       } catch (error) {
-        setError("Failed to fetch food search.");
+        setError("Failed to fetch food search.", error);
       } finally {
         setLoading(false);
       }
