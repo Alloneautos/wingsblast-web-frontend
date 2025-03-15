@@ -12,7 +12,7 @@ const BakerySection = ({ bakery, loading,error, onBakeryPriceChange, onBakerySel
         } else {
             setSelectBakery(bakery);
             onBakeryPriceChange(bakery.isPaid === 1 ? bakery.beverage_price: 0);
-            onBakerySelected(bakery.beverage_food_id);
+            onBakerySelected(bakery.beverage_id);
         }
     }
     useEffect(() => {

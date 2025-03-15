@@ -1,41 +1,62 @@
 import { useEffect } from "react";
-import { FaDownload } from "react-icons/fa";
-import Apple from "../assets/images/appleapp.png"
+import Apple from "../assets/images/iconbywb.png";
+import { MdClose } from "react-icons/md";
+import "./style.css";
 
 const PopupModel = () => {
   useEffect(() => {
-    // পেজ লোড হওয়ার সাথে সাথেই মডেলটি ওপেন হবে
     const modal = document.getElementById("my_modal_3");
     if (modal) {
       modal.showModal();
     }
   }, []);
 
+  const closeModal = () => {
+    const modal = document.getElementById("my_modal_3");
+    if (modal) {
+      modal.close(); // মডেলটি বন্ধ করতে এটি ব্যবহার করুন
+    }
+  };
+
   return (
-    <dialog id="my_modal_3" className="modal">
-      <div className="modal-box">
-        <form method="dialog">
-          {/* ✕ বাটন ক্লিক করলে মডেল বন্ধ হবে */}
-          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-            ✕
-          </button>
-        </form>
-        <div className="flex items-center bg-white p-4">
-          {/* Icon Section */}
-          <div className="rounded-full">
-            <img src={Apple} width={100} alt="" />
+    <dialog id="my_modal_3" className="modal modal-top">
+      <div className="modal-box relative">
+        <div className="flex items-center bg-white p-1">
+          <div className="absolute right-2 top-2 hidden">
+            {/* MdClose আইকন ক্লিক করলে মডেল বন্ধ হবে */}
+            <button
+              onClick={closeModal}
+              className="btn btn-sm btn-circle btn-ghost"
+            >
+              <MdClose />
+            </button>
+          </div>
+          <div>
+          <button
+              onClick={closeModal}
+              className="btn btn-sm btn-circle btn-ghost"
+            >
+              <MdClose />
+            </button>
+          </div>
+          <div className="rounded-full bg-gray-100">
+            <img src={Apple} width={50} alt="Apple App" />
           </div>
 
           {/* Text Section */}
           <div className="ml-4">
-            <h3 className="text-lg font-bold text-gray-800">
-              Download Our App!
-            </h3>
+            <h3 className="text-lg font-bold text-gray-800">WingsBlast</h3>
+            <p className="text-xs">Wings for Delivery or Carryout</p>
           </div>
 
           {/* Button Section */}
-          <a target="_blank" href="https://apps.apple.com/us/app/wingsblast/id6738927180" className="ml-auto btn bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-4 py-2 rounded shadow-md">
-            Install now
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://apps.apple.com/us/app/wingsblast/id6738927180"
+            className="ml-auto btn bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-5 rounded-full shadow-md"
+          >
+            Get
           </a>
         </div>
       </div>

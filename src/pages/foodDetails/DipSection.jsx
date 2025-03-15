@@ -13,7 +13,7 @@ const DipSection = ({ dips, loading, error, onDipPriceChange, onDipSelected  }) 
         } else {
             setSelectedDip(dip);
             onDipPriceChange(dip.isPaid === 1 ? dip.dip_price : 0);
-            onDipSelected(dip.dip_food_id); // Send dip ID
+            onDipSelected(dip.dip_id); // Send dip ID
         }
     };
     useEffect(() => {

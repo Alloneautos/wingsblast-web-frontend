@@ -19,7 +19,7 @@ const SideSection = ({
     } else {
       setSelectedSides(side);
       onSidePriceChange(side.isPaid === 1 ? side.side_price : 0);
-      onSideSelected(side.side_food_id); // সিলেক্টেড সাইডের id পাঠাবে
+      onSideSelected(side.side_id); // সিলেক্টেড সাইডের id পাঠাবে
     }
   };
   // Update the total price when a side is selected or unselected

@@ -130,7 +130,6 @@ const FlavorSelection = ({ flavorReq, choiceFlavorReq, sendFlavorData }) => {
       </p>
     );
   }
-  console.log(flavor);
   return (
     <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg shadow-lg">
       <Disclosure defaultOpen>

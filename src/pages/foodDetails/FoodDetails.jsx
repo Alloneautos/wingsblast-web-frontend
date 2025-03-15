@@ -166,6 +166,7 @@ const FoodDetails = () => {
 
   const handleDrinkSelected = (drinkId) => {
     setDrinkId(drinkId);
+    console.log(drinkId, "drinkid")
   };
 
   const onToppingsChange = (selectedToppingId) => {
@@ -254,7 +255,6 @@ const FoodDetails = () => {
     navigate(-1);
   };
 
-  console.log("guestUser", guestUser);
 
   return (
     <>

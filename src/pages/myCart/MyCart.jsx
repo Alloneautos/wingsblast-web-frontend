@@ -377,11 +377,6 @@ const MyCart = () => {
                     <h2 className="text-lg font-semibold">{item.food_name}</h2>
                     <div className="flex gap-2">
                       <button className="">
-                        <Link to={`/food-details/${item.food_details_id}`}>
-                          <BiEdit className="text-2xl" />
-                        </Link>
-                      </button>
-                      <button className="">
                         <RiDeleteBin6Line
                           onClick={() => handleDelete(item.id)}
                           className="text-2xl text-red-600"

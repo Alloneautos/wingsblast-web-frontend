@@ -7,7 +7,9 @@ const Main = () => {
     return (
         <div>
             <Navbar></Navbar>
+            <div className="block lg:hidden">
             <PopupModel />
+            </div>
             <div className="mt-[88px]">
                 <Outlet></Outlet>
             </div>
