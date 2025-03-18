@@ -31,8 +31,6 @@ const DrinkSection = ({
     onDrinkPriceChange(price);
   }, [selectedDrink, onDrinkPriceChange]);
 
-  console.log(drinks, "drinkd");
-
   return (
     <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg shadow-lg">
       <Disclosure>

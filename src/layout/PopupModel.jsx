@@ -1,44 +1,55 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Apple from "../assets/images/iconbywb.png";
 import { MdClose } from "react-icons/md";
 import "./style.css";
 
 const PopupModel = () => {
+  const [isSmallDevice, setIsSmallDevice] = useState(window.innerWidth < 1024);
+
   useEffect(() => {
     const modal = document.getElementById("my_modal_3");
-    if (modal) {
+
+    // ✅ শুধুমাত্র ছোট স্ক্রিনে মডাল দেখাও
+    if (modal && isSmallDevice) {
       modal.showModal();
     }
-  }, []);
+
+    // 📌 Function to check screen size and update state
+    const handleResize = () => {
+      setIsSmallDevice(window.innerWidth < 1024);
+    };
+
+    // 📌 Add event listener when component mounts
+    window.addEventListener("resize", handleResize);
+
+    // 📌 Cleanup event listener when component unmounts
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isSmallDevice]);
 
   const closeModal = () => {
     const modal = document.getElementById("my_modal_3");
     if (modal) {
-      modal.close(); // মডেলটি বন্ধ করতে এটি ব্যবহার করুন
+      modal.close();
     }
   };
+
+  // ✅ বড় স্ক্রিনে মডেল লোডই হবে না
+  if (!isSmallDevice) return null;
 
   return (
     <dialog id="my_modal_3" className="modal modal-top">
       <div className="modal-box relative">
         <div className="flex items-center bg-white p-1">
-          <div className="absolute right-2 top-2 hidden">
-            {/* MdClose আইকন ক্লিক করলে মডেল বন্ধ হবে */}
-            <button
-              onClick={closeModal}
-              className="btn btn-sm btn-circle btn-ghost"
-            >
-              <MdClose />
-            </button>
-          </div>
-          <div>
+          {/* Close Button */}
           <button
-              onClick={closeModal}
-              className="btn btn-sm btn-circle btn-ghost"
-            >
-              <MdClose />
-            </button>
-          </div>
+            onClick={closeModal}
+            className="btn btn-sm btn-circle btn-ghost"
+          >
+            <MdClose />
+          </button>
+
           <div className="rounded-full bg-gray-100">
             <img src={Apple} width={50} alt="Apple App" />
           </div>

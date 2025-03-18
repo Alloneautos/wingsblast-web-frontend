@@ -10,7 +10,7 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
 const FoodMenu = () => {
-  const [activeTab, setActiveTab] = useState("specials");
+  const [activeTab, setActiveTab] = useState("Wingsblast");
   const sectionsRef = useRef({});
   const { allwithfood, isLoading } = useCategoryWithFood();
   const { allFood, loading } = useAllFood();
@@ -122,70 +122,70 @@ const FoodMenu = () => {
       </div> */}
 
       {/* Our recommendations section */}
-       <div className="slider-container w-full lg:w-10/12 mx-auto">
-      <Carousel
-        responsive={responsive}
-        swipeable
-        draggable
-        infinite
-        arrows
-        showDots={false}
-        partialVisible
-        className="flex"
-      >
-        {/* Skeleton Loading */}
-        {loading
-          ? Array.from({ length: 3 }).map((_, index) => (
-              <div
-                key={index}
-                className="flex flex-col gap-4 p-4 w-full max-w-[250px]"
-              >
-                <div className="skeleton h-32 w-full"></div>
-                <div className="skeleton h-7 my-6 w-28"></div>
-                <div className="skeleton h-7 my-6 w-full"></div>
-                <div className="skeleton h-7 my-6 w-full"></div>
-              </div>
-            ))
-          : allFood?.map((foodMenu) => (
-              <div
-                key={foodMenu.id}
-                className="p-4 lg:p-6 cursor-pointer"
-                onClick={() => handleLinkClick(foodMenu?.id)}
-              >
-                <div className="relative h-full w-full border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transform transition duration-300 ease-in-out hover:scale-105 bg-white">
-                  {/* Image */}
-                  <img
-                    className="w-full h-48 object-cover"
-                    src={foodMenu.image}
-                    alt={foodMenu.name}
-                  />
-                  {/* Badge */}
-                  <div className="absolute top-2 right-2 bg-ButtonColor text-white text-xs font-bold uppercase px-3 py-1 rounded-full shadow">
-                    Most Sell
-                  </div>
-                  {/* Content */}
-                  <div className="p-4 space-y-3">
-                    {/* Title */}
-                    <h1 className="text-lg font-bold text-gray-800 truncate">
-                      {foodMenu.name}
-                    </h1>
-                    {/* Description */}
-                    <p className="text-gray-600 text-sm h-14 overflow-hidden line-clamp-2">
-                      {foodMenu.description}
-                    </p>
-                    {/* Calories and Price */}
-                    <div className="flex items-center justify-between text-gray-700 text-sm font-medium">
-                      <span>{foodMenu.cal}</span>
-                      <span className="text-green-600 font-semibold text-lg">
-                        ${foodMenu.price.toFixed(2)}
-                      </span>
+      <div className="slider-container w-full lg:w-10/12 mx-auto">
+        <Carousel
+          responsive={responsive}
+          swipeable
+          draggable
+          infinite
+          arrows
+          showDots={false}
+          partialVisible
+          className="flex"
+        >
+          {/* Skeleton Loading */}
+          {loading
+            ? Array.from({ length: 3 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col gap-4 p-4 w-full max-w-[250px]"
+                >
+                  <div className="skeleton h-32 w-full"></div>
+                  <div className="skeleton h-7 my-6 w-28"></div>
+                  <div className="skeleton h-7 my-6 w-full"></div>
+                  <div className="skeleton h-7 my-6 w-full"></div>
+                </div>
+              ))
+            : allFood?.map((foodMenu) => (
+                <div
+                  key={foodMenu.id}
+                  className="p-4 lg:p-6 cursor-pointer"
+                  onClick={() => handleLinkClick(foodMenu?.id)}
+                >
+                  <div className="relative h-full w-full border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transform transition duration-300 ease-in-out hover:scale-105 bg-white">
+                    {/* Image */}
+                    <img
+                      className="w-full h-48 object-cover"
+                      src={foodMenu.image}
+                      alt={foodMenu.name}
+                    />
+                    {/* Badge */}
+                    <div className="absolute top-2 right-2 bg-ButtonColor text-white text-xs font-bold uppercase px-3 py-1 rounded-full shadow">
+                      Most Sell
+                    </div>
+                    {/* Content */}
+                    <div className="p-4 space-y-3">
+                      {/* Title */}
+                      <h1 className="text-lg font-bold text-gray-800 truncate">
+                        {foodMenu.name}
+                      </h1>
+                      {/* Description */}
+                      <p className="text-gray-600 text-sm h-14 overflow-hidden line-clamp-2">
+                        {foodMenu.description}
+                      </p>
+                      {/* Calories and Price */}
+                      <div className="flex items-center justify-between text-gray-700 text-sm font-medium">
+                        <span>{foodMenu.cal}</span>
+                        <span className="text-green-600 font-semibold text-lg">
+                          ${foodMenu.price.toFixed(2)}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-      </Carousel>
-    </div>
+              ))}
+        </Carousel>
+      </div>
 
       {loading ? (
         // Skeleton Loading UI
@@ -265,16 +265,21 @@ const FoodMenu = () => {
 
       {/* Dialog Box */}
       <dialog id="select_cal" className="modal">
-        <div className="modal-box">
+        <div className="modal-box !p-5  max-w-[350px] !rounded">
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
               ✕
             </button>
           </form>
-          <h3 className="font-bold text-2xl">Choose An Option</h3>
+          <h3 className="font-[900] text-2xl font-sans text-black">
+            CHO0SE AN OPTION
+          </h3>
           {!isLoading && selectedItem && (
             <div>
-              <p className="py-1 text-green-600">{selectedItem.name}</p>
+              <p className="py-1 font-semibold text-black">
+                {selectedItem.name}
+              </p>
+              <div className="w-full h-[1px] bg-gray-300 my-2"></div>
               {selectedItem.food_details.map((food) => (
                 <p
                   key={food.id}
@@ -283,13 +288,15 @@ const FoodMenu = () => {
                 >
                   <div className="my-1">
                     <div className="flex justify-between">
-                      <h3 className="font-semibold">{food.food_menu_name}</h3>
-                      <span className="flex items-center text-lg">
+                      <h3 className="font-semibold text-black">
+                        {food.food_menu_name}
+                      </h3>
+                      <span className="flex items-center text-sm font-sans font-semibold text-black ">
                         $ {food.price} <MdOutlineKeyboardArrowRight />
                       </span>
                     </div>
-                    <h4 className="flex items-center gap-2 text-sm">
-                      {food.cal} cal <BiSolidError />
+                    <h4 className="flex items-center gap-2 text-xs font-medium">
+                      {food.cal} <BiSolidError />
                     </h4>
                   </div>
                 </p>

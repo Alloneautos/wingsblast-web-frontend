@@ -427,10 +427,22 @@ const MyCart = () => {
                     ) : (
                       <p></p>
                     )}
-                    <p title="Dip">{item.dip_name}</p>
-                    <p title="Side">{item.side_name}</p>
-                    <p title="Drink">{item.drink_name}</p>
-                    <p title="Bakery">{item.bakery_name}</p>
+                    <p title="Dip">
+                      {item.dip_name}{" "}
+                      {item.is_dip_paid ? `$(${item.dip_price})` : ""}
+                    </p>
+                    <p title="Side">
+                      {item.side_name}{" "}
+                      {item.is_side_paid ? `$(${item.side_price})` : ""}{" "}
+                    </p>
+                    <p title="Drink">
+                      {item.drink_name}{" "}
+                      {item.is_drink_paid ? `$(${item.drink_price})` : ""}
+                    </p>
+                    <p title="Bakery">
+                      {item.bakery_name}{" "}
+                      {item.is_bakery_paid ? `$(${item.bakery_price})` : ""}
+                    </p>
                     <button
                       className="flex gap-2 items-center bg-gray-200 rounded-lg px-2.5 py-1.5 mt-2 transition-all text-sm font-semibold"
                       onClick={() => handleOpenNote(item.id)}

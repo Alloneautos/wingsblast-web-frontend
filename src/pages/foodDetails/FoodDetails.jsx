@@ -199,7 +199,7 @@ const FoodDetails = () => {
         sandCust: sandCustData,
         // dip
         dip_id: dipId,
-        is_Dip_paid: isDipPrice,
+        is_dip_paid: isDipPrice,
         // side
         side_id: sideId,
         is_side_paid: isSidePrice,
@@ -211,7 +211,7 @@ const FoodDetails = () => {
         is_bakery_paid: isBakeryPrice,
         // toppings
       };
-
+      
       const response = await API.post("/card/add", data);
       queryClient.invalidateQueries(["wishListVechile", guestUser]);
 
