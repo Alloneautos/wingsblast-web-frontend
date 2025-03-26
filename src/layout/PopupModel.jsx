@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Apple from "../assets/images/iconbywb.png";
 import { MdClose } from "react-icons/md";
 import "./style.css";
+import { RiDownloadCloud2Line } from "react-icons/ri";
 
 const PopupModel = () => {
   const [isSmallDevice, setIsSmallDevice] = useState(window.innerWidth < 1024);
@@ -9,7 +10,7 @@ const PopupModel = () => {
   useEffect(() => {
     const modal = document.getElementById("my_modal_3");
 
-    // ✅ শুধুমাত্র ছোট স্ক্রিনে মডাল দেখাও
+    // 📌 Show modal on small devices
     if (modal && isSmallDevice) {
       modal.showModal();
     }
@@ -50,7 +51,7 @@ const PopupModel = () => {
             <MdClose />
           </button>
 
-          <div className="rounded-full bg-gray-100">
+          <div className="rounded bg-gray-300 text-white p-1">
             <img src={Apple} width={50} alt="Apple App" />
           </div>
 
@@ -65,9 +66,9 @@ const PopupModel = () => {
             target="_blank"
             rel="noopener noreferrer"
             href="https://apps.apple.com/us/app/wingsblast/id6738927180"
-            className="ml-auto btn bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-5 rounded-full shadow-md"
+            className="ml-auto text-[#0672E9] text-xl"
           >
-            Get
+            <RiDownloadCloud2Line />
           </a>
         </div>
       </div>

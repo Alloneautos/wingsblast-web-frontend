@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { FaPeopleCarry, FaSearch } from "react-icons/fa";
 import { FaBagShopping } from "react-icons/fa6";
 import {
-  MdOutlineAssignmentInd,
   MdOutlineBorderColor,
   MdOutlineDeliveryDining,
   MdRestaurantMenu,
@@ -18,7 +17,6 @@ import {
   useUserProfile,
 } from "../api/api";
 import { IoFastFood, IoNotificationsOutline } from "react-icons/io5";
-import { GrLanguage } from "react-icons/gr";
 import { LuUserCog } from "react-icons/lu";
 import { CgLogOut } from "react-icons/cg";
 import { RiMenu3Fill } from "react-icons/ri";
@@ -26,13 +24,12 @@ import { VscChromeClose } from "react-icons/vsc";
 import Logo from "../assets/images/website Logo.png";
 import LocationModal from "./LocationModal";
 import Notification from "./Notification";
-import { BiHome } from "react-icons/bi";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [savedAddress, setSavedAddress] = useState("");
   const { guestUser } = useGuestUser();
-  const { user, isLoading } = useUserProfile();
+  const { user } = useUserProfile();
   const [unreadCount, setUnreadCount] = useState(0);
   const { mycard, refetch } = useMyCart(guestUser);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
@@ -70,9 +67,16 @@ function Navbar() {
       <div className="container flex justify-between items-center py-2 lg:py-[18px] px-4 w-full lg:w-10/12 mx-auto">
         {/* Left side: Logo */}
         <div className="flex justify-between items-center space-x-4">
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden text-black text-3xl focus:outline-none"
+          >
+            {isOpen ? <VscChromeClose /> : <RiMenu3Fill />}
+          </button>
           <Link to="/">
             <img
-              className="w-[120px] lg:w-[155px] h-[40px] lg:h-[50px]"
+              className="w-[175px] lg:w-[175px] h-[50px] lg:h-[60px]"
               src={Logo}
               alt="WingsBlast Logo"
             />
@@ -97,8 +101,8 @@ function Navbar() {
             <div className="hidden lg:grid items-center text-sm text-gray-700">
               <span>
                 {orderStatus === "CarryOut" && (
-                  <span className="text-2xl font-semibold text-black">
-                    Selected {orderStatus}
+                  <span className="text-xl font-semibold text-black">
+                    {orderStatus}
                     <span
                       onClick={() => setIsLocationModalOpen(true)}
                       className="text-rose-500 text-base hover:no-underline cursor-pointer"
@@ -218,86 +222,6 @@ function Navbar() {
               </Link>
             </li>
           )}
-
-          {/* <div className="dropdown dropdown-end relative">
-            <button
-              tabIndex={0}
-              className="focus:outline-none"
-              onClick={toggleDropdown}
-            >
-              <img
-                src={ProfileIcon}
-                className="w-7 mt-1 lg:w-10 md:w-12"
-                alt="Profile"
-              />
-            </button>
-            {dropdownOpen && (
-              <ul
-                className="dropdown-content menu bg-gray-200 rounded w-52 z-50 p-2 shadow-lg mt-2 absolute right-0"
-                onClick={closeDropdown}
-              >
-                {isLoading ? (
-                  <li className="text-center p-2">
-                    <span className="loading loading-dots loading-md"></span>
-                  </li>
-                ) : !user.id ? (
-                  <>
-                    <li>
-                      <Link
-                        to="/signin"
-                        className="text-base font-semibold flex items-center"
-                      >
-                        <MdOutlineAssignmentInd /> Login
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        to="/signup"
-                        className="text-base font-semibold flex items-center"
-                      >
-                        <BsFillSignIntersectionFill /> Sign Up
-                      </Link>
-                    </li>
-                  </>
-                ) : (
-                  <>
-                    <li>
-                      <Link
-                        to="/userprofile"
-                        className="text-base font-semibold flex items-center"
-                      >
-                        <LuUserCog /> User Profile
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        to="/myorder"
-                        className="text-base font-semibold flex items-center"
-                      >
-                        <MdOutlineBorderColor /> My Order
-                      </Link>
-                    </li>
-                    <li >
-                      <button onClick={handleSignOut}>
-                      <span className="text-base font-semibold flex items-center cursor-pointer">
-                        <CgLogOut /> Log Out
-                      </span>
-
-                      </button>
-                      
-                    </li>
-                   
-                  </>
-                )}
-              </ul>
-            )}
-          </div> */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-black focus:outline-none"
-          >
-            {isOpen ? <VscChromeClose /> : <RiMenu3Fill />}
-          </button>
         </div>
       </div>
 
@@ -344,30 +268,30 @@ function Navbar() {
         onClose={() => setIsLocationModalOpen(false)}
       />
       <div className="block lg:hidden">
-      {orderStatus ? (
-        orderStatus === "Delivery" ? (
-          <div className="border-t p-1">
-            <h1 className="text-black font-semibold text-center flex justify-center items-center">
-              <MdOutlineDeliveryDining className="text-2xl" /> DELIVERY:
-              <span className="text-green-600 font-normal ml-1">
-                {shortAddress}
-              </span>
-            </h1>
-          </div>
+        {orderStatus ? (
+          orderStatus === "Delivery" ? (
+            <div className="border-t p-1">
+              <h1 className="text-black font-semibold text-center flex justify-center items-center">
+                <MdOutlineDeliveryDining className="text-2xl" /> DELIVERY:
+                <span className="text-green-600 font-normal ml-1">
+                  {shortAddress}
+                </span>
+              </h1>
+            </div>
+          ) : (
+            <div className="border-t p-1">
+              <h1 className="text-black font-semibold text-center flex justify-center items-center">
+                <FaPeopleCarry className="text-2xl" /> CARRYOUT
+              </h1>
+            </div>
+          )
         ) : (
           <div className="border-t p-1">
             <h1 className="text-black font-semibold text-center flex justify-center items-center">
-              <FaPeopleCarry className="text-2xl" /> CARRYOUT
+              PLEASE SELECT ORDER TYPE
             </h1>
           </div>
-        )
-      ) : (
-        <div className="border-t p-1">
-          <h1 className="text-black font-semibold text-center flex justify-center items-center">
-            PLEASE SELECT ORDER TYPE
-          </h1>
-        </div>
-      )}
+        )}
       </div>
     </nav>
   );

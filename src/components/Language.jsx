@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Logo from '../image/logo.png';
+import Logo from "../assets/bannarimage/logo.png";
 
 const Language = () => {
     const [language, setLanguage] = useState('English'); // Default language is English

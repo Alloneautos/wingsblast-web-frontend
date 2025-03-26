@@ -106,7 +106,7 @@ const FoodMenu = () => {
           <a
             key={catgr.id}
             role="tab"
-            className={`tab ${
+            className={`tab whitespace-nowrap ${
               activeTab === catgr.id ? "tab-active text-green-600" : ""
             }`}
             onClick={() => handleScrollToSection(catgr.id)}
@@ -202,7 +202,7 @@ const FoodMenu = () => {
           >
             <div className="container px-3 lg:px-5 py-2 w-full lg:w-10/12 mx-auto">
               {/* Category Name */}
-              <h1 className="text-5xl font-bold mb-5">
+              <h1 className="text-3xl lg:text-5xl font-bold mb-5">
                 {foodMenu.food_menus.length > 0 && foodMenu.category_name}
               </h1>
 

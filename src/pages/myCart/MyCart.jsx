@@ -120,26 +120,20 @@ const MyCart = () => {
     event.preventDefault();
     const code = event.target.elements.code.value;
 
-    try {
-      const response = await API.put("/coupons/check", {
-        code,
-      });
+    if (code === "GRAND20") {
+      const discount = cartSubtotal * 0.2; // 20% discount
+      setCouponPrice(discount);
 
-      if (response.data.data.discount_price) {
-        setCouponPrice(response.data.data.discount_price);
-
-        Swal.fire({
-          title: "Coupon Applied!",
-          text: `You have received a discount of $${response.data.data.discount_price}.`,
-          icon: "success",
-          confirmButtonText: "OK",
-        });
-      }
-    } catch (error) {
-      // Show error message
       Swal.fire({
-        title: "Invalide Coupons",
-        text: "Please provide valide coupons",
+        title: "Coupon Applied!",
+        text: `You have received a discount of $${discount.toFixed(2)}.`,
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    } else {
+      Swal.fire({
+        title: "Invalid Coupon",
+        text: "Please provide a valid coupon code.",
         icon: "error",
         confirmButtonText: "Try Again",
       });

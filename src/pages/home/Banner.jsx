@@ -39,7 +39,7 @@ const Banner = () => {
 
   return (
     <header className="bg-white  w-full lg:w-10/12 mt-0 lg:mt-7 mx-auto ">
-      <div className="container grid md:flex lg:flex gap-6 px-1  lg:px-6 py-3 lg:py-10 mx-auto space-y-6 lg:h-[32rem] lg:flex-row lg:items-center">
+      <div className="container grid md:flex lg:flex gap-6 px-1 lg:px-0 py-3 lg:py-10 mx-auto space-y-6 lg:h-[32rem] lg:flex-row lg:items-center">
         <div className="flex items-center justify-center w-full  lg:w-4/6">
           <div className="relative w-full overflow-hidden">
             {/* Carousel wrapper */}
