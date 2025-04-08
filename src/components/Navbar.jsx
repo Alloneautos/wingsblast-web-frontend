@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { FaPeopleCarry, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { FaBagShopping } from "react-icons/fa6";
 import {
   MdOutlineBorderColor,
-  MdOutlineDeliveryDining,
   MdRestaurantMenu,
 } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -19,12 +18,12 @@ import {
 import { IoFastFood, IoNotificationsOutline } from "react-icons/io5";
 import { LuUserCog } from "react-icons/lu";
 import { CgLogOut } from "react-icons/cg";
-import { RiMenu2Fill, RiMenu3Fill } from "react-icons/ri";
+import { RiMenu2Fill } from "react-icons/ri";
 import { VscChromeClose } from "react-icons/vsc";
 import Logo from "../assets/images/website Logo.png";
 import LocationModal from "./LocationModal";
 import Notification from "./Notification";
-import SideDrawer from "./SideDrawer";
+// import SideDrawer from "./SideDrawer";
 import { BiSearch } from "react-icons/bi";
 
 function Navbar() {
@@ -65,7 +64,7 @@ function Navbar() {
   const shortAddress = savedAddress.split(",")[0];
 
   return (
-    <nav className="bg-white w-full shadow-lg fixed top-0 !z-50">
+    <nav className="bg-white w-full fixed top-0 border-b !z-50">
       <div className="container flex justify-between items-center py-2 lg:py-[18px] px-4 w-full lg:w-10/12 mx-auto">
         {/* Left side: Logo */}
         <div className="flex justify-between items-center space-x-4">
@@ -77,10 +76,11 @@ function Navbar() {
           >
             {isOpen ? <VscChromeClose /> : <RiMenu2Fill />}
           </button>
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center mx-auto ml-[80px] lg:ml-0">
+            {/* Logo for mobile view */}
             <Link to="/">
               <img
-                className="w-[175px] lg:w-[175px] h-[50px] lg:h-[60px]"
+                className="w-[175px] lg:w-[175px] h-[50px] lg:h-[60px] ml-[50px] md:ml-0 lg:ml-0"
                 src={Logo}
                 alt="WingsBlast Logo"
               />
@@ -310,23 +310,23 @@ function Navbar() {
         {orderStatus ? (
           orderStatus === "Delivery" ? (
             <div className="border-t p-1">
-              <h1 className="text-black font-semibold text-center flex justify-center items-center">
-                <MdOutlineDeliveryDining className="text-2xl" /> DELIVERY:
-                <span className="text-green-600 font-normal ml-1">
+              <h1 className="text-gray-800 text-center flex justify-center items-center">
+                 DELIVERY:
+                <span className="ml-1 text-black">
                   {shortAddress}
                 </span>
               </h1>
             </div>
           ) : (
             <div className="border-t p-1">
-              <h1 className="text-black font-semibold text-center flex justify-center items-center">
-                <FaPeopleCarry className="text-2xl" /> CARRYOUT
+              <h1 className="text-black text-center flex justify-center items-center">
+                CARRYOUT
               </h1>
             </div>
           )
         ) : (
           <div className="border-t p-1">
-            <h1 className="text-black font-semibold text-center flex justify-center items-center">
+            <h1 className="text-black text-center flex justify-center items-center">
               PLEASE SELECT ORDER TYPE
             </h1>
           </div>

@@ -11,13 +11,19 @@ const Footer = () => {
         <nav className="grid md:flex lg:flex gap-3 text-xl">
           <div className=" flex gap-3">
             <Link to="/about">
-              <a className="link link-hover text-white hover:text-white hover:underline">ABOUT</a>
+              <a className="link link-hover text-white hover:text-white hover:underline">
+                ABOUT
+              </a>
             </Link>
             <Link to="/faq">
-              <a className="link link-hover text-white hover:text-white hover:underline">FAQ</a>
+              <a className="link link-hover text-white hover:text-white hover:underline">
+                FAQ
+              </a>
             </Link>
             <Link to="/contactUs">
-              <a className="link link-hover text-white hover:text-white hover:underline">CONTACT US</a>
+              <a className="link link-hover text-white hover:text-white hover:underline">
+                CONTACT US
+              </a>
             </Link>
           </div>
         </nav>
@@ -25,20 +31,32 @@ const Footer = () => {
         {/* <nav className="grid grid-cols-2 gap-1 mt-4 text-center text-xs sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-11 justify-center"> */}
         <nav className="flex flex-wrap justify-center gap-4">
           {/* <a className="link link-hover">Cookies Settings</a> */}
-          <a className="link link-hover text-white hover:text-white">Promotions & Offers</a>
+          <Link
+            to="/promotions"
+            className="link link-hover text-white hover:text-white"
+          >
+            Promotions & Offers
+          </Link>
           <Link to="/termsofuser">
-            <a className="link link-hover text-white hover:text-white">Terms Of User</a>
+            <a className="link link-hover text-white hover:text-white">
+              Terms Of User
+            </a>
           </Link>
           <Link to="/privacy">
-            <a className="link link-hover text-white hover:text-white">Privacy</a>
+            <a className="link link-hover text-white hover:text-white">
+              Privacy
+            </a>
           </Link>
-          {/* <a className="link link-hover">Own a Wingblast</a> */}
-          {/* <a className="link link-hover">FAQ</a> */}
+
           <Link to="/signin">
-            <a className="link link-hover text-white hover:text-white">Login/SignUp</a>
+            <a className="link link-hover text-white hover:text-white">
+              Login/SignUp
+            </a>
           </Link>
           <Link to="/privacy">
-            <a className="link link-hover text-white hover:text-white">Do Not Sell My Info</a>
+            <a className="link link-hover text-white hover:text-white">
+              Do Not Sell My Info
+            </a>
           </Link>
         </nav>
 

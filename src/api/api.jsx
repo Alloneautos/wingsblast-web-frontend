@@ -348,6 +348,7 @@ export const useOrderDetails = (detailsID) => {
 export const useGuestUser = () => {
   const [guestUser, setGuestUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  console.log("Guest User:", guestUser);
   useEffect(() => {
     const fetchGuestUser = async () => {
       try {

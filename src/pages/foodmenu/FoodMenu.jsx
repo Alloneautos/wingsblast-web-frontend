@@ -2,10 +2,11 @@ import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { BiSolidError } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { useCategory, useCategoryWithFood } from "../api/api";
-import LocationModal from "../components/LocationModal";
-import Loader from "../assets/images/loader.gif";
+import { useCategory, useCategoryWithFood } from "../../api/api";
+import LocationModal from "../../components/LocationModal";
+import Loader from "../../assets/images/loader.gif";
 import "react-multi-carousel/lib/styles.css";
+import FoodMenuAbout from "./FoodMenuAbout";
 
 const FoodMenu = () => {
   const [activeTab, setActiveTab] = useState("Wingsblast");
@@ -81,7 +82,7 @@ const FoodMenu = () => {
           <a
             key={catgr.id}
             role="tab"
-            className={`tab whitespace-nowrap text-lg text-black font-semibold font-TitleFont ${
+            className={`tab whitespace-nowrap text-lg text-gray-800 font-semibold font-TitleFont ${
               activeTab === catgr.id ? "tab-active text-green-600" : ""
             }`}
             onClick={() => handleScrollToSection(catgr.id)}
@@ -122,26 +123,25 @@ const FoodMenu = () => {
               </h1>
 
               {/* Food Items */}
-              <div className="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4">
+              <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {foodMenu.food_menus.map((food) => (
                   <div
                     key={food.id}
-                    className="p-4 w-full sm:w-1/2 lg:w-1/3 mb-6"
+                    className="p-4 w-full mb-6 border border-gray-500 rounded transition duration-300"
                   >
+                     {/* Food Name */}
+                     <h2 className="text-xl font-bold font-TitleFont text-gray-900">
+                      {food.name.toUpperCase()}
+                    </h2>
                     {/* Food Image */}
-                    <div className="rounded-lg h-64 overflow-hidden cursor-pointer">
+                    <div className="rounded-lg w-full h-[300px] overflow-hidden cursor-pointer">
                       <img
                         alt={food.name}
                         onClick={() => handleSelectItem(food)}
-                        className="object-cover object-center h-full bg-gray-300 w-full"
+                        className="object-cover object-center h-full bg-white w-full"
                         src={food.image || "placeholder-image-url"} // Use fallback image
                       />
                     </div>
-
-                    {/* Food Name */}
-                    <h2 className="text-xl font-bold font-TitleFont text-gray-900 mt-5">
-                      {food.name.toUpperCase()}
-                    </h2>
 
                     {/* Food Details */}
                     <p className="text-sm leading-relaxed line-clamp-2 mt-2">
@@ -164,8 +164,8 @@ const FoodMenu = () => {
                               <MdOutlineKeyboardArrowRight />
                             </span>
                           </div>
-                          <h4 className="flex items-center gap-2 text-sm">
-                            {food_detail.cal} <BiSolidError />
+                          <h4 className="flex items-center gap-2 text-sm text-gray-700">
+                            {food_detail.cal.toLowerCase()} <BiSolidError />
                           </h4>
                         </div>
                       </div>
@@ -177,6 +177,8 @@ const FoodMenu = () => {
           </section>
         ))
       )}
+
+      <FoodMenuAbout />
 
       {/* Dialog Box */}
       <dialog id="select_cal" className="modal">
@@ -192,7 +194,7 @@ const FoodMenu = () => {
           {!isLoading && selectedItem && (
             <div>
               <p className="py-1 font-semibold text-black">
-                {selectedItem.name}
+                {selectedItem.name.toUpperCase()}
               </p>
               <div className="w-full h-[1px] bg-gray-300 my-2"></div>
               {selectedItem.food_details.map((food) => (

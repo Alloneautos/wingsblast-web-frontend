@@ -1,7 +1,7 @@
-import { useAbout } from "../api/api";
+import { usePrivacy } from "../../api/api";
 
-const About = () => {
-  const { about, isLoading, isError, error } = useAbout();
+const Privacy = () => {
+  const { privacy, isLoading, isError, error } = usePrivacy();
 
   if (isLoading)
     return (
@@ -19,14 +19,14 @@ const About = () => {
   return (
     <div>
       <div className="bg-gradient-to-r from-sky-100 to-indigo-100 h-28 text-center">
-        <h1 className="text-5xl font-bold pt-12 text-black">About</h1>
+        <h1 className="text-5xl font-bold pt-12 text-black">PRIVACY</h1>
       </div>
 
       <div className="w-10/12 mx-auto my-4">
-        <div dangerouslySetInnerHTML={{ __html: about.content }} />
+        <div dangerouslySetInnerHTML={{ __html: privacy.content }} />
       </div>
     </div>
   );
 };
 
-export default About;
+export default Privacy;

@@ -5,7 +5,7 @@ function LocationInput() {
   const [selectedPlace, setSelectedPlace] = useState(null);
 
   const { ref } = usePlacesWidget({
-    apiKey: "AIzaSyDHR63uSt3NXUnv9Ml87RMOPR_DzFsTlYY", // Replace with your API key
+    apiKey: "AIzaSyDHR63uSt3NXUnv9Ml87RMOPR_DzFsTlYY",
     onPlaceSelected: (place) => {
       console.log(place);
       setSelectedPlace(place);

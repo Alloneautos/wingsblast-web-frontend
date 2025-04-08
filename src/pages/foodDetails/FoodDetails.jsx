@@ -271,7 +271,7 @@ const FoodDetails = () => {
               </h1>
               <p className="text-black text-lg md:text-xl font-medium mb-4">
                 ${foodDetails.price}
-                <span className="text-sm text-gray-700">
+                <span className="text-xs text-gray-700">
                   {" "}
                   {foodDetails.cal}
                 </span>

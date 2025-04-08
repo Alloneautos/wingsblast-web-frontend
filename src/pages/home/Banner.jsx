@@ -45,15 +45,15 @@ const Banner = () => {
           <div className="relative w-full overflow-hidden">
             {/* Carousel wrapper */}
             <div
-              className="flex transition-transform ease-in-out duration-700"
+              className="flex transition-transform ease-in-out duration-300"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
               {slides.map((slide, index) => (
-                <div key={index} className="min-w-full">
+                <div key={index} className="min-w-full rounded-3xl">
                   <img
                     src={slide.url}
                     alt={slide.content}
-                    className="w-full  object-cover"
+                    className="w-full  object-cover rounded-xl md:rounded-none lg:rounded-none"
                   />
                 </div>
               ))}

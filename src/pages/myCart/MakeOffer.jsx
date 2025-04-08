@@ -1,6 +1,7 @@
 import Gift from "../../assets/images/gift.png";
 
-const MakeOffer = () => {
+const MakeOffer = ({handleDiscount}) => {
+
   return (
     <div>
       <button onClick={() => document.getElementById("make_offer").showModal()}>
@@ -26,7 +27,13 @@ const MakeOffer = () => {
             Exclusive Limited-Time Offer !
           </h3>
           <div>
-            <button className="w-full h-[80px] bg-red-100 rounded-lg shadow-md flex items-center justify-between gap-2 p-4 mt-4">
+            <button 
+              onClick={(e) => {
+                handleDiscount();
+                document.getElementById("make_offer").close();
+              }} 
+              className="w-full h-[80px] bg-red-100 rounded-lg shadow-md flex items-center justify-between gap-2 p-4 mt-4"
+            >
               <div className="flex items-center gap-2">
                 <img src={Gift} alt="Gift Icon" className="w-16 h-16" />
                 <span className="text-red-600 font-semibold text-lg text-start">
@@ -34,7 +41,13 @@ const MakeOffer = () => {
                 </span>
               </div>
             </button>
-            <button className="w-full h-[80px] bg-red-100 rounded-lg shadow-md flex items-center justify-between gap-2 p-4 mt-4">
+            <button 
+              onClick={(e) => {
+                handleDiscount();
+                document.getElementById("make_offer").close();
+              }} 
+              className="w-full h-[80px] bg-red-100 rounded-lg shadow-md flex items-center justify-between gap-2 p-4 mt-4"
+            >
               <div className="flex items-center gap-2">
                 <img src={Gift} alt="Gift Icon" className="w-16 h-16" />
                 <span className="text-red-600 font-semibold text-lg text-start">
@@ -42,7 +55,13 @@ const MakeOffer = () => {
                 </span>
               </div>
             </button>
-            <button className="w-full h-[80px] bg-red-100 rounded-lg shadow-md flex items-center justify-between gap-2 p-4 mt-4">
+            <button 
+              onClick={(e) => {
+                handleDiscount();
+                document.getElementById("make_offer").close();
+              }} 
+              className="w-full h-[80px] bg-red-100 rounded-lg shadow-md flex items-center justify-between gap-2 p-4 mt-4"
+            >
               <div className="flex items-center gap-2">
                 <img src={Gift} alt="Gift Icon" className="w-16 h-16" />
                 <span className="text-red-600 font-semibold text-lg text-start">

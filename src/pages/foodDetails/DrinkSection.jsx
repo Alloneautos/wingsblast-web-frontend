@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { RxCross2 } from "react-icons/rx";
 import Coke from "../../assets/images/coke.png";
+import { BsHeartPulseFill } from "react-icons/bs";
 
 const DrinkSection = ({
   drinks,
@@ -76,10 +77,19 @@ const DrinkSection = ({
                                 {category.drink_name}
                               </p>
                               <div className="flex gap-2 text-gray-600">
-                                {category.isPaid == 1 && (
-                                  <p>+${category.drink_price}</p>
-                                )}
-                                <p className="flex">💪{category.drink_cal}</p>
+                                <p className="text-green-500 font-semibold">
+                                  {category.isPaid == 1 ? (
+                                    <span className="text-black font-medium">
+                                      `${category.drink_price}`
+                                    </span>
+                                  ) : (
+                                    "Free"
+                                  )}
+                                </p>
+                                <p className="flex items-center gap-1.5">
+                                  <BsHeartPulseFill className="text-red-500" />
+                                  {category.drink_cal}
+                                </p>
                               </div>
                             </div>
                           </div>

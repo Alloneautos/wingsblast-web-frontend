@@ -141,6 +141,20 @@ const MyCart = () => {
     }
   };
 
+  const handleDiscount = () => {
+    const discount = cartSubtotal * 0.2;
+    setCouponPrice(discount);
+    Swal.fire({
+
+      title: "Discount Applied!",
+      text: `You have received a discount of $${discount.toFixed(2)}.`,
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+
+  };
+
+
   const calculateSubtotal = (price, quantity) => price * quantity;
   const calculateTax = (subtotal) => (subtotal * taxRate) / 100;
 
@@ -370,10 +384,10 @@ const MyCart = () => {
                   <div className="flex justify-between text-xl sm:text-2xl">
                     <h2 className="text-xl font-semibold">{item.food_name}</h2>
                     <div className="flex gap-2">
-                      <button className="bg-red-300 rounded-full p-1.5 hover:bg-red-400 transition-all duration-300">
+                      <button className="bg-red-600 rounded-full p-1.5 hover:bg-red-800 transition-all duration-300">
                         <RiDeleteBin6Line
                           onClick={() => handleDelete(item.id)}
-                          className="text-2xl text-red-600 "
+                          className="text-2xl text-white "
                         />
                       </button>
                     </div>
@@ -438,19 +452,19 @@ const MyCart = () => {
                       {item.is_bakery_paid ? `$(${item.bakery_price})` : ""}
                     </p>
                     <button
-                      className="hidden  gap-2 items-center bg-gray-200 rounded-lg px-2.5 py-1.5 mt-2 transition-all text-sm font-semibold"
+                      className="flex gap-2 items-center bg-gray-200 rounded px-2.5 py-1.5 mt-2 transition-all text-sm font-semibold"
                       onClick={() => handleOpenNote(item.id)}
                     >
                       <MdEditNote className="" />
                       <span>Add Note</span>
                     </button>
                     {openNotes[item.id] && (
-                      <div className="mt-2 hidden">
+                      <div className="mt-2">
                         <textarea
                           name="note"
                           rows="3"
                           placeholder="Type your message"
-                          className="w-full max-w-md bg-white rounded-lg border border-gray-300 p-3 shadow-md focus:ring-2 focus:ring-primary focus:outline-none"
+                          className="w-full max-w-md bg-white rounded border border-gray-300 p-3 shadow-md focus:ring-1 focus:ring-primary focus:outline-none"
                           value={note[item.id] || ""}
                           onChange={(e) =>
                             handleNoteChange(item.id, e.target.value)
@@ -626,12 +640,12 @@ const MyCart = () => {
 
           <div className="divider mb-3"></div>
           <div className="flex items-center justify-between bg-red-100 rounded-lg py-1">
-            <MakeOffer />
+            <MakeOffer handleDiscount={handleDiscount} />
           </div>
-          <div className="divider mb-3">or</div>
+          {/* <div className="divider mb-3">or</div> */}
 
           {/* Coupon Code */}
-          <form onSubmit={handleCoupons} className="relative ">
+          <form onSubmit={handleCoupons} className="relative hidden ">
             <input
               type="text"
               name="code"
@@ -646,7 +660,7 @@ const MyCart = () => {
             </button>
           </form>
 
-          <label className="block text-gray-700 text-sm font-bold mb-2 mt-4">
+          {/* <label className="block text-gray-700 text-sm font-bold mb-2 mt-4">
             <span className="block text-lg font-medium text-gray-800 mb-1">
               Phone Number
             </span>
@@ -673,9 +687,9 @@ const MyCart = () => {
 
               <p>Use this number in future?</p>
             </div>
-          </div>
+          </div> */}
 
-          <div className="w-full mt-4 mb-2">
+          {/* <div className="w-full mt-4 mb-2">
             <label className="block text-lg font-semibold text-gray-700 mb-2">
               <textarea
                 type="text"
@@ -683,7 +697,7 @@ const MyCart = () => {
                 className="textarea textarea-info w-full h-24 border border-gray-300 rounded px-4 py-2 text-gray-700 placeholder-gray-500"
               ></textarea>
             </label> 
-          </div>
+          </div> */}
 
           {/* tips */}
           {orderStatus === "Delivery" && (
