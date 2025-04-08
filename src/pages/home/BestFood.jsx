@@ -15,7 +15,7 @@ const BestFood = () => {
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
-      items: 3,
+      items: 4,
       partialVisibilityGutter: 30,
     },
     tablet: {
@@ -25,7 +25,9 @@ const BestFood = () => {
     },
     mobile: {
       breakpoint: { max: 464, min: 0 },
-      items: 1,
+      items: 2,
+      arrows: false,
+      swipeable: true,
       partialVisibilityGutter: 10,
     },
   };
@@ -41,7 +43,7 @@ const BestFood = () => {
   };
 
   return (
-    <section className="text-black body-font w-full lg:w-8/12 mx-auto">
+    <section className="text-black body-font w-full lg:w-10/12 mx-auto">
       <div className="container px-1 py-4 md:py-5 lg:py-24 mx-auto">
         {/* Title Section */}
         <div className="text-center mb-8">
@@ -73,33 +75,33 @@ const BestFood = () => {
             className=""
           >
             {allFood?.map((foodMenu, index) => (
-              <div key={index} className="p-4 cursor-pointer">
+              <div key={index} className="p-2 sm:p-4 cursor-pointer">
                 <div
-                  className="h-full w-full border-2 border-gray-200 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transform transition duration-300 ease-in-out hover:scale-105 bg-gradient-to-br from-white to-gray-100"
+                  className="h-full w-full border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transform transition duration-300 ease-in-out hover:scale-105 bg-white"
                   onClick={() => handleLinkClick(foodMenu?.id)}
                 >
                   <div className="relative overflow-hidden">
                     <img
-                      className="lg:h-48 md:h-36 h-36 w-full object-cover object-center transition-all duration-300"
+                      className="h-40 sm:h-48 w-full object-cover object-center transition-all duration-300"
                       src={foodMenu.image}
-                      alt={foodMenu.name || "Food Item"}
+                      alt={foodMenu.name || 'Food Item'}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-40 hover:opacity-30 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-30 hover:opacity-20 transition-opacity duration-300"></div>
                   </div>
 
-                  <div className="p-6 space-y-4">
-                    <h2 className="title-font text-xl font-semibold text-gray-800 truncate">
+                  <div className="p-4 sm:p-6 space-y-2 sm:space-y-4">
+                    <h2 className="title-font text-lg sm:text-xl font-semibold text-gray-800 truncate">
                       {foodMenu.name}
                     </h2>
-                    <p className="leading-relaxed text-gray-600 text-sm line-clamp-3 h-[38px]">
+                    <p className="leading-relaxed text-gray-600 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3">
                       {foodMenu.description}
                     </p>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-TextColor text-base">
+                      <span className="text-TextColor text-sm sm:text-base">
                         {foodMenu.cal}
                       </span>
-                      <div className="text-gray-800 font-bold text-lg">
+                      <div className="text-gray-800 font-bold text-base sm:text-lg">
                         ${foodMenu.price}
                       </div>
                     </div>

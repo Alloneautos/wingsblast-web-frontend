@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../../assets/images/loader.gif";
 import FlavorSelection from "./FlavorSelection";
-import ChickenOption from "./ChickenOption";
 import {
   API,
   useFoodDetails,
@@ -17,8 +16,8 @@ import Swal from "sweetalert2";
 import ToppingSection from "./ToppingSection";
 import SanwichSection from "./SandwichSection";
 // import RicePlattarCostom from "./RicePlattarCostom";
-import { FaArrowLeft } from "react-icons/fa";
 import { useQueryClient } from "@tanstack/react-query";
+import AddMoreFood from "./AddMoreFood";
 
 const FoodDetails = () => {
   const queryClient = useQueryClient();
@@ -166,7 +165,7 @@ const FoodDetails = () => {
 
   const handleDrinkSelected = (drinkId) => {
     setDrinkId(drinkId);
-    console.log(drinkId, "drinkid")
+    console.log(drinkId, "drinkid");
   };
 
   const onToppingsChange = (selectedToppingId) => {
@@ -211,7 +210,7 @@ const FoodDetails = () => {
         is_bakery_paid: isBakeryPrice,
         // toppings
       };
-      
+
       const response = await API.post("/card/add", data);
       queryClient.invalidateQueries(["wishListVechile", guestUser]);
 
@@ -251,34 +250,10 @@ const FoodDetails = () => {
     return <div>Error: {error}</div>;
   }
 
-  const goBack = () => {
-    navigate(-1);
-  };
-
-
   return (
     <>
-      <div className="flex flex-col w-full lg:w-9/12 mx-auto">
-        <div className="container mx-auto p-6 bg-white  -mt-[30px] lg:mt-6">
-          {/* NavLink  */}
-          <div className="breadcrumbs mt-2 lg:mt-0">
-            <ul className="flex items-center p-0 text-black">
-              <li>
-                <button
-                  onClick={goBack}
-                  className="text-black  flex gap-1 items-center font-semibold text-md md:text-lg lg:text-xl font-sans hover:text-green-500"
-                >
-                  <FaArrowLeft />
-                  Menu
-                </button>
-              </li>
-              <li>
-                <a className="text-black font-semibold text-md md:text-lg lg:text-xl ">
-                  {foodDetails.name}
-                </a>
-              </li>
-            </ul>
-          </div>
+      <div className="flex flex-col w-full lg:w-10/12 mx-auto">
+        <div className="container mx-auto p-6 bg-white -mt-[15px] lg:mt-6">
           <div className="flex flex-col md:flex-row lg:flex-row items-center lg:gap-10">
             <div className="w-full lg:w-1/3 flex justify-center items-center">
               <div className="bg-white rounded-lg p-4">
@@ -291,18 +266,21 @@ const FoodDetails = () => {
             </div>
 
             <div className="w-auto p-4">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 text-black">
-                {foodDetails.name}
+              <h1 className="font-TitleFont text-2xl md:text-3xl lg:text-4xl font-bold mb-2 text-black">
+                {foodDetails.name.toUpperCase()}
               </h1>
               <p className="text-black text-lg md:text-xl font-medium mb-4">
                 ${foodDetails.price}
-                <span className="text-sm text-gray-700">{" "} {foodDetails.cal}</span>
+                <span className="text-sm text-gray-700">
+                  {" "}
+                  {foodDetails.cal}
+                </span>
               </p>
-              <p className="text-gray-600 mb-6 leading-relaxed text-sm md:text-base lg:text-base">
+              <p className="text-black mb-6 leading-relaxed text-sm md:text-base lg:text-base">
                 {foodDetails.description}
               </p>
 
-              <div className="flex flex-col md:flex-row justify-start items-center gap-9 p-4  bg-white">
+              <div className="flex-col md:flex-row justify-start items-center gap-9 p-4 bg-white flex md:gap-4 lg:gap-6">
                 {/* Quantity Controls */}
                 <div className="flex items-center gap-2">
                   <button
@@ -337,20 +315,6 @@ const FoodDetails = () => {
                     {cartLoading ? "Adding..." : "Add To Cart"}
                   </button>
                 </div>
-                {/* <div className="flex flex-col md:flex-row items-center bg-gray-100 px-5 py-0.5 md:justify-end gap-3">
-                  <div className="text-lg md:text-xl font-bold text-gray-800">
-                    ${totalPrice}
-                  </div>
-                  <button
-                    onClick={handleAddToBag}
-                    className={`flex items-center justify-center py-2 px-6 md:py-3 text-white font-semibold rounded-md bg-ButtonColor transition duration-300 ease-in-out transform hover:scale-105 hover:bg-ButtonHover ${
-                      cartLoading ? "opacity-70 cursor-not-allowed" : ""
-                    }`}
-                    disabled={cartLoading}
-                  >
-                    {cartLoading ? "Adding..." : "Add To Cart"}
-                  </button>
-                </div> */}
               </div>
             </div>
           </div>
@@ -433,18 +397,36 @@ const FoodDetails = () => {
         />
       ) : null}
 
-      <ChickenOption categoryID={foodDetails.category_id} />
+      <AddMoreFood categoryID={foodDetails.category_id} />
 
+      {/* scroll section */}
       <div
         className={`${
           isScrolled
             ? "fixed bottom-0 left-0 right-0 bg-white text-black z-50 transition-all duration-300 shadow-lg"
             : "relative"
-        } border-t border-gray-200 px-3 py-2 shadow-lg rounded-md flex justify-center items-center`}
+        } border-t border-gray-200 px-3 py-2 shadow-lg rounded-md flex gap-3 justify-center items-center`}
       >
+        <div className="flex items-center gap-2">
+          <button
+            className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 border border-gray-300 rounded text-lg md:text-xl font-semibold transition duration-200 ease-in-out hover:bg-gray-100"
+            onClick={decrementQuantity}
+          >
+            -
+          </button>
+          <div className="flex items-center justify-center w-12 h-10 md:w-14 md:h-12 border border-gray-300 text-lg md:text-xl font-semibold rounded-">
+            {quantity}
+          </div>
+          <button
+            className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 border border-gray-300 rounded text-lg md:text-xl font-semibold transition duration-200 ease-in-out hover:bg-gray-100"
+            onClick={incrementQuantity}
+          >
+            +
+          </button>
+        </div>
         <button
           onClick={handleAddToBag}
-          className={`px-12 py-3 text-white font-semibold rounded transform transition-transform duration-300 ${
+          className={`px-5 py-2 text-white font-semibold rounded transform transition-transform duration-300 ${
             cartLoading
               ? "bg-gradient-to-r from-gray-400 to-gray-500 cursor-not-allowed"
               : "bg-ButtonColor hover:from-indigo-600 hover:to-purple-600 hover:scale-105"

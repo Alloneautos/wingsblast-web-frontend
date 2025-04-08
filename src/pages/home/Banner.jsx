@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Banner = () => {
@@ -24,7 +25,7 @@ const Banner = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % totalSlides);
-    }, 3000); // Change slide every 3 seconds
+    }, 2000); // Change slide every 3 seconds
 
     return () => clearInterval(interval); // Clean up the interval on component unmount
   }, [totalSlides]);
@@ -38,9 +39,9 @@ const Banner = () => {
   };
 
   return (
-    <header className="bg-white  w-full lg:w-10/12 mt-0 lg:mt-7 mx-auto ">
-      <div className="container grid md:flex lg:flex gap-6 px-1 lg:px-0 py-3 lg:py-10 mx-auto space-y-6 lg:h-[32rem] lg:flex-row lg:items-center">
-        <div className="flex items-center justify-center w-full  lg:w-4/6">
+    <header className="bg-white w-full lg:w-10/12 mt-0 lg:mt-7 mx-auto">
+      <div className="container grid md:flex lg:flex flex-col lg:flex-row gap-3 lg:gap-6 px-1 lg:px-0 py-3 lg:py-10 mx-auto space-y-6 lg:h-[32rem] lg:items-center">
+        <div className="flex items-center justify-center w-full lg:w-4/6 order-2 lg:order-1">
           <div className="relative w-full overflow-hidden">
             {/* Carousel wrapper */}
             <div
@@ -63,20 +64,7 @@ const Banner = () => {
               onClick={goToPrevSlide}
               className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-300 text-blue-500 p-1 rounded-full"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
+              <FaAngleLeft className="h-6 w-6"/>
             </button>
 
             {/* Right Arrow */}
@@ -84,26 +72,13 @@ const Banner = () => {
               onClick={goToNextSlide}
               className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-300 text-blue-500 p-1 rounded-full"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+             <FaAngleRight className="h-6 w-6"/>
             </button>
           </div>
         </div>
-        <div className="w-full lg:w-2/6">
+        <div className="w-full lg:w-2/6 order-1 lg:order-2">
           <div className="lg:max-w-lg">
-            <h1 className="text-2xl font-bold tracking-wide italic text-TextColor font- text-center lg:text-4xl">
+            <h1 className="text-2xl font-bold tracking-wide italic text-TextColor text-center lg:text-4xl">
               Your journey to incredible teste begins here
             </h1>
             <p className="mt-4 text-black text-center ">

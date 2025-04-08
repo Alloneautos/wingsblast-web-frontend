@@ -41,6 +41,7 @@ const NewFoodAddCard = () => {
 
   return (
     <div className="bg-gray-50 rounded-t-md pb-6">
+      {/* Header Section */}
       <h1 className="title-font font-bold text-xl lg:text-3xl text-gray-900 pt-5 ml-12 mb-6">
         Add something extra to your order
       </h1>
@@ -77,7 +78,7 @@ const NewFoodAddCard = () => {
                     <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition duration-300 transform hover:scale-105">
                       <div className="relative bg-gray-200">
                         <img
-                          className="rounded-t-lg w-full object-cover h-48"
+                          className="rounded-t-lg w-[180px] h-[180px] mx-auto object-cover"
                           src={foodMenu.image}
                           alt={foodMenu.name}
                         />

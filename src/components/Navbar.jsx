@@ -19,11 +19,13 @@ import {
 import { IoFastFood, IoNotificationsOutline } from "react-icons/io5";
 import { LuUserCog } from "react-icons/lu";
 import { CgLogOut } from "react-icons/cg";
-import { RiMenu3Fill } from "react-icons/ri";
+import { RiMenu2Fill, RiMenu3Fill } from "react-icons/ri";
 import { VscChromeClose } from "react-icons/vsc";
 import Logo from "../assets/images/website Logo.png";
 import LocationModal from "./LocationModal";
 import Notification from "./Notification";
+import SideDrawer from "./SideDrawer";
+import { BiSearch } from "react-icons/bi";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -68,19 +70,22 @@ function Navbar() {
         {/* Left side: Logo */}
         <div className="flex justify-between items-center space-x-4">
           {/* Mobile Menu Button */}
+          {/* <SideDrawer /> */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden text-black text-3xl focus:outline-none"
           >
-            {isOpen ? <VscChromeClose /> : <RiMenu3Fill />}
+            {isOpen ? <VscChromeClose /> : <RiMenu2Fill />}
           </button>
-          <Link to="/">
-            <img
-              className="w-[175px] lg:w-[175px] h-[50px] lg:h-[60px]"
-              src={Logo}
-              alt="WingsBlast Logo"
-            />
-          </Link>
+          <div className="flex items-center justify-center">
+            <Link to="/">
+              <img
+                className="w-[175px] lg:w-[175px] h-[50px] lg:h-[60px]"
+                src={Logo}
+                alt="WingsBlast Logo"
+              />
+            </Link>
+          </div>
           <div className="hidden md:flex space-x-5 text-lg lg:text-xl">
             <Link to="/foodmenu">
               <span className="text-black text-2xl font-sans font-semibold hover:text-green-500">
@@ -132,102 +137,113 @@ function Navbar() {
           )}
 
           <button
-            className="text-black hover:text-green-500"
+            className="text-black hover:text-green-500 hidden md:block lg:block"
             onClick={() => document.getElementById("search").showModal()}
           >
             <FaSearch className="text-xl md:text-2xl lg:text-3xl" />
           </button>
 
           {user.id && (
-            <>
+            <div className="hidden md:block lg:block relative">
               <label
                 htmlFor="my-drawer-4"
-                className="relative cursor-pointer -mr-4"
+                className="cursor-pointer flex items-center justify-center"
               >
-                {/* Notification Icon */}
-                <IoNotificationsOutline className="text-xl md:text-3xl lg:text-3xl " />
-                {/* Notification Dot */}
-                <span className="absolute top-0 right-0 bg-red-700 text-white rounded-full px-1 text-xs">
+                <IoNotificationsOutline className="text-xl md:text-3xl lg:text-3xl text-gray-700 hover:text-green-500 transition duration-300" />
+                <span className="absolute top-0 right-0 bg-red-700 text-white rounded-full px-2 py-0.5 text-xs font-bold shadow-md">
                   {unreadCount}
                 </span>
               </label>
-              <Notification sendUnreadCount={sendUnreadCount} />
-            </>
+              <div className="absolute top-10 right-0 bg-white shadow-lg rounded-lg p-0 w-64 z-50">
+                <Notification sendUnreadCount={sendUnreadCount} />
+              </div>
+            </div>
           )}
 
           <Link
             to="/myCart"
             className="relative text-black hover:text-green-500"
           >
-            <FaBagShopping className="text-xl md:text-2xl lg:text-3xl" />
+            <FaBagShopping className="text-3xl md:text-2xl lg:text-3xl" />
             <span className="absolute top-0 right-0 bg-red-700 text-white rounded-full px-1 text-xs">
               {mycard.length}
             </span>
           </Link>
 
-          {/* Profile Dropdown */}
-          {user.id ? (
-            <div className="dropdown dropdown-en">
-              <div className="dropdown dropdown-end">
-                <button
-                  tabIndex={0}
-                  className="focus:outline-none"
-                  onClick={toggleDropdown}
-                >
-                  <img
-                    src={ProfileIcon}
-                    className="w-7 mt-1 lg:w-10 md:w-12"
-                    alt="Profile"
-                  />
-                </button>
-                <ul
-                  tabIndex={0}
-                  className="dropdown-content menu bg-base-100 rounded-box !z-30 w-52 p-2 shadow"
-                >
-                  <li>
-                    <Link
-                      to="/userprofile"
-                      className="text-base font-semibold flex items-center"
-                    >
-                      <LuUserCog /> User Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/myorder"
-                      className="text-base font-semibold flex items-center"
-                    >
-                      <MdOutlineBorderColor /> My Order
-                    </Link>
-                  </li>
-                  <li>
-                    <button onClick={handleSignOut}>
-                      <span className="text-base font-semibold flex items-center cursor-pointer">
-                        <CgLogOut /> Log Out
-                      </span>
-                    </button>
-                  </li>
-                </ul>
+          <div className="hidden md:block lg:block">
+            {/* Profile Dropdown */}
+            {user.id ? (
+              <div className="dropdown dropdown-en">
+                <div className="dropdown dropdown-end">
+                  <button
+                    tabIndex={0}
+                    className="focus:outline-none"
+                    onClick={toggleDropdown}
+                  >
+                    <img
+                      src={ProfileIcon}
+                      className="w-7 mt-1 lg:w-10 md:w-12"
+                      alt="Profile"
+                    />
+                  </button>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu bg-base-100 rounded-box !z-30 w-52 p-2 shadow"
+                  >
+                    <li>
+                      <Link
+                        to="/userprofile"
+                        className="text-base font-semibold flex items-center"
+                      >
+                        <LuUserCog /> User Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/myorder"
+                        className="text-base font-semibold flex items-center"
+                      >
+                        <MdOutlineBorderColor /> My Order
+                      </Link>
+                    </li>
+                    <li>
+                      <button onClick={handleSignOut}>
+                        <span className="text-base font-semibold flex items-center cursor-pointer">
+                          <CgLogOut /> Log Out
+                        </span>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
-          ) : (
-            <li className="list-none">
-              <Link
-                to="/signin"
-                className="text-base font-semibold flex items-center"
-              >
-                <button className="px-[6px] lg:px-3 py-1 lg:py-2 bg-ButtonColor hover:bg-ButtonHover rounded text-white">
-                  Login
-                </button>
-              </Link>
-            </li>
-          )}
+            ) : (
+              <li className="list-none">
+                <Link
+                  to="/signin"
+                  className="text-base font-semibold flex items-center"
+                >
+                  <button className="px-[6px] lg:px-3 py-1 lg:py-2 bg-ButtonColor hover:bg-ButtonHover rounded text-white">
+                    Login
+                  </button>
+                </Link>
+              </li>
+            )}
+          </div>
         </div>
       </div>
 
       {isOpen && (
-        <div className="md:hidden bg-white py-4 px-6">
+        <div className="md:hidden bg-white py-4 px-6 !z-50">
           <div>
+            <span
+              onClick={() => {
+                document.getElementById("search").showModal();
+                setIsOpen(false); // Close the menu
+              }}
+              className="text-black font-sans text-lg mb-2 font-bold flex gap-2 items-center"
+            >
+              <BiSearch /> SEARCH
+            </span>
             {/* MENU Link */}
             <Link
               to="/foodmenu"
@@ -248,16 +264,39 @@ function Navbar() {
               </span>
             </Link>
 
-            {/* LANGUAGE Option */}
-            {/* <span
-              className="text-black text-lg mb-2 font-bold flex gap-2 items-center"
-              onClick={() => {
-                document.getElementById("language_model").showModal();
-                setIsOpen(false); // Hide menu on click
-              }}
-            >
-              <GrLanguage /> LANGUAGE
-            </span> */}
+            {/* profile Section */}
+
+            {user.id ? (
+              <div className="flex flex-col gap-2">
+                <Link
+                  to="/userprofile"
+                  onClick={() => setIsOpen(false)} // Hide menu on click
+                >
+                  <span className="text-black text-lg font-bold flex gap-2 items-center">
+                    <LuUserCog /> USER PROFILE
+                  </span>
+                </Link>
+                <Link
+                  to="/myorder"
+                  onClick={() => setIsOpen(false)} // Hide menu on click
+                >
+                  <span className="text-black text-lg font-bold flex gap-2 items-center">
+                    <MdOutlineBorderColor /> MY ORDER
+                  </span>
+                </Link>
+                <button onClick={handleSignOut}>
+                  <span className="text-black text-lg font-bold flex gap-2 items-center cursor-pointer">
+                    <CgLogOut /> LOG OUT
+                  </span>
+                </button>
+              </div>
+            ) : (
+              <Link to="/signin" onClick={() => setIsOpen(false)}>
+                <button className="px-[6px] lg:px-3 py-1 lg:py-2 bg-ButtonColor hover:bg-ButtonHover rounded text-white">
+                  LOGIN
+                </button>
+              </Link>
+            )}
           </div>
         </div>
       )}

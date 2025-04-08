@@ -11,7 +11,9 @@ export default {
         'ButtonColor': '#EA4548',
         'ButtonHover': '#991b1b',
         'TextColor': '#2e1065'
-
+      },
+      fontFamily: {
+        'TitleFont': ['"Bebas Neue"', 'sans-serif'],
       },
     },
   },

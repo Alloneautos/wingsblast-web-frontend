@@ -24,12 +24,12 @@ const BakerySection = ({ bakery, loading,error, onBakeryPriceChange, onBakerySel
   return (
     <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg shadow-lg">
       <Disclosure>
-        {({ open }) => (
+        {() => (
           <>
             <Disclosure.Button className=" grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-md transition ease-in-out duration-300">
               <div>
-                <span className="text-xl lg:text-2xl font-semibold">
-                  Choose Reguler Bakery
+                <span className="text-lg font-TitleFont lg:text-2xl font-semibold">
+                  CHOOSE REGULER BAKERY
                 </span>
                 <h2 className="font-bold mt-2 text-gray-600">
                   <span>Up To Select: </span>

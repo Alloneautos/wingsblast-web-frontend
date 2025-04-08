@@ -9,10 +9,10 @@ import {
   useGuestUser,
   useMyCart,
   useTax,
+  useUserProfile,
 } from "../../api/api";
 import Swal from "sweetalert2";
 import { FaMinus, FaPlus } from "react-icons/fa";
-import { BiEdit } from "react-icons/bi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import LocationModal from "../../components/LocationModal";
 import { RiEdit2Fill } from "react-icons/ri";
@@ -20,6 +20,7 @@ import { LuBadgeInfo } from "react-icons/lu";
 import OrderTips from "./OrderTips";
 import { MdEditNote } from "react-icons/md";
 import Loader from "../../assets/images/loader.gif";
+import MakeOffer from "./MakeOffer";
 
 const MyCart = () => {
   const { tax, isTaxLoading } = useTax();
@@ -51,8 +52,7 @@ const MyCart = () => {
   const [note, setNote] = useState({});
   const [firstLine, setFirstLine] = useState("");
   const [secondLine, setSecondLine] = useState("");
-
-  console.log(mycard);
+  const { user } = useUserProfile();
 
   const handleOpenNote = (id) => {
     setOpenNotes((prev) => ({
@@ -368,12 +368,12 @@ const MyCart = () => {
                 <div key={item.id} className="my-3 mx-4 text-black">
                   <div className="divider"></div>
                   <div className="flex justify-between text-xl sm:text-2xl">
-                    <h2 className="text-lg font-semibold">{item.food_name}</h2>
+                    <h2 className="text-xl font-semibold">{item.food_name}</h2>
                     <div className="flex gap-2">
-                      <button className="">
+                      <button className="bg-red-300 rounded-full p-1.5 hover:bg-red-400 transition-all duration-300">
                         <RiDeleteBin6Line
                           onClick={() => handleDelete(item.id)}
-                          className="text-2xl text-red-600"
+                          className="text-2xl text-red-600 "
                         />
                       </button>
                     </div>
@@ -438,14 +438,14 @@ const MyCart = () => {
                       {item.is_bakery_paid ? `$(${item.bakery_price})` : ""}
                     </p>
                     <button
-                      className="flex gap-2 items-center bg-gray-200 rounded-lg px-2.5 py-1.5 mt-2 transition-all text-sm font-semibold"
+                      className="hidden  gap-2 items-center bg-gray-200 rounded-lg px-2.5 py-1.5 mt-2 transition-all text-sm font-semibold"
                       onClick={() => handleOpenNote(item.id)}
                     >
                       <MdEditNote className="" />
                       <span>Add Note</span>
                     </button>
                     {openNotes[item.id] && (
-                      <div className="mt-2">
+                      <div className="mt-2 hidden">
                         <textarea
                           name="note"
                           rows="3"
@@ -576,11 +576,14 @@ const MyCart = () => {
                   <option disabled value="">
                     Select Date
                   </option>
-                  {dates.map((date, index) => (
-                    <option key={index} value={date}>
-                      {date}
-                    </option>
-                  ))}
+                  {dates.map((date, index) => {
+                    const isSunday = new Date(date).getDay() === 0; // Check if the day is Sunday
+                    return (
+                      <option key={index} value={date} disabled={isSunday}>
+                        {date} {isSunday ? "(Close)" : ""}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
               <div className="w-full">
@@ -621,6 +624,12 @@ const MyCart = () => {
             </div>
           ) : null}
 
+          <div className="divider mb-3"></div>
+          <div className="flex items-center justify-between bg-red-100 rounded-lg py-1">
+            <MakeOffer />
+          </div>
+          <div className="divider mb-3">or</div>
+
           {/* Coupon Code */}
           <form onSubmit={handleCoupons} className="relative ">
             <input
@@ -636,6 +645,45 @@ const MyCart = () => {
               Submit
             </button>
           </form>
+
+          <label className="block text-gray-700 text-sm font-bold mb-2 mt-4">
+            <span className="block text-lg font-medium text-gray-800 mb-1">
+              Phone Number
+            </span>
+            <div className="relative">
+              <input
+                type="number"
+                name="phone"
+                defaultValue={user?.phone}
+                placeholder="Enter Your Phone Number"
+                className="w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-1 text-gray-700 placeholder-gray-700"
+              />
+              <span className="absolute inset-y-0 right-4 flex items-center text-gray-400">
+                📞
+              </span>
+            </div>
+          </label>
+
+          <div className="mt-2">
+            <div className="flex items-center gap-5 mb-2">
+              <input
+                type="checkbox"
+                className="checkbox checkbox-md !rounded checkbox-primary"
+              />
+
+              <p>Use this number in future?</p>
+            </div>
+          </div>
+
+          <div className="w-full mt-4 mb-2">
+            <label className="block text-lg font-semibold text-gray-700 mb-2">
+              <textarea
+                type="text"
+                placeholder="Add Note..."
+                className="textarea textarea-info w-full h-24 border border-gray-300 rounded px-4 py-2 text-gray-700 placeholder-gray-500"
+              ></textarea>
+            </label> 
+          </div>
 
           {/* tips */}
           {orderStatus === "Delivery" && (
@@ -736,14 +784,14 @@ const MyCart = () => {
                 ""
               )}
 
-              <tr className="font-bold text-3xl text-gray-800">
+              <tr className="font-bold text-2xl text-gray-800">
                 <td className="py-2">Total</td>
                 <td className="text-right">${cartTotalPrice.toFixed(2)}</td>
               </tr>
             </tbody>
           </table>
           {error && <p className="text-red-500">{error}</p>}
-          <div className="divider "></div>
+          <div className="divider hidden md:block lg:block"></div>
           {/* Checkout Button */}
           {!isASAP && (!selectedDate || !selectedTime) && (
             <p className="text-red-600 text-base font-semibold mb-4 bg-gray-200 p-3 rounded">
@@ -754,7 +802,7 @@ const MyCart = () => {
           <button
             onClick={handleToCheckout}
             disabled={!isASAP && (!selectedDate || !selectedTime)}
-            className={`w-full py-3 rounded-lg shadow-lg transition font-bold text-white ${
+            className={`w-full py-3 rounded-lg shadow-lg transition font-bold text-white hidden md:block lg:block ${
               !isASAP && (!selectedDate || !selectedTime)
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-ButtonColor hover:bg-ButtonHover"
@@ -763,6 +811,20 @@ const MyCart = () => {
             Checkout <span>${cartTotalPrice.toFixed(2)}</span>
           </button>
         </div>
+      </div>
+
+      <div className="fixed bottom-0 left-0 w-full bg-white p-4 shadow-lg z-50 block md:hidden lg:hidden">
+        <button
+          onClick={handleToCheckout}
+          disabled={!isASAP && (!selectedDate || !selectedTime)}
+          className={`w-full py-3 rounded-lg shadow-lg transition font-bold text-white ${
+            !isASAP && (!selectedDate || !selectedTime)
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-ButtonColor hover:bg-ButtonHover"
+          }`}
+        >
+          Checkout <span>${cartTotalPrice.toFixed(2)}</span>
+        </button>
       </div>
 
       <LocationModal

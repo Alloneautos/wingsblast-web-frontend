@@ -1,46 +1,21 @@
-// import Bannar from "../assets/images/Desktop_Banner_1440_x_106.jpg";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { BiSolidError } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { useAllFood, useCategory, useCategoryWithFood } from "../api/api";
+import { useCategory, useCategoryWithFood } from "../api/api";
 import LocationModal from "../components/LocationModal";
 import Loader from "../assets/images/loader.gif";
-import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
 const FoodMenu = () => {
   const [activeTab, setActiveTab] = useState("Wingsblast");
   const sectionsRef = useRef({});
   const { allwithfood, isLoading } = useCategoryWithFood();
-  const { allFood, loading } = useAllFood();
   const { category } = useCategory();
   const [selectedItem, setSelectedItem] = useState(null);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [foodId, setFoodId] = useState(0);
   const navigate = useNavigate();
-
-  const responsive = {
-    superLargeDesktop: {
-      breakpoint: { max: 4000, min: 1024 },
-      items: 3,
-      partialVisibilityGutter: 20,
-    },
-    desktop: {
-      breakpoint: { max: 1024, min: 768 },
-      items: 3,
-      partialVisibilityGutter: 20,
-    },
-    tablet: {
-      breakpoint: { max: 768, min: 464 },
-      items: 2,
-      partialVisibilityGutter: 10,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
-  };
 
   const handleScrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -94,100 +69,39 @@ const FoodMenu = () => {
 
   return (
     <div className="">
-      <h1 className="text-4xl font-sans ml-[10px] lg:ml-[140px] py-4 font-semibold">
+      <h1 className="text-3xl font-sans ml-[10px] lg:ml-[140px] py-4 font-semibold">
         MENU
       </h1>
       {/* tab menu section  */}
       <div
         role="tablist"
-        className="tabs overflow-x-scroll tabs-bordered w-full sticky top-[0px] z-40 px-0 lg:px-[120px] shadow-md font-semibold"
+        className="tabs overflow-x-scroll scrollbar-hide w-full border-b-2 sticky px-0 lg:px-[120px] bg-white shadow-2xl font-semibold"
       >
         {category.map((catgr) => (
           <a
             key={catgr.id}
             role="tab"
-            className={`tab whitespace-nowrap ${
+            className={`tab whitespace-nowrap text-lg text-black font-semibold font-TitleFont ${
               activeTab === catgr.id ? "tab-active text-green-600" : ""
             }`}
             onClick={() => handleScrollToSection(catgr.id)}
           >
-            {catgr.category_name}
+            {catgr.category_name.toUpperCase()}
           </a>
         ))}
       </div>
 
-      {/* bannar section  */}
-      {/* <div className="mt-1 hidden md:block lg:block">
-        <img src={Bannar} alt="" />
-      </div> */}
+      {/* Food Menu Sections */}
+      {allwithfood.length === 0 && !isLoading ? (
+        <div className="flex items-center justify-center h-screen">
+          <h1 className="text-2xl font-semibold text-gray-500">
+            No Food Menu Available
+          </h1>
+        </div>
+      ) : null}
 
-      {/* Our recommendations section */}
-      <div className="slider-container w-full lg:w-10/12 mx-auto">
-        <Carousel
-          responsive={responsive}
-          swipeable
-          draggable
-          infinite
-          arrows
-          showDots={false}
-          partialVisible
-          className="flex"
-        >
-          {/* Skeleton Loading */}
-          {loading
-            ? Array.from({ length: 3 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col gap-4 p-4 w-full max-w-[250px]"
-                >
-                  <div className="skeleton h-32 w-full"></div>
-                  <div className="skeleton h-7 my-6 w-28"></div>
-                  <div className="skeleton h-7 my-6 w-full"></div>
-                  <div className="skeleton h-7 my-6 w-full"></div>
-                </div>
-              ))
-            : allFood?.map((foodMenu) => (
-                <div
-                  key={foodMenu.id}
-                  className="p-4 lg:p-6 cursor-pointer"
-                  onClick={() => handleLinkClick(foodMenu?.id)}
-                >
-                  <div className="relative h-full w-full border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transform transition duration-300 ease-in-out hover:scale-105 bg-white">
-                    {/* Image */}
-                    <img
-                      className="w-full h-48 object-cover"
-                      src={foodMenu.image}
-                      alt={foodMenu.name}
-                    />
-                    {/* Badge */}
-                    <div className="absolute top-2 right-2 bg-ButtonColor text-white text-xs font-bold uppercase px-3 py-1 rounded-full shadow">
-                      Most Sell
-                    </div>
-                    {/* Content */}
-                    <div className="p-4 space-y-3">
-                      {/* Title */}
-                      <h1 className="text-lg font-bold text-gray-800 truncate">
-                        {foodMenu.name}
-                      </h1>
-                      {/* Description */}
-                      <p className="text-gray-600 text-sm h-14 overflow-hidden line-clamp-2">
-                        {foodMenu.description}
-                      </p>
-                      {/* Calories and Price */}
-                      <div className="flex items-center justify-between text-gray-700 text-sm font-medium">
-                        <span>{foodMenu.cal}</span>
-                        <span className="text-green-600 font-semibold text-lg">
-                          ${foodMenu.price.toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-        </Carousel>
-      </div>
-
-      {loading ? (
+      {/* Display Food Menus */}
+      {isLoading ? (
         // Skeleton Loading UI
         <div className="flex items-center justify-center">
           <img src={Loader} alt="Loading..." className="w-[150px]" />
@@ -202,8 +116,9 @@ const FoodMenu = () => {
           >
             <div className="container px-3 lg:px-5 py-2 w-full lg:w-10/12 mx-auto">
               {/* Category Name */}
-              <h1 className="text-3xl lg:text-5xl font-bold mb-5">
-                {foodMenu.food_menus.length > 0 && foodMenu.category_name}
+              <h1 className="text-3xl lg:text-5xl font-bold font-TitleFont mb-5">
+                {foodMenu.food_menus.length > 0 &&
+                  foodMenu.category_name.toUpperCase()}
               </h1>
 
               {/* Food Items */}
@@ -224,8 +139,8 @@ const FoodMenu = () => {
                     </div>
 
                     {/* Food Name */}
-                    <h2 className="text-xl font-bold title-font text-gray-900 mt-5">
-                      {food.name}
+                    <h2 className="text-xl font-bold font-TitleFont text-gray-900 mt-5">
+                      {food.name.toUpperCase()}
                     </h2>
 
                     {/* Food Details */}
@@ -244,7 +159,7 @@ const FoodMenu = () => {
                             <h3 className="font-semibold">
                               {food_detail.food_menu_name}
                             </h3>
-                            <span className="flex items-center text-lg">
+                            <span className="flex items-center font-semibold text-base text-black">
                               $ {food_detail.price.toFixed(2)}
                               <MdOutlineKeyboardArrowRight />
                             </span>

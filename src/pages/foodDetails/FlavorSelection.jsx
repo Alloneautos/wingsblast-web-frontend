@@ -126,23 +126,32 @@ const FlavorSelection = ({ flavorReq, choiceFlavorReq, sendFlavorData }) => {
   if (isLoading) {
     return (
       <p className="text-center text-lg font-medium">
-        <span className="loading loading-bars loading-lg"></span>
+        Loading flavors...
       </p>
     );
   }
   return (
     <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg shadow-lg">
-      <Disclosure defaultOpen>
-        {({ open }) => (
+      <Disclosure>
+        {() => (
           <>
             <Disclosure.Button className="grid md:flex lg:flex w-full justify-between items-center rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-lg">
               <div>
-                <span className="text-lg lg:text-2xl font-semibold">
-                  Choose Flavors
-                </span>
+                <div className="w-full flex items-center justify-between mb-2">
+                  <h1 className="text-lg font-TitleFont lg:text-2xl font-semibold">
+                    CHOOSE FLAVORS
+                  </h1>
+                  <span
+                    className={
+                      selectedCount > 0 ? "text-green-600" : "text-red-700" 
+                    }
+                  >
+                    {selectedCount > 0 ? "Done" : "Required"}
+                  </span>
+                </div>
                 <h2 className="font-bold mb-4">
                   <span className="text-base text-gray-500">
-                    Up To Select:
+                    Up To Choose
                     <span className="text-black ">
                       ({selectedCount} of {flavorReq} Selected)
                     </span>
@@ -150,13 +159,10 @@ const FlavorSelection = ({ flavorReq, choiceFlavorReq, sendFlavorData }) => {
                 </h2>
               </div>
               <div className="text-gray-500">
-                <h2 className="grid text-lg font-bold mb-4">
+                <h2 className="grid text-lg font-bold mb-1">
                   <span className="text-sm text-gray-500">
                     ( {choiceItem} of {choiceFlavorReq} Selected)
                   </span>
-                  <span className={selectedCount > 0 ? "text-green-600" : "text-red-700"}>
-                    {selectedCount > 0 ? "Done" : "Required"}
-                    </span>
                 </h2>
               </div>
             </Disclosure.Button>

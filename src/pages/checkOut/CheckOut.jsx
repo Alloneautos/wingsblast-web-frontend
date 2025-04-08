@@ -74,19 +74,19 @@ const CheckOut = () => {
     <section className="text-gray-600 bg-gray-50 body-font  mx-auto">
       <div className="container px-0 lg:px-5 py-2 lg:py-12 w-full lg:w-10/12 mx-auto flex flex-wrap ">
         {/* Left side section  */}
-        <div className="lg:w-4/6 md:w-1/2 md:pr-16 mx-auto shadow-lg rounded-lg lg:pr-0 pr-0 p-">
+        <div className="w-full lg:w-4/6 md:w-1/2 mx-auto shadow-none lg:shadow-lg ">
           <div className=" rounded-t-md">
-            <h1 className="title-font font-bold text-4xl text-gray-900 pt-5 ml-3 mb-6">
+            <h1 className="font-sans font-bold text-4xl text-gray-900 pt-5 mb-6 text-center lg:text-start">
               CHECKOUT
             </h1>
-            <div className="divider"></div>
           </div>
+            <div className="divider"></div>
           <div className="my-3 mx-4 text-black">
             <div className="flex justify-between text-center text-2xl">
               <h1>CONTACT INFORMATION</h1>
             </div>
           </div>
-          <div className="max-w-4xl p-6 mx-auto bg-white rounded-md">
+          <div className=" w-full lg:max-w-4xl p-6 mx-auto bg-white rounded-md">
             {user.id > 0 ? (
               <form onSubmit={handleSaveInfo}>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -229,13 +229,16 @@ const CheckOut = () => {
         {/* Right Side section  */}
         <div className="lg:w-2/6 md:w-1/2 border border-gray-300 rounded-lg  flex flex-col md:ml-auto w-full mt-10 md:mt-0">
           <div className="px-4 pt-4">
-            <h2 className="text-gray-900 text-2xl font-medium title-font">
-              {localStorage.getItem("carryoutAddress")
-                ? "CARRYOUT ADDRESS"
-                : "DELIVERY ADDRESS"}
+            <h2 className="text-gray-900 text-2xl font-semibold title-font text-center lg:text-start">
+              {orderStatus == "Delivery" ? "DELIVERY ADDRESS" : "CARRYOUT"}
             </h2>
-            <p>{saveLocation}</p>
-            <div className="mt-3 flex items-center gap-2 text-black"></div>
+              {orderStatus == "Delivery" ? (
+                <p className="text-gray-600 text-base mt-2 flex justify-center lg:justify-start">
+                  {saveLocation}
+                </p>
+              ) : (
+                ""
+              )}
           </div>
 
           <div className="divider"></div>
