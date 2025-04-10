@@ -30,6 +30,7 @@ const InvoiceOrder = () => {
     foods,
     coupon_discount,
   } = orderDetails || {};
+
   const dateObject = new Date(later_date);
   const formattedDate = dateObject.toLocaleDateString("en-US", {
     year: "numeric",
@@ -154,7 +155,7 @@ const InvoiceOrder = () => {
         <div>
           <div
             id="content"
-            className="bg-white shadow-2xl rounded-lg max-w-4xl w-full overflow-hidden"
+            className="bg-white shadow-2xl rounded-lg w-full overflow-hidden"
           >
             {/* Invoice Header */}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center my-5 text-yellow-400">
@@ -234,7 +235,7 @@ const InvoiceOrder = () => {
                     </span>
 
                     {/* Addons (collapsible) */}
-                    <div className="col-span-5 ml-4 mt-2 text-gray-600 text-sm">
+                    <div className="col-span-5 ml-4 mt-2 text-gray-800 text-sm">
                       {/* Flavor Addon */}
                       {food.addons?.flavor && (
                         <div>
@@ -262,7 +263,13 @@ const InvoiceOrder = () => {
                           </h1>
                           {food.addons.toppings.map((addon, idx) => (
                             <div key={idx} className="ml-4">
-                              {addon.name ? <p>{addon.name} </p> : ""}
+                              {addon.name ? (
+                                <p>
+                                  {addon.name}-${addon.price}{" "}
+                                </p>
+                              ) : (
+                                ""
+                              )}
                             </div>
                           ))}
                         </div>
@@ -395,9 +402,7 @@ const InvoiceOrder = () => {
               {delivery_type === "Delivery" && (
                 <p className="text-gray-700">Delivery Fee: $4.99</p>
               )}
-              {coupon_discount && (
-                <p>Coupon Discount: -$ {coupon_discount}</p>
-              )}
+              {coupon_discount && <p>Coupon Discount: -$ {coupon_discount}</p>}
               <p className="text-xl font-bold text-gray-800">
                 Total: ${total_price.toFixed(2)}
               </p>

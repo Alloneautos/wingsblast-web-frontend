@@ -21,6 +21,7 @@ import OrderTips from "./OrderTips";
 import { MdEditNote } from "react-icons/md";
 import Loader from "../../assets/images/loader.gif";
 import MakeOffer from "./MakeOffer";
+import { IoClose } from "react-icons/io5";
 
 const MyCart = () => {
   const { tax, isTaxLoading } = useTax();
@@ -145,15 +146,12 @@ const MyCart = () => {
     const discount = cartSubtotal * 0.2;
     setCouponPrice(discount);
     Swal.fire({
-
       title: "Discount Applied!",
       text: `You have received a discount of $${discount.toFixed(2)}.`,
       icon: "success",
       confirmButtonText: "OK",
     });
-
   };
-
 
   const calculateSubtotal = (price, quantity) => price * quantity;
   const calculateTax = (subtotal) => (subtotal * taxRate) / 100;
@@ -393,19 +391,7 @@ const MyCart = () => {
                     </div>
                   </div>
                   <div>
-                    <p>
-                      {item.sandCust && item.sandCust.length > 0 ? (
-                        item.sandCust.map((flavor, index) => (
-                          <div
-                            key={index}
-                            className="flavor-item cursor-pointer"
-                          >
-                            <h1 title="Sandwich">{flavor.sandCust_name}</h1>
-                          </div>
-                        ))
-                      ) : (
-                        <p> </p>
-                      )}
+                    <div className="text-sm font-medium">
                       {item.flavors && item.flavors.length > 0 ? (
                         item.flavors.map((flavor, index) => (
                           <div
@@ -420,37 +406,56 @@ const MyCart = () => {
                       ) : (
                         <p> </p>
                       )}
-                    </p>
-                    {item.toppings && item.toppings.length > 0 ? (
-                      item.toppings.map((topping, index) => (
-                        <div key={index} className="flavor-item">
-                          <h1 title="Toppings">
-                            {topping.toppings_name}
-                            {topping.isPaid === 1 && (
-                              <span> (${topping.price})</span>
-                            )}
+                      {item.dips.map((dip, index) => (
+                        <div key={index} className="flavor-item cursor-pointer">
+                          <h1 title="Dip" className="flex items-center">
+                            {dip.name} X{dip.quantity}{" "}
+                            <span>{dip.is_paid_type === 1 ? `($${dip.price})` : ""}</span>
                           </h1>
                         </div>
-                      ))
-                    ) : (
-                      <p></p>
-                    )}
-                    <p title="Dip">
-                      {item.dip_name}{" "}
-                      {item.is_dip_paid ? `$(${item.dip_price})` : ""}
-                    </p>
-                    <p title="Side">
-                      {item.side_name}{" "}
-                      {item.is_side_paid ? `$(${item.side_price})` : ""}{" "}
-                    </p>
-                    <p title="Drink">
-                      {item.drink_name}{" "}
-                      {item.is_drink_paid ? `$(${item.drink_price})` : ""}
-                    </p>
-                    <p title="Bakery">
-                      {item.bakery_name}{" "}
-                      {item.is_bakery_paid ? `$(${item.bakery_price})` : ""}
-                    </p>
+                      ))}
+                      {item.sides.map((side, index) => (
+                        <div key={index} className="flavor-item cursor-pointer">
+                          <h1 title="side" className="flex items-center">
+                            {side.name}{" "}
+                            <span>{side.is_paid_type === 1 ? `($${side.price})` : ""}</span>
+                          </h1>
+                        </div>
+                      ))}
+                      {item.drinks.map((drink, index) => (
+                        <div key={index} className="flavor-item cursor-pointer">
+                          <h1 title="drink" className="flex items-center">
+                            {drink.name} X{drink.quantity}{" "}
+                            <span>{drink.is_paid_type === 1 ? `($${drink.price})` : ""}</span>
+                          </h1>
+                        </div>
+                      ))}
+                      {item.bakery.map((bakery, index) => (
+                        <div key={index} className="flavor-item cursor-pointer">
+                          <h1 title="bakery" className="flex items-center">
+                            {bakery.name} {" "}
+                            <span>{bakery.is_paid_type === 1 ? `($${bakery.price})` : ""}</span>
+                          </h1>
+                        </div>
+                      ))}
+                      {item.toppings.map((topping, index) => (
+                        <div key={index} className="flavor-item cursor-pointer">
+                          <h1 title="topping" className="flex items-center">
+                            {topping.name} {" "}
+                            <span>{topping.is_paid_type === 1 ? `($${topping.price})` : ""}</span>
+                          </h1>
+                        </div>
+                      ))}
+                      {item.sandCust.map((sandCust, index) => (
+                        <div key={index} className="flavor-item cursor-pointer">
+                          <h1 title="sandCust" className="flex items-center">
+                            {sandCust.name} X{sandCust.quantity}{" "}
+                           <span>{sandCust.is_paid_type === 1 ? `($${sandCust.price})` : ""}</span>
+                          </h1>
+                        </div>
+                      ))}
+                    </div>
+
                     <button
                       className="flex gap-2 items-center bg-gray-200 rounded px-2.5 py-1.5 mt-2 transition-all text-sm font-semibold"
                       onClick={() => handleOpenNote(item.id)}

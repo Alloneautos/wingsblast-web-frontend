@@ -8,7 +8,6 @@ import {
   useGuestUser,
   useUserProfile,
 } from "../../api/api";
-import DrinkSection from "./DrinkSection";
 import SideSection from "./SideSection";
 import DipSection from "./DipSection";
 import BakerySection from "./BakerySection";
@@ -18,6 +17,9 @@ import SanwichSection from "./SandwichSection";
 // import RicePlattarCostom from "./RicePlattarCostom";
 import { useQueryClient } from "@tanstack/react-query";
 import AddMoreFood from "./AddMoreFood";
+import DrinkSection from "./drinksection/DrinkSection";
+import ExtraDrinkSection from "./extradrinksection/ExtraDrinkSection";
+import ExtraDipSection from "./ExtraDipSection";
 
 const FoodDetails = () => {
   const queryClient = useQueryClient();
@@ -27,14 +29,15 @@ const FoodDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [isScrolled, setIsScrolled] = useState(false);
   const { foodDetails, loading, error } = useFoodDetails(foodDetailsID);
-  const [dipId, setDipId] = useState(null);
-  const [sideId, setSideId] = useState(null);
+  const [dipSelects, setDipSelects] = useState(null);
+  const [sideSelects, setSideSelects] = useState(null);
   const [drinkId, setDrinkId] = useState(null);
-  const [bakeryId, setBakeryId] = useState(null);
+  const [bakerySelects, setBakerySelects] = useState(null);
   const [toppingsData, setToppingsData] = useState(null);
   const [sandCustData, setSandCustData] = useState(null);
   const [flavorData, setFlavorData] = useState(null);
   const [cartLoading, setCartLoading] = useState(false);
+  const [selectedDrinks, setSelectedDrinks] = useState([]);
 
   const navigate = useNavigate();
   const [unitPrice, setUnitPrice] = useState(0);
@@ -159,13 +162,12 @@ const FoodDetails = () => {
     setSandWichPrice(price);
   };
 
-  const handleSideSelected = (sideId) => {
-    setSideId(sideId);
+  const handleSideSelected = (selectedSides) => {
+    setSideSelects(selectedSides); // Store the formatted data
   };
 
   const handleDrinkSelected = (drinkId) => {
     setDrinkId(drinkId);
-    console.log(drinkId, "drinkid");
   };
 
   const onToppingsChange = (selectedToppingId) => {
@@ -174,44 +176,79 @@ const FoodDetails = () => {
   const onSandCustChange = (selectSandCustId) => {
     setSandCustData(selectSandCustId);
   };
-  const handleDipSelected = (selectedDipId) => {
-    setDipId(selectedDipId);
+  const handleDipSelected = (selectedDips) => {
+    setDipSelects(selectedDips); // Store the formatted data
   };
   const handleBakerySelected = (selectedBakery) => {
-    setBakeryId(selectedBakery);
+    setBakerySelects(selectedBakery); // Store the formatted data
   };
 
   const handleFlavorSelected = (selectFlavorId) => {
     setFlavorData(selectFlavorId);
   };
 
+  const handleSelectedDrinksChange = (drinks) => {
+    setSelectedDrinks(drinks);
+  };
+
   const handleAddToBag = async () => {
     try {
+      const formattedFeatures = [
+        ...(dipSelects?.map((dip) => ({
+          type: "Dip",
+          type_id: dip.type_id,
+          is_paid_type: dip.is_paid_type,
+          quantity: dip.quantity,
+        })) || []),
+        ...(selectedDrinks?.map((drink) => ({
+          type: "Drink",
+          type_id: drink.type_id,
+          is_paid_type: drink.is_paid_type,
+          quantity: drink.quantity,
+        })) || []),
+        ...(sandCustData?.map((sand) => ({
+          type: "Sandwich",
+          type_id: sand.id,
+          is_paid_type: sand.isPaid,
+          quantity,
+        })) || []),
+        ...(toppingsData?.map((topping) => ({
+          type: "Topping",
+          type_id: topping.id,
+          is_paid_type: topping.isPaid,
+          quantity,
+        })) || []),
+        ...(sideSelects?.map((side) => ({
+          type: "Side",
+          type_id: side.type_id,
+          is_paid_type: side.is_paid_type,
+          quantity,
+        })) || []),
+        ...(bakerySelects?.map((bakery) => ({
+          type: "Bakery",
+          type_id: bakery.type_id,
+          is_paid_type: bakery.is_paid_type,
+          quantity,
+        })) || []),
+      ];
+
+      const formattedFlavors =
+        flavorData?.map((flavor) => ({
+          id: flavor.id,
+          quantity: flavor.quantity,
+        })) || [];
+
       const data = {
-        user_id: user.id,
+        user_id: user?.id || null,
         guest_user_id: guestUser,
         food_details_id: foodDetailsID,
         quantity,
         price: myFoodPrice,
-        flavers: flavorData,
-        toppings: toppingsData,
-        sandCust: sandCustData,
-        // dip
-        dip_id: dipId,
-        is_dip_paid: isDipPrice,
-        // side
-        side_id: sideId,
-        is_side_paid: isSidePrice,
-        // drink
-        drink_id: drinkId,
-        is_drink_paid: isDrinkPrice,
-        // bakery
-        bakery_id: bakeryId,
-        is_bakery_paid: isBakeryPrice,
-        // toppings
+        features: formattedFeatures,
+        flavers: formattedFlavors,
       };
 
-      const response = await API.post("/card/add", data);
+      const response = await API.post("/card/addtocard", data);
       queryClient.invalidateQueries(["wishListVechile", guestUser]);
 
       if (response.status == 200) {
@@ -338,23 +375,11 @@ const FoodDetails = () => {
         />
       ) : null}
 
-      {/* {foodDetails.sides && foodDetails.sides.length > 0 ? (
-        <RicePlattarCostom
-          plattarSide={foodDetails.sides}
-          loading={loading}
-          error={error}
-          onToppingsChange={onToppingsChange}
-          onToppingsPriceChnge={handleToppingsPriceChnge}
-        ></RicePlattarCostom>
-       ) : null} */}
-
       {foodDetails.dips && foodDetails.dips.length > 0 ? (
         <DipSection
-          dips={foodDetails.dips}
-          loading={loading}
-          error={error}
-          onDipPriceChange={handleDipPriceChange}
           onDipSelected={handleDipSelected}
+          howManyDips={foodDetails.howManyDips}
+          howManyChoiceDips={foodDetails.howManyChoiceDips}
         />
       ) : null}
 
@@ -375,6 +400,7 @@ const FoodDetails = () => {
           error={error}
           onDrinkSelected={handleDrinkSelected}
           onDrinkPriceChange={handleDrinkPriceChange}
+          onSelectedDrinksChange={handleSelectedDrinksChange}
         />
       ) : null}
 
@@ -396,6 +422,17 @@ const FoodDetails = () => {
           onSandCustPriceChnge={onSandCustPriceChnge}
         />
       ) : null}
+
+        <ExtraDipSection
+          onDipPriceChange={handleDipPriceChange}
+          onDipSelected={handleDipSelected}
+        />
+
+      <ExtraDrinkSection
+        onDrinkSelected={handleDrinkSelected}
+        onDrinkPriceChange={handleDrinkPriceChange}
+        onSelectedDrinksChange={handleSelectedDrinksChange}
+      />
 
       <AddMoreFood categoryID={foodDetails.category_id} />
 

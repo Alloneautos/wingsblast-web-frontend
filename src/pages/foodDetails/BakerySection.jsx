@@ -2,25 +2,50 @@ import { Disclosure } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 
-const BakerySection = ({ bakery, loading,error, onBakeryPriceChange, onBakerySelected }) => {
-    const [selectBakery, setSelectBakery] = useState(null);
-    const handleSelectBakery = (bakery) => {
-        if (selectBakery === bakery) {
-            setSelectBakery(null);
-            onBakerySelected(0);
-            onBakerySelected(null)
-        } else {
-            setSelectBakery(bakery);
-            onBakeryPriceChange(bakery.isPaid === 1 ? bakery.beverage_price: 0);
-            onBakerySelected(bakery.beverage_id);
-        }
+const BakerySection = ({
+  bakery,
+  loading,
+  error,
+  onBakeryPriceChange,
+  onBakerySelected,
+}) => {
+  const [selectedBakeries, setSelectedBakeries] = useState([]);
+
+  const handleSelectBakery = (bakery) => {
+    const isSelected = selectedBakeries.includes(bakery);
+    let updatedSelection;
+
+    if (isSelected) {
+      updatedSelection = selectedBakeries.filter((item) => item !== bakery);
+    } else {
+      updatedSelection = [...selectedBakeries, bakery];
     }
-    useEffect(() => {
-        const price = selectBakery ? selectBakery.isPaid === 1
-                        ? selectBakery.beverage_price: 0
-                        : 0;
-                        onBakeryPriceChange(price)
-    },[selectBakery, onBakeryPriceChange]);
+
+    setSelectedBakeries(updatedSelection);
+
+    const totalPrice = updatedSelection.reduce((sum, item) => {
+      return sum + (item.isPaid === 1 ? item.beverage_price : 0);
+    }, 0);
+
+    onBakeryPriceChange(totalPrice);
+
+    const formattedData = updatedSelection.map((item) => ({
+      type: "Bakery",
+      type_id: item.beverage_id,
+      is_paid_type: item.isPaid,
+      quantity: 1,
+    }));
+
+    onBakerySelected(formattedData);
+  };
+
+  useEffect(() => {
+    const totalPrice = selectedBakeries.reduce((sum, item) => {
+      return sum + (item.isPaid === 1 ? item.beverage_price : 0);
+    }, 0);
+    onBakeryPriceChange(totalPrice);
+  }, [selectedBakeries, onBakeryPriceChange]);
+
   return (
     <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg shadow-lg">
       <Disclosure>
@@ -28,13 +53,15 @@ const BakerySection = ({ bakery, loading,error, onBakeryPriceChange, onBakerySel
           <>
             <Disclosure.Button className=" grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-md transition ease-in-out duration-300">
               <div>
-                <span className="text-lg font-TitleFont lg:text-2xl font-semibold">
+                <span className="text-lg font-TitleFont lg:text-xl font-semibold">
                   CHOOSE REGULER BAKERY
                 </span>
                 <h2 className="font-bold mt-2 text-gray-600">
-                  <span>Up To Select: </span>
+                  <span>Selected: </span>
                   <span className="text-black">
-                    {selectBakery ? selectBakery.beverage_name : "(Selected)"}
+                    {selectedBakeries.length > 0
+                      ? selectedBakeries.map((item) => item.beverage_name).join(", ")
+                      : "(None)"}
                   </span>
                 </h2>
               </div>
@@ -69,15 +96,16 @@ const BakerySection = ({ bakery, loading,error, onBakeryPriceChange, onBakerySel
                                 {category.isPaid == 1 && (
                                   <p>+${category.beverage_price}</p>
                                 )}
-                                <p className="flex">💪{category.beverage_cal}</p>
+                                <p className="flex">
+                                  💪{category.beverage_cal}
+                                </p>
                               </div>
                             </div>
                           </div>
                           <input
-                            type="radio"
-                            name="bakery"
-                            className="radio radio-success"
-                            checked={selectBakery === category}
+                            type="checkbox"
+                            className="checkbox checkbox-primary rounded"
+                            checked={selectedBakeries.includes(category)}
                             onChange={() => handleSelectBakery(category)}
                           />
                         </div>
@@ -92,11 +120,10 @@ const BakerySection = ({ bakery, loading,error, onBakeryPriceChange, onBakerySel
                         <h1 className="text-2xl font-semibold">No Bakery</h1>
                       </div>
                       <input
-                        type="radio"
-                        name="bakery"
-                        className="radio radio-success"
-                        checked={!selectBakery}
-                        onChange={() => handleSelectBakery(null)}
+                        type="checkbox"
+                        className="checkbox checkbox-primary rounded"
+                        checked={selectedBakeries.length === 0}
+                        onChange={() => setSelectedBakeries([])}
                       />
                     </div>
                   </label>

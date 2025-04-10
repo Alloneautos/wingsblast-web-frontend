@@ -117,7 +117,7 @@ const FoodMenu = () => {
           >
             <div className="container px-3 lg:px-5 py-2 w-full lg:w-10/12 mx-auto">
               {/* Category Name */}
-              <h1 className="text-3xl lg:text-5xl font-bold font-TitleFont mb-5">
+              <h1 className="text-3xl lg:text-4xl font-bold font-TitleFont mb-5 text-black">
                 {foodMenu.food_menus.length > 0 &&
                   foodMenu.category_name.toUpperCase()}
               </h1>

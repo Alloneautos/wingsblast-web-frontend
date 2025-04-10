@@ -279,7 +279,7 @@ export const useReletiveFood = (categoryID) => {
 // my card
 export const useMyCart = (guestUser) => {
   const getMyCard = async () => {
-    const response = await API.get(`/card?guest_user_id=${guestUser}`);
+    const response = await API.get(`/card/my-card?guest_user_id=${guestUser}`);
     if (response.status === 201) {
       return [];
     }
@@ -348,7 +348,6 @@ export const useOrderDetails = (detailsID) => {
 export const useGuestUser = () => {
   const [guestUser, setGuestUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  console.log("Guest User:", guestUser);
   useEffect(() => {
     const fetchGuestUser = async () => {
       try {
@@ -612,4 +611,44 @@ export const useTipsRate = () => {
   });
 
   return { tipsRate, isLoading, isError, error, refetch };
+};
+// get all drinks
+export const useAllDrinks = () => {
+  const getAllDrinks = async () => {
+    const response = await API.get(`/drink/all`);
+    return response.data.data;
+  };
+
+  const {
+    data: allDrinks = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["allDrinks"],
+    queryFn: getAllDrinks,
+  });
+
+  return { allDrinks, isLoading, isError, error, refetch };
+};
+// get dips
+export const useAllDips = () => {
+  const getAllDips = async () => {
+    const response = await API.get(`/dip/all`);
+    return response.data.data;
+  };
+
+  const {
+    data: allDips = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["allDips"],
+    queryFn: getAllDips,
+  });
+
+  return { allDips, isLoading, isError, error, refetch };
 };

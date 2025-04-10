@@ -7,7 +7,7 @@ const FlavorSelection = ({ flavorReq, choiceFlavorReq, sendFlavorData }) => {
   const [selectedCount, setSelectedCount] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [wingsDistribution, setWingsDistribution] = useState({});
-  const { flavor, isLoading, isError, error, refetch } = useFlavor();
+  const { flavor, isLoading, error } = useFlavor();
   const [choiceItem, setChoiceItem] = useState(0);
 
   const getWingsDistribution = useCallback(
@@ -125,9 +125,7 @@ const FlavorSelection = ({ flavorReq, choiceFlavorReq, sendFlavorData }) => {
 
   if (isLoading) {
     return (
-      <p className="text-center text-lg font-medium">
-        Loading flavors...
-      </p>
+      <p className="text-center text-lg font-medium">Loading flavors...</p>
     );
   }
   return (
@@ -135,20 +133,20 @@ const FlavorSelection = ({ flavorReq, choiceFlavorReq, sendFlavorData }) => {
       <Disclosure>
         {() => (
           <>
-            <Disclosure.Button className="grid md:flex lg:flex w-full justify-between items-center rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-lg">
-              <div>
-                <div className="w-full flex items-center justify-between mb-2">
-                  <h1 className="text-lg font-TitleFont lg:text-2xl font-semibold">
-                    CHOOSE FLAVORS
-                  </h1>
-                  <span
-                    className={
-                      selectedCount > 0 ? "text-green-600" : "text-red-700" 
-                    }
-                  >
-                    {selectedCount > 0 ? "Done" : "Required"}
-                  </span>
-                </div>
+            <Disclosure.Button className="grid w-full rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-lg">
+              <div className="flex justify-between items-center w-full">
+                <h1 className="text-lg font-TitleFont lg:text-xl font-semibold">
+                  CHOOSE FLAVORS
+                </h1>
+                <span
+                  className={
+                    selectedCount > 0 ? "text-green-600" : "text-red-700"
+                  }
+                >
+                  {selectedCount > 0 ? "Done" : "Required"}
+                </span>
+              </div>
+              <div className="flex justify-between items-center w-full">
                 <h2 className="font-bold mb-4">
                   <span className="text-base text-gray-500">
                     Up To Choose
@@ -157,13 +155,13 @@ const FlavorSelection = ({ flavorReq, choiceFlavorReq, sendFlavorData }) => {
                     </span>
                   </span>
                 </h2>
-              </div>
-              <div className="text-gray-500">
-                <h2 className="grid text-lg font-bold mb-1">
-                  <span className="text-sm text-gray-500">
-                    ( {choiceItem} of {choiceFlavorReq} Selected)
-                  </span>
-                </h2>
+                <div className="text-gray-500">
+                  <h2 className="grid text-lg font-bold mb-1">
+                    <span className="text-sm text-gray-500">
+                      ( {choiceItem} of {choiceFlavorReq} Selected)
+                    </span>
+                  </h2>
+                </div>
               </div>
             </Disclosure.Button>
             {error && <p className="text-red-500">Error loading flavors.</p>}

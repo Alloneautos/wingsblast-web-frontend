@@ -64,7 +64,7 @@ function Navbar() {
   const shortAddress = savedAddress.split(",")[0];
 
   return (
-    <nav className="bg-white w-full fixed top-0 border-b !z-50">
+    <nav className="bg-white w-full sticky top-0 border-b !z-50">
       <div className="container flex justify-between items-center py-2 lg:py-[18px] px-4 w-full lg:w-10/12 mx-auto">
         {/* Left side: Logo */}
         <div className="flex justify-between items-center space-x-4">

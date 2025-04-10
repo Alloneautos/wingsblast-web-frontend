@@ -27,7 +27,7 @@ const AddMoreFood = ({ categoryID }) => {
   };
 
   return (
-    <div className="w-full md:w-10/12 lg:w-10/12 mx-auto p-2 lg:p-6 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-lg shadow-2xl">
+    <div className="w-full md:w-10/12 lg:w-10/12 mx-auto p-2 lg:p-6 rounded-lg shadow-2xl">
       {/* Section Header */}
       <h2 className="text-4xl text-center font-bold text-gray-800 mb-8">
         ADD MORE
@@ -60,7 +60,7 @@ const AddMoreFood = ({ categoryID }) => {
                 }}
               >
                 <div className="p-4 cursor-pointer hover:scale-105 transition-transform duration-300">
-                  <div className="h-full border border-gray-200 rounded-lg shadow-md bg-white overflow-hidden">
+                  <div className="h-full border border-black rounded-lg bg-white overflow-hidden">
                     <img
                       className="w-[180px] h-[180px] mx-auto object-cover"
                       src={foodMenu.image}
@@ -70,11 +70,11 @@ const AddMoreFood = ({ categoryID }) => {
                       <h3 className="text-lg font-bold text-gray-800 h-[48px]">
                         {foodMenu.name}
                       </h3>
-                      <p className="text-xs text-gray-600 h-[50px] line-clamp-3">
+                      <p className="text-xs text-black h-[33px] line-clamp-2">
                         {foodMenu.description}
                       </p>
-                      <div className="flex justify-between items-center mt-1">
-                        <span className="text-xl font-semibold text-purple-700">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xl font-semibold">
                           ${foodMenu.price}
                         </span>
                         <span className="text-sm text-gray-500">

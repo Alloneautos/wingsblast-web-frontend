@@ -75,8 +75,8 @@ const NewFoodAddCard = () => {
                     className="cursor-pointer"
                     onClick={() => handleLinkClick(foodMenu?.id)}
                   >
-                    <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition duration-300 transform hover:scale-105">
-                      <div className="relative bg-gray-200">
+                    <div className="bg-white border-[0.5px] hover:border-[2px] hover:border-[#006938] border-gray-800 rounded  overflow-hidden hover:shadow-xl transition duration-900 transform">
+                      <div className="relative ">
                         <img
                           className="rounded-t-lg w-[180px] h-[180px] mx-auto object-cover"
                           src={foodMenu.image}

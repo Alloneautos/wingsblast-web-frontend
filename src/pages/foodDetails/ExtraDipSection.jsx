@@ -4,16 +4,13 @@ import { RxCross2 } from "react-icons/rx";
 import { BsHeartPulseFill } from "react-icons/bs";
 import { useAllDips } from "../../api/api";
 
-const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
+const ExtraDipSection = ({
+  onDipPriceChange,
+  onDipSelected,
+}) => {
   const { allDips, loading, error } = useAllDips(); // Assuming useAllDrinks fetches dips data
   const [selectedDips, setSelectedDips] = useState([]); // Track selected dips
   const [dipQuantities, setDipQuantities] = useState({}); // Track quantities for dips
-
-  const selectedCount = selectedDips.length; // Number of selected dips
-  const choiceItem = Object.values(dipQuantities).reduce(
-    (sum, qty) => sum + qty,
-    0
-  ); // Total quantity of dips selected
 
   const handleSelectDip = (dip) => {
     const isSelected = selectedDips.some((d) => d.id === dip.id);
@@ -21,26 +18,37 @@ const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
 
     if (isSelected) {
       updatedDips = selectedDips.filter((d) => d.id !== dip.id);
-    } else if (selectedDips.length < howManyDips) {
-      updatedDips = [...selectedDips, dip];
     } else {
-      return; // Do nothing if max dips are already selected
+      updatedDips = [...selectedDips, dip];
+      setDipQuantities((prevQuantities) => ({
+        ...prevQuantities,
+        [dip.id]: 1, // Default quantity to 1 for newly selected dips
+      }));
     }
 
     setSelectedDips(updatedDips);
+  };
 
-    // Distribute quantities equally among selected dips
-    distributeQuantities(updatedDips);
+  const handleQuantityChange = (dipId, change) => {
+    setDipQuantities((prevQuantities) => {
+      const newQuantities = { ...prevQuantities };
+      newQuantities[dipId] = Math.max(1, (newQuantities[dipId] || 1) + change); // Ensure quantity is at least 1
+
+      // Update price
+      const price = selectedDips.reduce(
+        (total, d) => total + ((d.price || 0) * newQuantities[d.id]), // Ensure price defaults to 0
+        0
+      );
+      onDipPriceChange(price);
+
+      return newQuantities;
+    });
   };
 
   const distributeQuantities = (dips) => {
-    const totalDips = dips.length;
-    const baseQuantity = Math.floor(howManyChoiceDips / totalDips);
-    const remainder = howManyChoiceDips % totalDips;
-
     const newQuantities = {};
-    dips.forEach((d, index) => {
-      newQuantities[d.id] = baseQuantity + (index < remainder ? 1 : 0);
+    dips.forEach((d) => {
+      newQuantities[d.id] = dipQuantities[d.id] || 1; // Retain existing quantity or default to 1
     });
 
     setDipQuantities(newQuantities);
@@ -49,92 +57,51 @@ const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
     const formattedData = dips.map((d) => ({
       type: "Dip",
       type_id: d.id,
-      is_paid_type: 0,
+      is_paid_type: 1,
       quantity: newQuantities[d.id],
     }));
 
     console.log("Formatted Data:", formattedData); // Log the formatted data
+
+    // Update price and selected dips
+    const price = dips.reduce(
+      (total, d) => total + ((d.price || 0) * newQuantities[d.id]), // Ensure price defaults to 0
+      0
+    );
+    onDipPriceChange(price);
     onDipSelected(formattedData); // Pass formatted data
   };
 
-  const handleQuantityChange = (dipId, change) => {
-    setDipQuantities((prevQuantities) => {
-      const newQuantities = { ...prevQuantities };
-      newQuantities[dipId] = Math.max(
-        0,
-        Math.min((newQuantities[dipId] || 0) + change, howManyChoiceDips)
-      );
+  useEffect(() => {
+    const price = selectedDips.reduce(
+      (total, dip) => total + ((dip.price || 0) * dipQuantities[dip.id]), // Ensure price defaults to 0
+      0
+    );
+    onDipPriceChange(price);
+  }, [selectedDips, dipQuantities, onDipPriceChange]);
 
-      const totalSelected = Object.values(newQuantities).reduce(
-        (sum, qty) => sum + qty,
-        0
-      );
-
-      let excess = totalSelected - howManyChoiceDips;
-      if (excess > 0) {
-        const otherDips = selectedDips.filter((d) => d.id !== dipId);
-        for (const dip of otherDips) {
-          if (excess <= 0) break;
-          const reduceBy = Math.min(newQuantities[dip.id], excess);
-          newQuantities[dip.id] -= reduceBy;
-          excess -= reduceBy;
-        }
-      }
-
-      let deficit =
-        howManyChoiceDips -
-        Object.values(newQuantities).reduce((sum, qty) => sum + qty, 0);
-      if (deficit > 0) {
-        const otherDips = selectedDips.filter((d) => d.id !== dipId);
-        for (const dip of otherDips) {
-          if (deficit <= 0) break;
-          const increaseBy = Math.min(
-            howManyChoiceDips - newQuantities[dip.id],
-            deficit
-          );
-          newQuantities[dip.id] += increaseBy;
-          deficit -= increaseBy;
-        }
-      }
-
-      return newQuantities;
-    });
-  };
+  useEffect(() => {
+    distributeQuantities(selectedDips); // Call distributeQuantities whenever selectedDips changes
+  }, [selectedDips]);
 
   return (
     <div className="w-full lg:w-10/12 mx-auto my-1 p-2 bg-white rounded-lg shadow-lg">
       <Disclosure>
         {() => (
           <>
-            <Disclosure.Button className="grid items-center w-full rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-md transition ease-in-out duration-300">
-              <div className="flex justify-between items-center w-full">
+            <Disclosure.Button className="grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-md transition ease-in-out duration-300">
+              <div>
                 <span className="text-lg font-TitleFont lg:text-xl font-semibold">
-                  CHOOSE REGULAR DIP
+                  CHOOSE EXTRA DIP
                 </span>
-                <span
-                  className={
-                    selectedCount > 0 ? "text-green-600" : "text-red-700"
-                  }
-                >
-                  {selectedCount > 0 ? "Done" : "Required"}
-                </span>
-              </div>
-              <div className="flex justify-between items-center w-full">
-                <h2 className="font-bold mb-4">
-                  <span className="text-base text-gray-500">
-                    Up To Choose
-                    <span className="text-black ">
-                      ({selectedCount} of {howManyDips} Selected)
-                    </span>
+                <h2 className=" font-bold mt-2 text-gray-600">
+                  <span>Up To Select: </span>
+                  <span className="text-black">
+                    {selectedDips.length > 0
+                      ? selectedDips.map((dip) => dip.name).join(", ")
+                      : "(Selected)"}
                   </span>
                 </h2>
-                <div className="text-gray-500">
-                  <h2 className="grid text-lg font-bold mb-1">
-                    <span className="text-sm text-gray-500">
-                      ( {choiceItem} of {howManyChoiceDips} Selected)
-                    </span>
-                  </h2>
-                </div>
               </div>
             </Disclosure.Button>
             {error && (
@@ -165,7 +132,9 @@ const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
                               </p>
                               <div className="flex gap-2 text-gray-600">
                                 <p className="text-green-500 font-semibold">
-                                  Free
+                                    <span className="text-black font-medium">
+                                      $ {category.price}
+                                    </span>
                                 </p>
                                 <p className="flex items-center gap-1.5">
                                   <BsHeartPulseFill className="text-red-500" />
@@ -183,7 +152,9 @@ const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
                             onChange={() => handleSelectDip(category)}
                           />
                         </div>
-                        {selectedDips.some((d) => d.id === category.id) && (
+                        {selectedDips.some(
+                          (d) => d.id === category.id
+                        ) && (
                           <div className="mt-3 ml-[90px] mx-auto items-center gap-2 text-gray-700">
                             <span className="font-medium">Quantity:</span>
                             <div className="flex items-center border p-2 w-[148px] rounded-md overflow-hidden">
@@ -207,14 +178,6 @@ const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
                                 onClick={() =>
                                   handleQuantityChange(category.id, 1)
                                 }
-                                disabled={
-                                  dipQuantities[category.id] >=
-                                    howManyChoiceDips ||
-                                  Object.values(dipQuantities).reduce(
-                                    (sum, qty) => sum + qty,
-                                    0
-                                  ) >= howManyChoiceDips
-                                }
                               >
                                 +
                               </button>
@@ -222,6 +185,7 @@ const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
                           </div>
                         )}
                       </label>
+
                     </div>
                   ))}
                 <div className="w-full">
@@ -249,4 +213,4 @@ const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
   );
 };
 
-export default DipSection;
+export default ExtraDipSection;
