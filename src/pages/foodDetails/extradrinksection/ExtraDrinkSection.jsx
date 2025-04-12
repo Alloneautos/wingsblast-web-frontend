@@ -12,8 +12,7 @@ const ExtraDrinkSection = ({
   onSelectedDrinksChange = () => {},
 }) => {
   const [selectedDrinks, setSelectedDrinks] = useState([]);
-  const { allDrinks, loading, error} = useAllDrinks();
-  console.log(allDrinks);
+  const { allDrinks, loading, error } = useAllDrinks();
 
   const handleSelectDrink = (drink) => {
     const isAlreadySelected = selectedDrinks.some(
@@ -63,10 +62,7 @@ const ExtraDrinkSection = ({
       const drinkData = allDrinks
         .flatMap((category) => category)
         .find((d) => d.id === drink.type_id);
-      return (
-        sum +
-        (drinkData.price * drink.quantity)
-      );
+      return sum + drinkData.price * drink.quantity;
     }, 0);
 
     onDrinkPriceChange(totalPrice);
@@ -92,8 +88,7 @@ const ExtraDrinkSection = ({
                             (drink) =>
                               allDrinks
                                 .flatMap((category) => category)
-                                .find((d) => d.id === drink.type_id)
-                                ?.name
+                                .find((d) => d.id === drink.type_id)?.name
                           )
                           .join(", ")
                       : "(Please select)"}
@@ -129,9 +124,9 @@ const ExtraDrinkSection = ({
                               </p>
                               <div className="flex gap-2 text-gray-600">
                                 <p className="text-green-500 font-semibold">
-                                    <span className="text-black font-medium">
-                                      ${category.price}
-                                    </span>
+                                  <span className="text-black font-medium">
+                                    ${category.price}
+                                  </span>
                                 </p>
                                 <p className="flex items-center gap-1.5">
                                   <BiSolidError className="text-black" />
@@ -153,33 +148,26 @@ const ExtraDrinkSection = ({
                           (drink) => drink.type_id === category.id
                         ) && (
                           <div>
-                           <CustomDrinkModal />
-                            <div className="flex items-center justify-center">
+                            <CustomDrinkModal />
+                            <div className="flex items-center justify-center  ml-3">
                               <div className="flex items-center gap-3">
                                 <button
                                   className="p-1.5 border border-gray-300 rounded-md hover:bg-gray-100"
                                   onClick={() =>
-                                    handleQuantityChange(
-                                      category.id,
-                                      false
-                                    )
+                                    handleQuantityChange(category.id, false)
                                   }
                                 >
                                   <FaMinus />
                                 </button>
                                 <span className="p-2 border-gray-300 text-xl">
                                   {selectedDrinks.find(
-                                    (drink) =>
-                                      drink.type_id === category.id
+                                    (drink) => drink.type_id === category.id
                                   )?.quantity || 1}
                                 </span>
                                 <button
                                   className="p-1.5 border border-gray-300 rounded-md hover:bg-gray-100"
                                   onClick={() =>
-                                    handleQuantityChange(
-                                      category.id,
-                                      true
-                                    )
+                                    handleQuantityChange(category.id, true)
                                   }
                                 >
                                   <FaPlus />

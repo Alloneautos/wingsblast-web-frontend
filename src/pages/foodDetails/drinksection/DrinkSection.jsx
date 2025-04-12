@@ -14,7 +14,23 @@ const DrinkSection = ({
   onSelectedDrinksChange,
 }) => {
   const [selectedDrinks, setSelectedDrinks] = useState([]);
-  const [selectedDrinkName, setSelectedDrinkName] = useState("");
+  const [drinksNameId, setDrinksNameId] = useState(0);
+
+  const handleDrinkSelect = (selectedDrinkId, drink) => {
+    setDrinksNameId(selectedDrinkId);
+
+    const newDrink = {
+      type: "Drink",
+      type_id: drink.drink_id,
+      is_paid_type: drink.isPaid,
+      quantity: 1,
+      child_item_id: selectedDrinkId,
+    };
+
+    setSelectedDrinks([newDrink]); // Only one drink can be selected
+    onSelectedDrinksChange([newDrink]); // Notify parent component
+  };
+
   const handleSelectDrink = (drink) => {
     const isAlreadySelected = selectedDrinks.some(
       (selected) => selected.type_id === drink.drink_id
@@ -31,6 +47,7 @@ const DrinkSection = ({
         type_id: drink.drink_id,
         is_paid_type: drink.isPaid,
         quantity: 1, // Assuming quantity is always 1 for drinks
+        child_item_id: drinksNameId,
       };
       setSelectedDrinks([newDrink]); // Only one drink can be selected
       onSelectedDrinksChange([newDrink]); // Notify parent component
@@ -51,11 +68,6 @@ const DrinkSection = ({
     });
     setSelectedDrinks(updatedDrinks);
     onSelectedDrinksChange(updatedDrinks); // Notify parent component
-  };
-
-  const handleDrinkSelect = (selectedDrink) => {
-    setSelectedDrinkName(selectedDrink);
-    // Handle the selected drink data here
   };
 
   useEffect(() => {
@@ -120,11 +132,11 @@ const DrinkSection = ({
                         <div className="flex items-center justify-between">
                           <div className="flex space-x-3">
                             <div className="w-16">
-                            <img
-                              className="h-16 rounded-full"
-                              src={category.drink_image}
-                              alt=""
-                            />
+                              <img
+                                className="h-16 rounded-full"
+                                src={category.drink_image}
+                                alt=""
+                              />
                             </div>
                             <div>
                               <p className="font-medium text-gray-800">
@@ -160,8 +172,12 @@ const DrinkSection = ({
                           (drink) => drink.type_id === category.drink_id
                         ) && (
                           <div>
-                           <CustomDrinkModal onDrinkSelect={handleDrinkSelect} />
-                            <div className="items-center justify-center hidden">
+                            <CustomDrinkModal
+                              onDrinkSelect={(selectedDrinkId) =>
+                                handleDrinkSelect(selectedDrinkId, category)
+                              }
+                            />
+                            <div className="items-center justify-center hidden ">
                               <div className="flex items-center gap-3">
                                 <button
                                   className="p-1.5 border border-gray-300 rounded-md hover:bg-gray-100"
@@ -222,7 +238,6 @@ const DrinkSection = ({
           </>
         )}
       </Disclosure>
-
     </div>
   );
 };

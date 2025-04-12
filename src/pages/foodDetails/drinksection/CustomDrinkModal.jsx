@@ -1,28 +1,18 @@
 import { useState } from "react";
-import SpriteImg from "../../../assets/images/spriteimg.png";
+import { useAllDrinksName } from "../../../api/api";
 
 const CustomDrinkModal = ({ onDrinkSelect }) => {
-  const [selectedDrink, setSelectedDrink] = useState(
-    "Fountain Coca-Cola Freestyle™"
-  );
-  const drinkOptions = [
-    { name: "Fountain Coca-Cola Freestyle™", img: SpriteImg },
-    { name: "Coke", img: SpriteImg },
-    { name: "Diet Coke", img: SpriteImg },
-    { name: "Coke Zero", img: SpriteImg },
-    { name: "Sprite", img: SpriteImg },
-    { name: "Fanta", img: SpriteImg },
-    { name: "Dr Pepper", img: SpriteImg },
-    { name: "Barq's Root Beer", img: SpriteImg },
-    { name: "Caffeine Free Diet Coke", img: SpriteImg },
-    { name: "Powerade Fruit Punch", img: SpriteImg },
-    { name: "Powerade Orange", img: SpriteImg },
-  ];
+  const { allDrinksName, isLoading, isError, error } = useAllDrinksName();
+  const [selectedDrink, setSelectedDrink] = useState({});
 
   const handleApply = () => {
-    onDrinkSelect(selectedDrink); // Pass selectedDrink to parent
+    onDrinkSelect(selectedDrink.id); // Pass selectedDrink to parent
     document.getElementById("costomizeDrinkModal").close();
   };
+
+  if (isLoading) {
+    return <dip>Loading...</dip>;
+  }
 
   return (
     <div>
@@ -36,7 +26,7 @@ const CustomDrinkModal = ({ onDrinkSelect }) => {
         >
           Customize
         </button>
-        <p className="text-xs">{selectedDrink}</p>
+        <p className="text-xs">{selectedDrink?.name}</p>
       </div>
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
       <dialog id="costomizeDrinkModal" className="modal rounded">
@@ -49,20 +39,20 @@ const CustomDrinkModal = ({ onDrinkSelect }) => {
           </form>
           <h3 className="font-bold text-lg text-center">CUSTOMIZE</h3>
           <p className="text-center text-gray-600 mt-2">
-            Selected: {selectedDrink}
+            Selected: {selectedDrink?.name}
           </p>
           <div className="mt-4">
-            {drinkOptions.map((drink, index) => (
+            {allDrinksName.map((drink, index) => (
               <div
                 key={index}
                 className={`flex items-center justify-between ${
-                  index !== drinkOptions.length - 1 ? "border-b" : ""
+                  index !== allDrinksName.length - 1 ? "border-b" : ""
                 } py-3`}
               >
                 <label className="flex items-center justify-between w-full cursor-pointer">
                   <div className="flex items-center space-x-3">
                     <img
-                      src={drink.img}
+                      src={drink.image}
                       alt={drink.name}
                       className="w-[70px] h-12 rounded-full"
                     />
@@ -73,7 +63,7 @@ const CustomDrinkModal = ({ onDrinkSelect }) => {
                     name="drink"
                     className="radio radio-primary"
                     {...(index === 0 && { defaultChecked: true })}
-                    onChange={() => setSelectedDrink(drink.name)}
+                    onChange={() => setSelectedDrink(drink)}
                   />
                 </label>
               </div>

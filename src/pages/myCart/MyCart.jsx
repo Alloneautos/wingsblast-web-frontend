@@ -21,7 +21,6 @@ import OrderTips from "./OrderTips";
 import { MdEditNote } from "react-icons/md";
 import Loader from "../../assets/images/loader.gif";
 import MakeOffer from "./MakeOffer";
-import { IoClose } from "react-icons/io5";
 
 const MyCart = () => {
   const { tax, isTaxLoading } = useTax();
@@ -263,7 +262,7 @@ const MyCart = () => {
     building_suite_apt: "building_suite_apt",
     later_date: selectedDate,
     later_slot: selectedTime,
-    foods: mycard.map((item) => ({
+    foods: mycard?.map((item) => ({
       name: item.food_name,
       image: item.food_image,
       price: (item.price * quantities[item.id]).toFixed(2),
@@ -273,55 +272,51 @@ const MyCart = () => {
       addons: {
         flavor: item?.flavors?.map((flavor) => ({
           name: flavor.flavor_name,
-          image: flavor.flavor_image,
           quantity: flavor.quantity,
-          rating: "4",
-        })),
-        toppings: item?.toppings?.map((topping) => ({
-          name: topping.toppings_name,
-          image: topping.toppings_image,
-          quantity: topping.price,
-          isPaid: topping.isPaid,
-        })),
-        sandCust: item?.sandCust?.map((sandwich) => ({
-          name: sandwich.sandCust_name,
-          image: sandwich.sandCust_image,
-          price: sandwich.price,
-          isPaid: sandwich.isPaid,
         })),
 
-        dip: [
-          {
-            name: item.dip_name,
-            image: item.dip_image,
-            price: item.dip_price,
-            isPaid: item.is_dip_paid,
-          },
-        ],
-        side: [
-          {
-            name: item.side_name,
-            image: item.side_image,
-            price: item.side_price,
-            isPaid: item.is_side_paid,
-          },
-        ],
-        drink: [
-          {
-            name: item.drink_name,
-            image: item.drink_image,
-            price: item.drink_price,
-            isPaid: item.is_drink_paid,
-          },
-        ],
-        bakery: [
-          {
-            name: item.bakery_name,
-            image: item.bakery_image,
-            price: item.bakery_price,
-            isPaid: item.is_bakery_paid,
-          },
-        ],
+        toppings: item?.topping?.map((tp) => ({
+          name: tp.name,
+          price: tp.price,
+          isPaid: tp.is_paid_type,
+          quantity: tp.quantity,
+        })),
+
+        sandCust: item?.sandwich?.map((sw) => ({
+          name: sw.name,
+          price: sw.price,
+          isPaid: sw.is_paid_type,
+          quantity: sw.quantity,
+        })),
+
+        drink: item?.drinks?.map((d) => ({
+          name: d.size_name,
+          child_item_name: d.brand_name,
+          price: d.price,
+          isPaid: d.is_paid_type,
+          quantity: d.quantity,
+        })),
+
+        dip: item?.dips?.map((dp) => ({
+          name: dp.name,
+          price: dp.price,
+          isPaid: dp.is_paid_type,
+          quantity: dp.quantity,
+        })),
+
+        side: item?.sides?.map((sd) => ({
+          name: sd.name,
+          price: sd.price,
+          isPaid: sd.is_paid_type,
+          quantity: sd.quantity,
+        })),
+
+        beverage: item?.bakery?.map((bk) => ({
+          name: bk.name,
+          price: bk.price,
+          isPaid: bk.is_paid_type,
+          quantity: bk.quantity,
+        })),
       },
     })),
   };
@@ -410,7 +405,9 @@ const MyCart = () => {
                         <div key={index} className="flavor-item cursor-pointer">
                           <h1 title="Dip" className="flex items-center">
                             {dip.name} X{dip.quantity}{" "}
-                            <span>{dip.is_paid_type === 1 ? `($${dip.price})` : ""}</span>
+                            <span>
+                              {dip.is_paid_type === 1 ? `($${dip.price})` : ""}
+                            </span>
                           </h1>
                         </div>
                       ))}
@@ -418,39 +415,60 @@ const MyCart = () => {
                         <div key={index} className="flavor-item cursor-pointer">
                           <h1 title="side" className="flex items-center">
                             {side.name}{" "}
-                            <span>{side.is_paid_type === 1 ? `($${side.price})` : ""}</span>
+                            <span>
+                              {side.is_paid_type === 1
+                                ? `($${side.price})`
+                                : ""}
+                            </span>
                           </h1>
                         </div>
                       ))}
                       {item.drinks.map((drink, index) => (
                         <div key={index} className="flavor-item cursor-pointer">
                           <h1 title="drink" className="flex items-center">
-                            {drink.name} X{drink.quantity}{" "}
-                            <span>{drink.is_paid_type === 1 ? `($${drink.price})` : ""}</span>
+                            {drink?.size_name}({drink?.brand_name}) X
+                            {drink.quantity}{" "}
+                            <span>
+                              {drink.is_paid_type === 1
+                                ? `($${drink.price})`
+                                : ""}
+                            </span>
                           </h1>
                         </div>
                       ))}
-                      {item.bakery.map((bakery, index) => (
+                      {item?.bakery?.map((bakery, index) => (
                         <div key={index} className="flavor-item cursor-pointer">
                           <h1 title="bakery" className="flex items-center">
-                            {bakery.name} {" "}
-                            <span>{bakery.is_paid_type === 1 ? `($${bakery.price})` : ""}</span>
+                            {bakery.name}{" "}
+                            <span>
+                              {bakery.is_paid_type === 1
+                                ? `($${bakery.price})`
+                                : ""}
+                            </span>
                           </h1>
                         </div>
                       ))}
-                      {item.toppings.map((topping, index) => (
+                      {item?.topping?.map((topping, index) => (
                         <div key={index} className="flavor-item cursor-pointer">
                           <h1 title="topping" className="flex items-center">
-                            {topping.name} {" "}
-                            <span>{topping.is_paid_type === 1 ? `($${topping.price})` : ""}</span>
+                            {topping.name}{" "}
+                            <span>
+                              {topping.is_paid_type === 1
+                                ? `($${topping.price})`
+                                : ""}
+                            </span>
                           </h1>
                         </div>
                       ))}
-                      {item.sandCust.map((sandCust, index) => (
+                      {item?.sandwich?.map((sandCust, index) => (
                         <div key={index} className="flavor-item cursor-pointer">
                           <h1 title="sandCust" className="flex items-center">
                             {sandCust.name} X{sandCust.quantity}{" "}
-                           <span>{sandCust.is_paid_type === 1 ? `($${sandCust.price})` : ""}</span>
+                            <span>
+                              {sandCust.is_paid_type === 1
+                                ? `($${sandCust.price})`
+                                : ""}
+                            </span>
                           </h1>
                         </div>
                       ))}

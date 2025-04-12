@@ -191,6 +191,8 @@ const FoodDetails = () => {
     setSelectedDrinks(drinks);
   };
 
+  console.log("toppingsData", toppingsData, "sandCustData", sandCustData);
+
   const handleAddToBag = async () => {
     try {
       const formattedFeatures = [
@@ -205,6 +207,7 @@ const FoodDetails = () => {
           type_id: drink.type_id,
           is_paid_type: drink.is_paid_type,
           quantity: drink.quantity,
+          child_item_id: drink.child_item_id,
         })) || []),
         ...(sandCustData?.map((sand) => ({
           type: "Sandwich",
@@ -423,10 +426,10 @@ const FoodDetails = () => {
         />
       ) : null}
 
-        <ExtraDipSection
-          onDipPriceChange={handleDipPriceChange}
-          onDipSelected={handleDipSelected}
-        />
+      <ExtraDipSection
+        onDipPriceChange={handleDipPriceChange}
+        onDipSelected={handleDipSelected}
+      />
 
       <ExtraDrinkSection
         onDrinkSelected={handleDrinkSelected}

@@ -612,6 +612,7 @@ export const useTipsRate = () => {
 
   return { tipsRate, isLoading, isError, error, refetch };
 };
+
 // get all drinks
 export const useAllDrinks = () => {
   const getAllDrinks = async () => {
@@ -632,6 +633,28 @@ export const useAllDrinks = () => {
 
   return { allDrinks, isLoading, isError, error, refetch };
 };
+
+// get all drinks
+export const useAllDrinksName = () => {
+  const getAllDrinksName = async () => {
+    const response = await API.get(`/drink-name/all`);
+    return response.data.data;
+  };
+
+  const {
+    data: allDrinksName = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["allDrinksName"],
+    queryFn: getAllDrinksName,
+  });
+
+  return { allDrinksName, isLoading, isError, error, refetch };
+};
+
 // get dips
 export const useAllDips = () => {
   const getAllDips = async () => {

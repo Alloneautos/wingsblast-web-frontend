@@ -1,23 +1,12 @@
 import { useState } from "react";
 import SpriteImg from "../../../assets/images/spriteimg.png";
+import { useAllDrinksName } from "../../../api/api";
 
 const CustomDrinkModal = ({ onDrinkSelect }) => {
-  const [selectedDrink, setSelectedDrink] = useState(
-    "Fountain Coca-Cola Freestyle™"
-  );
-  const drinkOptions = [
-    { name: "Fountain Coca-Cola Freestyle™", img: SpriteImg },
-    { name: "Coke", img: SpriteImg },
-    { name: "Diet Coke", img: SpriteImg },
-    { name: "Coke Zero", img: SpriteImg },
-    { name: "Sprite", img: SpriteImg },
-    { name: "Fanta", img: SpriteImg },
-    { name: "Dr Pepper", img: SpriteImg },
-    { name: "Barq's Root Beer", img: SpriteImg },
-    { name: "Caffeine Free Diet Coke", img: SpriteImg },
-    { name: "Powerade Fruit Punch", img: SpriteImg },
-    { name: "Powerade Orange", img: SpriteImg },
-  ];
+  const [selectedDrink, setSelectedDrink] = useState("");
+
+  const { allDrinksName, isLoading, isError, error, refetch } =
+    useAllDrinksName();
 
   const handleApply = () => {
     onDrinkSelect(selectedDrink); // Pass selectedDrink to parent
@@ -52,17 +41,17 @@ const CustomDrinkModal = ({ onDrinkSelect }) => {
             Selected: {selectedDrink}
           </p>
           <div className="mt-4">
-            {drinkOptions.map((drink, index) => (
+            {allDrinksName.map((drink, index) => (
               <div
                 key={index}
                 className={`flex items-center justify-between ${
-                  index !== drinkOptions.length - 1 ? "border-b" : ""
+                  index !== allDrinksName.length - 1 ? "border-b" : ""
                 } py-3`}
               >
                 <label className="flex items-center justify-between w-full cursor-pointer">
                   <div className="flex items-center space-x-3">
                     <img
-                      src={drink.img}
+                      src={drink.image}
                       alt={drink.name}
                       className="w-[70px] h-12 rounded-full"
                     />
@@ -82,9 +71,7 @@ const CustomDrinkModal = ({ onDrinkSelect }) => {
           <div className="flex space-x-2 bg-white z-30 sticky -bottom-[22px]">
             <button
               className="btn rounded btn-primary w-[50%] text-white"
-              onClick={() =>
-                document.getElementById("costomizeDrink").close()
-              }
+              onClick={() => document.getElementById("costomizeDrink").close()}
             >
               Cancel
             </button>
