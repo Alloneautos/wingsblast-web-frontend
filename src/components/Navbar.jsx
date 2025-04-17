@@ -88,12 +88,12 @@ function Navbar() {
           </div>
           <div className="hidden md:flex space-x-5 text-lg lg:text-xl">
             <Link to="/foodmenu">
-              <span className="text-black text-2xl font-sans font-semibold hover:text-green-500">
+              <span className="text-black text-2xl font-TitleFont hover:text-green-500">
                 MENU
               </span>
             </Link>
             <Link to="/flavors">
-              <span className="text-black text-2xl font-sans font-semibold hover:text-green-500">
+              <span className="text-black text-2xl font-TitleFont hover:text-green-500">
                 FLAVORS
               </span>
             </Link>
@@ -106,11 +106,11 @@ function Navbar() {
             <div className="hidden lg:grid items-center text-sm text-gray-700">
               <span>
                 {orderStatus === "CarryOut" && (
-                  <span className="text-xl font-semibold text-black">
+                  <span className="text-2xl font-TitleFont text-black">
                     {orderStatus}
                     <span
                       onClick={() => setIsLocationModalOpen(true)}
-                      className="text-rose-500 text-base hover:no-underline cursor-pointer"
+                      className="text-rose-500 font-sans text-sm font-medium hover:no-underline cursor-pointer"
                     >
                       (Change)
                     </span>
@@ -118,10 +118,10 @@ function Navbar() {
                 )}
                 {orderStatus === "Delivery" && (
                   <p className="grid">
-                    <span className="text-xl font-semibold text-black">
+                    <span className="text-2xl font-TitleFont text-black">
                       {orderStatus} Address
                     </span>
-                    <a className="ml-1 font-semibold text-green-600 hover:underline cursor-pointer">
+                    <a className="ml-1 text-black hover:underline cursor-pointer">
                       {displayAddress}
                       <span
                         onClick={() => setIsLocationModalOpen(true)}
@@ -149,8 +149,8 @@ function Navbar() {
                 htmlFor="my-drawer-4"
                 className="cursor-pointer flex items-center justify-center"
               >
-                <IoNotificationsOutline className="text-xl md:text-3xl lg:text-3xl text-gray-700 hover:text-green-500 transition duration-300" />
-                <span className="absolute top-0 right-0 bg-red-700 text-white rounded-full px-2 py-0.5 text-xs font-bold shadow-md">
+                <IoNotificationsOutline className="text-xl md:text-3xl lg:text-4xl text-gray-700 hover:text-green-500 transition duration-300" />
+                <span className="absolute top-0 right-0 bg-red-700 text-white rounded-full px-1 py-0.5 text-xs font-medium shadow-md">
                   {unreadCount}
                 </span>
               </label>
@@ -240,7 +240,7 @@ function Navbar() {
                 document.getElementById("search").showModal();
                 setIsOpen(false); // Close the menu
               }}
-              className="text-black font-sans text-lg mb-2 font-bold flex gap-2 items-center"
+              className="text-black font-TitleFont text-xl mb-2 flex gap-2 items-center"
             >
               <BiSearch /> SEARCH
             </span>
@@ -249,7 +249,7 @@ function Navbar() {
               to="/foodmenu"
               onClick={() => setIsOpen(false)} // Hide menu on click
             >
-              <span className="text-black font-sans text-lg mb-2 font-bold flex gap-2 items-center">
+              <span className="text-black font-TitleFont text-xl mb-2 flex gap-2 items-center">
                 <MdRestaurantMenu /> MENU
               </span>
             </Link>
@@ -259,7 +259,7 @@ function Navbar() {
               to="/flavors"
               onClick={() => setIsOpen(false)} // Hide menu on click
             >
-              <span className="text-black text-lg mb-2 font-bold flex gap-2 items-center">
+              <span className="text-black font-TitleFont text-xl mb-2 flex gap-2 items-center">
                 <IoFastFood /> FLAVORS
               </span>
             </Link>
@@ -272,7 +272,7 @@ function Navbar() {
                   to="/userprofile"
                   onClick={() => setIsOpen(false)} // Hide menu on click
                 >
-                  <span className="text-black text-lg font-bold flex gap-2 items-center">
+                  <span className="text-black font-TitleFont text-xl flex gap-2 items-center">
                     <LuUserCog /> USER PROFILE
                   </span>
                 </Link>
@@ -280,12 +280,12 @@ function Navbar() {
                   to="/myorder"
                   onClick={() => setIsOpen(false)} // Hide menu on click
                 >
-                  <span className="text-black text-lg font-bold flex gap-2 items-center">
+                  <span className="text-black font-TitleFont text-xl flex gap-2 items-center">
                     <MdOutlineBorderColor /> MY ORDER
                   </span>
                 </Link>
                 <button onClick={handleSignOut}>
-                  <span className="text-black text-lg font-bold flex gap-2 items-center cursor-pointer">
+                  <span className="text-black font-TitleFont text-xl flex gap-2 items-center cursor-pointer">
                     <CgLogOut /> LOG OUT
                   </span>
                 </button>

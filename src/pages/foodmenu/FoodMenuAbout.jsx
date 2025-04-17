@@ -1,12 +1,13 @@
+import { BiSolidError } from "react-icons/bi";
 import { Link } from "react-router-dom";
 
 const FoodMenuAbout = () => {
   return (
     <div className="w-full lg:w-10/12 mx-auto my-4">
       <p className="p-4">
-        2,000 calories a day is used for general nutrition advice, but calorie
-        needs vary. Additional nutritional and allergen information available
-        upon request or by visiting{" "}
+        <span className="flex items-center gap-1">2,000 calories <BiSolidError /> a day is used for general nutrition
+        advice, but calorie needs vary. Additional nutritional and allergen
+        information available upon request or by visiting{" "}</span>
         <Link className="text-green-500" to="/termsofuser">
           {" "}
           wingblast.com/terms&user

@@ -42,7 +42,7 @@ const NewFoodAddCard = () => {
   return (
     <div className="bg-gray-50 rounded-t-md pb-6">
       {/* Header Section */}
-      <h1 className="title-font font-bold text-xl lg:text-3xl text-gray-900 pt-5 ml-12 mb-6">
+      <h1 className="font-TitleFont text-xl lg:text-3xl text-gray-900 p-4">
         Add something extra to your order
       </h1>
 
@@ -82,15 +82,15 @@ const NewFoodAddCard = () => {
                           src={foodMenu.image}
                           alt={foodMenu.name}
                         />
-                        <span className="absolute top-2 right-2 bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-sm">
+                        <span className="absolute top-2 right-2 bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded">
                           POPULAR
                         </span>
                       </div>
-                      <div className="p-5 space-y-3">
-                        <h2 className="text-gray-900 font-bold text-xl h-[48px] leading-tight line-clamp-2">
+                      <div className="p-2 space-y-1">
+                        <h2 className="text-gray-900 text-xl h-[33px] font-TitleFont leading-tight line-clamp-2">
                           {foodMenu.name}
                         </h2>
-                        <p className="leading-relaxed text-gray-600 text-sm line-clamp-2 h-[42px]">
+                        <p className="leading-relaxed text-black text-xs line-clamp-2 h-[42px]">
                           {foodMenu.description}
                         </p>
                       </div>

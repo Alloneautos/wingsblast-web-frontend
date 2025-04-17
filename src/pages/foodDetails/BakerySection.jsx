@@ -1,15 +1,19 @@
 import { Disclosure } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
+import LoadingComponent from "../../components/LoadingComponent";
+import { FaChevronRight } from "react-icons/fa";
 
 const BakerySection = ({
-  bakery,
+  myBakery,
   loading,
   error,
   onBakeryPriceChange,
   onBakerySelected,
 }) => {
   const [selectedBakeries, setSelectedBakeries] = useState([]);
+  const [bakeryQuantities, setBakeryQuantities] = useState({});
+  const bakery = myBakery.data;
 
   const handleSelectBakery = (bakery) => {
     const isSelected = selectedBakeries.includes(bakery);
@@ -17,50 +21,110 @@ const BakerySection = ({
 
     if (isSelected) {
       updatedSelection = selectedBakeries.filter((item) => item !== bakery);
+      setBakeryQuantities((prevQuantities) => {
+        const { [bakery.id]: _, ...updatedQuantities } = prevQuantities;
+        return updatedQuantities;
+      });
     } else {
       updatedSelection = [...selectedBakeries, bakery];
+      setBakeryQuantities((prevQuantities) => ({
+        ...prevQuantities,
+        [bakery.id]: 1, // Default quantity to 1
+      }));
     }
 
     setSelectedBakeries(updatedSelection);
 
+    // Calculate total price and formatted data after updating quantities
+    const updatedQuantities = {
+      ...bakeryQuantities,
+      ...(isSelected ? {} : { [bakery.id]: 1 }),
+    };
+
     const totalPrice = updatedSelection.reduce((sum, item) => {
-      return sum + (item.isPaid === 1 ? item.beverage_price : 0);
+      return (
+        sum +
+        (item.isPaid === 1 ? item.price * (updatedQuantities[item.id] || 1) : 0)
+      );
     }, 0);
 
     onBakeryPriceChange(totalPrice);
 
     const formattedData = updatedSelection.map((item) => ({
       type: "Bakery",
-      type_id: item.beverage_id,
-      is_paid_type: item.isPaid,
-      quantity: 1,
+      type_id: item.id,
+      is_paid_type: 1,
+      quantity: bakeryQuantities[item.id],
     }));
+
+    console.log("formattedData", formattedData);
 
     onBakerySelected(formattedData);
   };
 
+  const handleQuantityChange = (bakeryId, change) => {
+    setBakeryQuantities((prevQuantities) => {
+      const newQuantities = { ...prevQuantities };
+      newQuantities[bakeryId] = Math.max(
+        1,
+        (newQuantities[bakeryId] || 1) + change
+      ); // Ensure quantity is at least 1
+
+      // Update price and formatted data
+      const totalPrice = selectedBakeries.reduce(
+        (sum, item) =>
+          sum + (item.isPaid === 1 ? item.price * newQuantities[item.id] : 0),
+        0
+      );
+      onBakeryPriceChange(totalPrice);
+
+      const formattedData = selectedBakeries.map((item) => ({
+        type: "Bakery",
+        type_id: item.id,
+        is_paid_type: 1,
+        quantity: newQuantities[item.id],
+      }));
+
+      console.log("formattedData", formattedData);
+
+      onBakerySelected(formattedData);
+
+      return newQuantities;
+    });
+  };
+
   useEffect(() => {
     const totalPrice = selectedBakeries.reduce((sum, item) => {
-      return sum + (item.isPaid === 1 ? item.beverage_price : 0);
+      return (
+        sum +
+        (item.isPaid === 1 ? item.price * (bakeryQuantities[item.id] || 1) : 0)
+      );
     }, 0);
     onBakeryPriceChange(totalPrice);
-  }, [selectedBakeries, onBakeryPriceChange]);
+  }, [selectedBakeries, bakeryQuantities, onBakeryPriceChange]);
 
   return (
-    <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg shadow-lg">
+    <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg">
       <Disclosure>
-        {() => (
+        {({ open }) => (
           <>
-            <Disclosure.Button className=" grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-md transition ease-in-out duration-300">
+            <Disclosure.Button className=" grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-blue-50 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition ease-in-out duration-300">
               <div>
-                <span className="text-lg font-TitleFont lg:text-xl font-semibold">
-                  CHOOSE REGULER BAKERY
+                <span className="font-TitleFont text-2xl flex items-center gap-1">
+                  <span
+                    className={`text-lg transform transition-transform duration-300 ${
+                      open ? "rotate-90" : "rotate-0"
+                    }`}
+                  >
+                    <FaChevronRight />
+                  </span>{" "}
+                  CHOOSE REGULAR BAKERY
                 </span>
-                <h2 className="font-bold mt-2 text-gray-600">
+                <h2 className="mt-2 text-gray-800 text-sm">
                   <span>Selected: </span>
                   <span className="text-black">
                     {selectedBakeries.length > 0
-                      ? selectedBakeries.map((item) => item.beverage_name).join(", ")
+                      ? selectedBakeries.map((item) => item.name).join(", ")
                       : "(None)"}
                   </span>
                 </h2>
@@ -71,7 +135,7 @@ const BakerySection = ({
                 Error loading Bakery. Please try again.
               </p>
             )}
-            {loading && <p className="text-gray-500 mt-4">Loading Bakery...</p>}
+            {loading && <LoadingComponent />}
             <Disclosure.Panel className="px-4 pt-6 pb-4 text-sm text-gray-700">
               <div className="flavor-selection grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                 {!loading &&
@@ -85,30 +149,60 @@ const BakerySection = ({
                           <div className="flex space-x-3">
                             <img
                               className="h-16 rounded-full"
-                              src={category.beverage_image}
-                              alt=""
+                              src={category.image}
+                              alt={category.name}
                             />
                             <div>
-                              <p className="font-medium text-gray-800">
-                                {category.beverage_name}
+                              <p className="font-TitleFont text-black text-lg">
+                                {category.name}
                               </p>
                               <div className="flex gap-2 text-gray-600">
                                 {category.isPaid == 1 && (
-                                  <p>+${category.beverage_price}</p>
+                                  <p>+${category.price}</p>
                                 )}
-                                <p className="flex">
-                                  💪{category.beverage_cal}
-                                </p>
+                                <p className="flex">💪{category.cal}</p>
                               </div>
                             </div>
                           </div>
                           <input
                             type="checkbox"
                             className="checkbox checkbox-primary rounded"
-                            checked={selectedBakeries.includes(category)}
+                            checked={selectedBakeries.some(
+                              (b) => b.id === category.id
+                            )}
                             onChange={() => handleSelectBakery(category)}
                           />
                         </div>
+                        {selectedBakeries.some((b) => b.id === category.id) && (
+                          <div className="mt-3 ml-[90px] mx-auto items-center gap-2 text-gray-700">
+                            <span className="font-medium">Quantity:</span>
+                            <div className="flex items-center border p-2 w-[148px] rounded-md overflow-hidden">
+                              <button
+                                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
+                                onClick={() =>
+                                  handleQuantityChange(category.id, -1)
+                                }
+                                disabled={bakeryQuantities[category.id] <= 1}
+                              >
+                                -
+                              </button>
+                              <input
+                                type="number"
+                                value={bakeryQuantities[category.id] || 1}
+                                readOnly
+                                className="w-16 text-center text-lg border-l border-r outline-none"
+                              />
+                              <button
+                                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
+                                onClick={() =>
+                                  handleQuantityChange(category.id, 1)
+                                }
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </label>
                     </div>
                   ))}
@@ -123,7 +217,10 @@ const BakerySection = ({
                         type="checkbox"
                         className="checkbox checkbox-primary rounded"
                         checked={selectedBakeries.length === 0}
-                        onChange={() => setSelectedBakeries([])}
+                        onChange={() => {
+                          setSelectedBakeries([]);
+                          setBakeryQuantities({});
+                        }}
                       />
                     </div>
                   </label>

@@ -157,7 +157,7 @@ const CheckOut = () => {
 
           <div>
             {loading && (
-              <span className="loading loading-bars loading-lg"></span>
+              <span className="loading loading-spinner text-linear-to-bl from-violet-500 to-fuchsia-500"></span>
             )}
             {myOrderData?.foods?.map((food, foodIndex) => (
               <div key={foodIndex} className="p-4 text-black">

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Loader from "../../assets/images/loader.gif";
 import FlavorSelection from "./FlavorSelection";
 import {
   API,
@@ -14,12 +13,16 @@ import BakerySection from "./BakerySection";
 import Swal from "sweetalert2";
 import ToppingSection from "./ToppingSection";
 import SanwichSection from "./SandwichSection";
-// import RicePlattarCostom from "./RicePlattarCostom";
 import { useQueryClient } from "@tanstack/react-query";
 import AddMoreFood from "./AddMoreFood";
 import DrinkSection from "./drinksection/DrinkSection";
 import ExtraDrinkSection from "./extradrinksection/ExtraDrinkSection";
 import ExtraDipSection from "./ExtraDipSection";
+import LoadingComponent from "../../components/LoadingComponent";
+import ExtraCombo from "./ExtraCombo";
+import RicePlattarCostom from "./RicePlattarCostom";
+import ExtraSideSection from "./ExtraSideSection";
+import { Helmet } from "react-helmet-async";
 
 const FoodDetails = () => {
   const queryClient = useQueryClient();
@@ -31,6 +34,8 @@ const FoodDetails = () => {
   const { foodDetails, loading, error } = useFoodDetails(foodDetailsID);
   const [dipSelects, setDipSelects] = useState(null);
   const [sideSelects, setSideSelects] = useState(null);
+  const [extraSideSelects, setExtraSideSelects] = useState(null);
+  const [ricePlattarSelects, setRicePlattarSelects] = useState(null);
   const [drinkId, setDrinkId] = useState(null);
   const [bakerySelects, setBakerySelects] = useState(null);
   const [toppingsData, setToppingsData] = useState(null);
@@ -38,18 +43,21 @@ const FoodDetails = () => {
   const [flavorData, setFlavorData] = useState(null);
   const [cartLoading, setCartLoading] = useState(false);
   const [selectedDrinks, setSelectedDrinks] = useState([]);
+  const [selectedExtraDrinks, setSelectedExtraDrinks] = useState([]);
 
   const navigate = useNavigate();
   const [unitPrice, setUnitPrice] = useState(0);
   const [sidePrice, setSidePrice] = useState(0);
-  const [bakeryPrice, setBakryPrice] = useState(0);
+  const [bakeryPrice, setBakeryPrice] = useState(0);
   const [drinkPrice, setDrinkPrice] = useState(0);
+  const [drinkRegulerPrice, setDrinkRegulerPrice] = useState(0);
   const [dipPrice, setDipPrice] = useState(0);
   const [toppingPrice, setToppingsPrice] = useState(0);
   const [sandwichPrice, setSandWichPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [myFoodPrice, setMyFoodPrice] = useState(0);
   const [isDrinkPrice, setIsDrinkPrice] = useState(0);
+  const [isDrinkRegulerPrice, setIsDrinkRegulerPrice] = useState(0);
   const [isSidePrice, setIsSidePrice] = useState(0);
   const [isDipPrice, setIsDipPrice] = useState(0);
   const [isBakeryPrice, setIsBakeryPrice] = useState(0);
@@ -57,6 +65,9 @@ const FoodDetails = () => {
   useEffect(() => {
     setIsDrinkPrice(drinkPrice > 0 ? 1 : 0);
   }, [drinkPrice]);
+  useEffect(() => {
+    setIsDrinkRegulerPrice(drinkRegulerPrice > 0 ? 1 : 0);
+  }, [drinkRegulerPrice]);
   useEffect(() => {
     setIsSidePrice(sidePrice > 0 ? 1 : 0);
   }, [sidePrice]);
@@ -79,6 +90,7 @@ const FoodDetails = () => {
         quantity * unitPrice +
         sidePrice * quantity +
         drinkPrice * quantity +
+        drinkRegulerPrice * quantity +
         dipPrice * quantity +
         bakeryPrice * quantity +
         toppingPrice * quantity +
@@ -94,6 +106,7 @@ const FoodDetails = () => {
     bakeryPrice,
     toppingPrice,
     sandwichPrice,
+    drinkRegulerPrice,
   ]);
 
   useEffect(() => {
@@ -143,16 +156,17 @@ const FoodDetails = () => {
   const handleSidePriceChange = (price) => {
     setSidePrice(price);
   };
+  const handleBakeryPriceChange = (price) => {
+    setBakeryPrice(price);
+  };
 
-  const handleDrinkPriceChange = (price) => {
-    // Fixed typo here
+  const handleExtraDrinkPriceChange = (price) => {
     setDrinkPrice(price);
   };
-  const onBakeryPriceChange = (price) => {
-    setBakryPrice(price);
+  const handleDrinkRegularPrice = (price) => {
+    setDrinkRegulerPrice(price);
   };
   const handleDipPriceChange = (price) => {
-    // Fixed typo here
     setDipPrice(price);
   };
   const handleToppingsPriceChnge = (price) => {
@@ -163,7 +177,15 @@ const FoodDetails = () => {
   };
 
   const handleSideSelected = (selectedSides) => {
+    console.log("Selected Sides:", selectedSides); // Log the selected sides
     setSideSelects(selectedSides); // Store the formatted data
+  };
+  const handleExtraSideSelected = (selectedExtraSides) => {
+    setExtraSideSelects(selectedExtraSides); // Store the formatted data
+  };
+
+  const handleRicePlattarSelected = (selectedRicePlattar) => {
+    setRicePlattarSelects(selectedRicePlattar); // Store the formatted data
   };
 
   const handleDrinkSelected = (drinkId) => {
@@ -190,8 +212,113 @@ const FoodDetails = () => {
   const handleSelectedDrinksChange = (drinks) => {
     setSelectedDrinks(drinks);
   };
+  const handleSelectedExtraDrinksChange = (drinks) => {
+    setSelectedExtraDrinks(drinks);
+  };
 
-  console.log("toppingsData", toppingsData, "sandCustData", sandCustData);
+  const components = [
+    {
+      component:
+        foodDetails?.flavor?.how_many_select > 0 ? (
+          <FlavorSelection
+            flavor={foodDetails.flavor}
+            loading={loading}
+            sendFlavorData={handleFlavorSelected}
+          />
+        ) : null,
+      sn_number: foodDetails?.flavor?.sn_number,
+    },
+    {
+      component:
+        foodDetails?.dip?.how_many_select > 0 ? (
+          <DipSection
+            dips={foodDetails.dip}
+            loading={loading}
+            error={error}
+            onDipSelected={handleDipSelected}
+          />
+        ) : null,
+      sn_number: foodDetails?.dip?.sn_number,
+    },
+    {
+      component:
+        foodDetails?.side?.how_many_select > 0 ? (
+          <SideSection
+            sides={foodDetails.side}
+            loading={loading}
+            error={error}
+            onSideSelected={handleSideSelected}
+          />
+        ) : null,
+      sn_number: foodDetails?.side?.sn_number,
+    },
+    {
+      component: foodDetails?.drink?.data ? (
+        <DrinkSection
+          myDrink={foodDetails.drink}
+          loading={loading}
+          error={error}
+          onDrinkSelected={handleDrinkSelected}
+          onDrinkRegulerPrice={handleDrinkRegularPrice}
+          onSelectedDrinksChange={handleSelectedDrinksChange}
+        />
+      ) : null,
+      sn_number: foodDetails?.drink?.sn_number,
+    },
+    {
+      component: foodDetails?.topping?.data ? (
+        <ToppingSection
+          myTopping={foodDetails.topping}
+          loading={loading}
+          error={error}
+          onToppingsChange={onToppingsChange}
+          onToppingsPriceChnge={handleToppingsPriceChnge}
+        />
+      ) : null,
+      sn_number: foodDetails?.topping?.sn_number,
+    },
+    {
+      component: foodDetails?.sandwichCustomize?.data ? (
+        <SanwichSection
+          mySandwich={foodDetails.sandwichCustomize}
+          loading={loading}
+          error={error}
+          onSandCustChange={onSandCustChange}
+          onSandCustPriceChnge={onSandCustPriceChnge}
+        />
+      ) : null,
+      sn_number: foodDetails?.sandwichCustomize?.sn_number,
+    },
+    {
+      component:
+        foodDetails?.ricePlatter?.how_many_select > 0 ? (
+          <RicePlattarCostom
+            ricePlatter={foodDetails.ricePlatter}
+            loading={loading}
+            error={error}
+            onRicePlattarSelected={handleRicePlattarSelected}
+          />
+        ) : null,
+      sn_number: foodDetails?.ricePlatter?.sn_number,
+    },
+    {
+      component:
+        foodDetails?.bakery?.how_many_select > 0 ? (
+          <BakerySection
+            myBakery={foodDetails.bakery}
+            loading={loading}
+            error={error}
+            onBakerySelected={handleBakerySelected}
+            onBakeryPriceChange={handleBakeryPriceChange}
+          />
+        ) : null,
+      sn_number: foodDetails?.ricePlatter?.sn_number,
+    },
+  ];
+
+  const sortedComponents = components
+    .filter((item) => item.component !== null)
+    .sort((a, b) => a.sn_number - b.sn_number);
 
   const handleAddToBag = async () => {
     try {
@@ -209,29 +336,48 @@ const FoodDetails = () => {
           quantity: drink.quantity,
           child_item_id: drink.child_item_id,
         })) || []),
+        ...(selectedExtraDrinks?.map((drink) => ({
+          type: "Drink",
+          type_id: drink.type_id,
+          is_paid_type: drink.is_paid_type,
+          quantity: drink.quantity,
+          child_item_id: drink.child_item_id,
+        })) || []),
         ...(sandCustData?.map((sand) => ({
           type: "Sandwich",
           type_id: sand.id,
           is_paid_type: sand.isPaid,
-          quantity,
+          quantity: sand.quantity,
         })) || []),
         ...(toppingsData?.map((topping) => ({
           type: "Topping",
           type_id: topping.id,
           is_paid_type: topping.isPaid,
-          quantity,
+          quantity: topping.quantity,
         })) || []),
         ...(sideSelects?.map((side) => ({
           type: "Side",
           type_id: side.type_id,
           is_paid_type: side.is_paid_type,
-          quantity,
+          quantity: side.quantity,
+        })) || []),
+        ...(extraSideSelects?.map((side) => ({
+          type: "Side",
+          type_id: side.type_id,
+          is_paid_type: side.is_paid_type,
+          quantity: side.quantity,
+        })) || []),
+        ...(ricePlattarSelects?.map((ricePlattar) => ({
+          type: "RicePlatter",
+          type_id: ricePlattar.type_id,
+          is_paid_type: ricePlattar.is_paid_type,
+          quantity: ricePlattar.quantity,
         })) || []),
         ...(bakerySelects?.map((bakery) => ({
           type: "Bakery",
           type_id: bakery.type_id,
           is_paid_type: bakery.is_paid_type,
-          quantity,
+          quantity: bakery.quantity,
         })) || []),
       ];
 
@@ -250,7 +396,7 @@ const FoodDetails = () => {
         features: formattedFeatures,
         flavers: formattedFlavors,
       };
-
+      setCartLoading(true);
       const response = await API.post("/card/addtocard", data);
       queryClient.invalidateQueries(["wishListVechile", guestUser]);
 
@@ -263,7 +409,7 @@ const FoodDetails = () => {
           showConfirmButton: false,
           timer: 1500,
         });
-        navigate("/foodmenu");
+        // navigate("/foodmenu");
       }
     } catch (error) {
       console.log(error);
@@ -279,11 +425,7 @@ const FoodDetails = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center">
-        <img src={Loader} alt="Loading..." className="w-[150px]" />
-      </div>
-    );
+    return <LoadingComponent />;
   }
 
   if (error) {
@@ -292,6 +434,9 @@ const FoodDetails = () => {
 
   return (
     <>
+     <Helmet>
+        <title>{foodDetails.name} | Wingsblast</title>
+      </Helmet>
       <div className="flex flex-col w-full lg:w-10/12 mx-auto">
         <div className="container mx-auto p-6 bg-white -mt-[15px] lg:mt-6">
           <div className="flex flex-col md:flex-row lg:flex-row items-center lg:gap-10">
@@ -306,17 +451,17 @@ const FoodDetails = () => {
             </div>
 
             <div className="w-auto p-4">
-              <h1 className="font-TitleFont text-2xl md:text-3xl lg:text-4xl font-bold mb-2 text-black">
+              <h1 className="font-TitleFont text-4xl md:text-4xl lg:text-5xl font-s mb-2 text-black">
                 {foodDetails.name.toUpperCase()}
               </h1>
-              <p className="text-black text-lg md:text-xl font-medium mb-4">
+              <p className="text-black text-2xl font-TitleFont mb-4">
                 ${foodDetails.price}
-                <span className="text-xs text-gray-700">
+                <span className="text-xs text-gray-900">
                   {" "}
                   {foodDetails.cal}
                 </span>
               </p>
-              <p className="text-black mb-6 leading-relaxed text-sm md:text-base lg:text-base">
+              <p className="text-black mb-6 font-paragraphFont leading-relaxed text-sm md:text-base lg:text-base">
                 {foodDetails.description}
               </p>
 
@@ -341,13 +486,13 @@ const FoodDetails = () => {
                 </div>
 
                 {/* Total Price and Add to Cart Button */}
-                <div className=" flex items-center bg-gray-100 pl-5 md:justify-end rounded-l-md gap-3">
-                  <div className="text-lg md:text-xl font-bold text-gray-800">
+                <div className=" flex items-center bg-gray-300 pl-5 md:justify-end rounded-l-md gap-3">
+                  <div className="text-2xl font-TitleFont text-gray-800">
                     ${totalPrice}
                   </div>
                   <button
                     onClick={handleAddToBag}
-                    className={`flex items-center justify-center py-2 px-6 md:py-3 text-white font-semibold rounded-r-md bg-ButtonColor transition duration-300 ease-in-out transform hover:scale-105 hover:bg-ButtonHover ${
+                    className={`flex items-center justify-center py-2 px-6 md:py-3 text-white font-TitleFont text-xl rounded-r-md bg-ButtonColor transition duration-300 ease-in-out transform hover:bg-ButtonHover ${
                       cartLoading ? "opacity-70 cursor-not-allowed" : ""
                     }`}
                     disabled={cartLoading}
@@ -361,81 +506,43 @@ const FoodDetails = () => {
         </div>
       </div>
 
-      {foodDetails.toppings && foodDetails.toppings.length > 0 ? (
-        <ToppingSection
-          toppings={foodDetails.toppings}
+      <ExtraCombo />
+
+      {sortedComponents.map((item, index) => (
+        <div key={index}>{item.component}</div>
+      ))}
+
+      {/* // Extra Combo dip Section */}
+      {foodDetails?.dip?.is_extra_addon === 1 && (
+        <ExtraDipSection
+          allDips={foodDetails.dip.data}
           loading={loading}
           error={error}
-          onToppingsChange={onToppingsChange}
-          onToppingsPriceChnge={handleToppingsPriceChnge}
-        />
-      ) : null}
-      {foodDetails.howManyChoiceFlavor > 0 ? (
-        <FlavorSelection
-          flavorReq={foodDetails.howManyFlavor}
-          choiceFlavorReq={foodDetails.howManyChoiceFlavor}
-          sendFlavorData={handleFlavorSelected}
-        />
-      ) : null}
-
-      {foodDetails.dips && foodDetails.dips.length > 0 ? (
-        <DipSection
+          onDipPriceChange={handleDipPriceChange}
           onDipSelected={handleDipSelected}
-          howManyDips={foodDetails.howManyDips}
-          howManyChoiceDips={foodDetails.howManyChoiceDips}
         />
-      ) : null}
-
-      {foodDetails.sides && foodDetails.sides.length > 0 ? (
-        <SideSection
-          sides={foodDetails.sides}
+      )}
+      {/* // Extra Combo Side Section */}
+      {foodDetails?.side?.is_extra_addon === 1 && (
+        <ExtraSideSection
+          sides={foodDetails.side}
           loading={loading}
           error={error}
-          onSideSelected={handleSideSelected}
+          onExtraSideSelected={handleExtraSideSelected}
           onSidePriceChange={handleSidePriceChange}
         />
-      ) : null}
-
-      {foodDetails.drinks && foodDetails.drinks.length > 0 ? (
-        <DrinkSection
-          drinks={foodDetails.drinks}
+      )}
+      {/* // Extra Combo Drink Section */}
+      {foodDetails?.drink?.is_extra_addon === 0 && (
+        <ExtraDrinkSection
+          allDrinks={foodDetails.drink.data}
           loading={loading}
           error={error}
-          onDrinkSelected={handleDrinkSelected}
-          onDrinkPriceChange={handleDrinkPriceChange}
-          onSelectedDrinksChange={handleSelectedDrinksChange}
+          onExtraDrinkPriceChange={handleExtraDrinkPriceChange}
+          onSelectedExtraDrinksChange={handleSelectedExtraDrinksChange}
+          onExtraDrinkSelected={handleDrinkSelected}
         />
-      ) : null}
-
-      {foodDetails.beverages && foodDetails.beverages.length > 0 ? (
-        <BakerySection
-          bakery={foodDetails.beverages}
-          loading={loading}
-          error={error}
-          onBakerySelected={handleBakerySelected}
-          onBakeryPriceChange={onBakeryPriceChange}
-        />
-      ) : null}
-      {foodDetails.sandCust && foodDetails.sandCust.length > 0 ? (
-        <SanwichSection
-          sandCust={foodDetails.sandCust}
-          loading={loading}
-          error={error}
-          onSandCustChange={onSandCustChange}
-          onSandCustPriceChnge={onSandCustPriceChnge}
-        />
-      ) : null}
-
-      <ExtraDipSection
-        onDipPriceChange={handleDipPriceChange}
-        onDipSelected={handleDipSelected}
-      />
-
-      <ExtraDrinkSection
-        onDrinkSelected={handleDrinkSelected}
-        onDrinkPriceChange={handleDrinkPriceChange}
-        onSelectedDrinksChange={handleSelectedDrinksChange}
-      />
+      )}
 
       <AddMoreFood categoryID={foodDetails.category_id} />
 
@@ -466,7 +573,7 @@ const FoodDetails = () => {
         </div>
         <button
           onClick={handleAddToBag}
-          className={`px-5 py-2 text-white font-semibold rounded transform transition-transform duration-300 ${
+          className={`px-5 py-2 text-white font-TitleFont text-xl rounded transform transition-transform duration-300 ${
             cartLoading
               ? "bg-gradient-to-r from-gray-400 to-gray-500 cursor-not-allowed"
               : "bg-ButtonColor hover:from-indigo-600 hover:to-purple-600 hover:scale-105"

@@ -7,6 +7,7 @@ import LocationModal from "../../components/LocationModal";
 import Loader from "../../assets/images/loader.gif";
 import "react-multi-carousel/lib/styles.css";
 import FoodMenuAbout from "./FoodMenuAbout";
+import { Helmet } from "react-helmet-async";
 
 const FoodMenu = () => {
   const [activeTab, setActiveTab] = useState("Wingsblast");
@@ -70,19 +71,22 @@ const FoodMenu = () => {
 
   return (
     <div className="">
+      <Helmet>
+        <title>Menu | Wingsblast</title>
+      </Helmet>
       <h1 className="text-3xl font-sans ml-[10px] lg:ml-[140px] py-4 font-semibold">
         MENU
       </h1>
       {/* tab menu section  */}
       <div
         role="tablist"
-        className="tabs overflow-x-scroll scrollbar-hide w-full border-b-2 sticky px-0 lg:px-[120px] bg-white shadow-2xl font-semibold"
+        className="tabs overflow-x-scroll scrollbar-hide w-full border-b-2 sticky px-0 lg:px-[120px] bg-white shadow-2xl"
       >
         {category.map((catgr) => (
           <a
             key={catgr.id}
             role="tab"
-            className={`tab whitespace-nowrap text-lg text-gray-800 font-semibold font-TitleFont ${
+            className={`tab whitespace-nowrap text-xl text-black font-TitleFont ${
               activeTab === catgr.id ? "tab-active text-green-600" : ""
             }`}
             onClick={() => handleScrollToSection(catgr.id)}
@@ -117,7 +121,7 @@ const FoodMenu = () => {
           >
             <div className="container px-3 lg:px-5 py-2 w-full lg:w-10/12 mx-auto">
               {/* Category Name */}
-              <h1 className="text-3xl lg:text-4xl font-bold font-TitleFont mb-5 text-black">
+              <h1 className="text-3xl lg:text-4xl  font-TitleFont mb-5 text-black">
                 {foodMenu.food_menus.length > 0 &&
                   foodMenu.category_name.toUpperCase()}
               </h1>
@@ -127,10 +131,10 @@ const FoodMenu = () => {
                 {foodMenu.food_menus.map((food) => (
                   <div
                     key={food.id}
-                    className="p-4 w-full mb-6 border border-gray-500 rounded transition duration-300"
+                    className="p-4 w-full mb-6 border rounded-xl shadow-xl transition duration-300"
                   >
                      {/* Food Name */}
-                     <h2 className="text-xl font-bold font-TitleFont text-gray-900">
+                     <h2 className="text-xl font-TitleFont black">
                       {food.name.toUpperCase()}
                     </h2>
                     {/* Food Image */}
@@ -144,7 +148,7 @@ const FoodMenu = () => {
                     </div>
 
                     {/* Food Details */}
-                    <p className="text-sm leading-relaxed line-clamp-2 mt-2">
+                    <p className="text-xs leading-relaxed line-clamp-4 mt-2">
                       {food.details}
                     </p>
 
@@ -156,10 +160,10 @@ const FoodMenu = () => {
                           onClick={() => handleLinkClick(food_detail.id)}
                         >
                           <div className="flex justify-between">
-                            <h3 className="font-semibold">
-                              {food_detail.food_menu_name}
+                            <h3 className="text-lg text-black font-TitleFont">
+                              {food_detail.food_menu_name.toUpperCase()}
                             </h3>
-                            <span className="flex items-center font-semibold text-base text-black">
+                            <span className="flex items-center font-TitleFont text-lg text-black">
                               $ {food_detail.price.toFixed(2)}
                               <MdOutlineKeyboardArrowRight />
                             </span>
@@ -188,12 +192,12 @@ const FoodMenu = () => {
               ✕
             </button>
           </form>
-          <h3 className="font-[900] text-2xl font-sans text-black">
+          <h3 className="text-3xl font-TitleFont text-black">
             CHO0SE AN OPTION
           </h3>
           {!isLoading && selectedItem && (
             <div>
-              <p className="py-1 font-semibold text-black">
+              <p className="py-1 font-TitleFont text-xl text-black">
                 {selectedItem.name.toUpperCase()}
               </p>
               <div className="w-full h-[1px] bg-gray-300 my-2"></div>
@@ -205,10 +209,10 @@ const FoodMenu = () => {
                 >
                   <div className="my-1">
                     <div className="flex justify-between">
-                      <h3 className="font-semibold text-black">
-                        {food.food_menu_name}
+                      <h3 className="font-TitleFont text-lg text-black">
+                        {food.food_menu_name.toUpperCase()}
                       </h3>
-                      <span className="flex items-center text-sm font-sans font-semibold text-black ">
+                      <span className="flex items-center text-lg font-TitleFont text-black ">
                         $ {food.price} <MdOutlineKeyboardArrowRight />
                       </span>
                     </div>

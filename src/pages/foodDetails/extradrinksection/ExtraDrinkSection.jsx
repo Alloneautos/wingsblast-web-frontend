@@ -2,17 +2,35 @@ import { useEffect, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { RxCross2 } from "react-icons/rx";
 import { BiSolidError } from "react-icons/bi";
-import { FaMinus, FaPlus } from "react-icons/fa";
-import { useAllDrinks } from "../../../api/api";
-import CustomDrinkModal from "./CustomDrinkModal";
+import { FaChevronRight, FaMinus, FaPlus } from "react-icons/fa";
+import CustomExtraDrinkModal from "./CustomExtraDrinkModal";
 
 const ExtraDrinkSection = ({
-  onDrinkPriceChange = () => {},
-  onDrinkSelected = () => {},
-  onSelectedDrinksChange = () => {},
+  allDrinks,
+  loading,
+  error,
+  onExtraDrinkPriceChange,
+  onExtraDrinkSelected,
+  onSelectedExtraDrinksChange,
 }) => {
   const [selectedDrinks, setSelectedDrinks] = useState([]);
-  const { allDrinks, loading, error } = useAllDrinks();
+  const [drinksNameId, setDrinksNameId] = useState(0);
+
+  const handleDrinkSelect = (selectedDrinkId, drink) => {
+    setDrinksNameId(selectedDrinkId);
+    console.log("Selected Drink ID:", selectedDrinkId); // Debugging line
+
+    const newDrink = {
+      type: "Drink",
+      type_id: drink.id,
+      is_paid_type: 1,
+      quantity: 1,
+      child_item_id: selectedDrinkId,
+    };
+
+    setSelectedDrinks([newDrink]); // Only one drink can be selected
+    onSelectedExtraDrinksChange([newDrink]); // Notify parent component
+  };
 
   const handleSelectDrink = (drink) => {
     const isAlreadySelected = selectedDrinks.some(
@@ -20,23 +38,20 @@ const ExtraDrinkSection = ({
     );
 
     if (isAlreadySelected) {
-      // Remove drink if already selected
-      const updatedDrinks = selectedDrinks.filter(
-        (selected) => selected.type_id !== drink.id
-      );
-      setSelectedDrinks(updatedDrinks);
-      onSelectedDrinksChange(updatedDrinks); // Notify parent component
+      // Deselect the drink if it's already selected
+      setSelectedDrinks([]);
+      onSelectedExtraDrinksChange([]); // Notify parent component
     } else {
-      // Add new drink
+      // Select the new drink and deselect any previously selected drink
       const newDrink = {
         type: "Drink",
         type_id: drink.id,
-        is_paid_type: drink.isPaid,
+        is_paid_type: 1,
         quantity: 1, // Assuming quantity is always 1 for drinks
+        child_item_id: drinksNameId,
       };
-      const updatedDrinks = [...selectedDrinks, newDrink];
-      setSelectedDrinks(updatedDrinks);
-      onSelectedDrinksChange(updatedDrinks); // Notify parent component
+      setSelectedDrinks([newDrink]); // Only one drink can be selected
+      onSelectedExtraDrinksChange([newDrink]); // Notify parent component
     }
   };
 
@@ -53,11 +68,10 @@ const ExtraDrinkSection = ({
       return drink;
     });
     setSelectedDrinks(updatedDrinks);
-    onSelectedDrinksChange(updatedDrinks); // Notify parent component
+    onSelectedExtraDrinksChange(updatedDrinks); // Notify parent component
   };
 
   useEffect(() => {
-    // Calculate total price of selected drinks
     const totalPrice = selectedDrinks.reduce((sum, drink) => {
       const drinkData = allDrinks
         .flatMap((category) => category)
@@ -65,31 +79,43 @@ const ExtraDrinkSection = ({
       return sum + drinkData.price * drink.quantity;
     }, 0);
 
-    onDrinkPriceChange(totalPrice);
-    onDrinkSelected(selectedDrinks);
-  }, [selectedDrinks, allDrinks, onDrinkPriceChange, onDrinkSelected]);
+    onExtraDrinkPriceChange(totalPrice);
+    onExtraDrinkSelected(selectedDrinks);
+  }, [
+    selectedDrinks,
+    allDrinks,
+    onExtraDrinkPriceChange,
+    onExtraDrinkSelected,
+  ]);
 
   return (
-    <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg shadow-lg">
+    <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white">
       <Disclosure>
-        {() => (
+        {({ open }) => (
           <>
-            <Disclosure.Button className=" grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-md transition ease-in-out duration-300">
+            <Disclosure.Button className=" grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-blue-50 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition ease-in-out duration-300">
               <div>
-                <span className="text-lg font-TitleFont lg:text-xl font-semibold">
+                <span className="font-TitleFont text-2xl flex items-center gap-1">
+                  <span
+                    className={`text-lg transform transition-transform duration-300 ${
+                      open ? "rotate-90" : "rotate-0"
+                    }`}
+                  >
+                    <FaChevronRight />
+                  </span>{" "}
                   CHOOSE EXTRA DRINK
                 </span>
                 <h2 className="font-bold mt-2 text-gray-600">
                   <span>Selected Drinks: </span>
-                  <span className="text-black">
+                  <span className="text-black font-paragraphFont text-base">
                     {selectedDrinks.length > 0
                       ? selectedDrinks
-                          .map(
-                            (drink) =>
-                              allDrinks
-                                .flatMap((category) => category)
-                                .find((d) => d.id === drink.type_id)?.name
-                          )
+                          .map((drink) => {
+                            const drinkData = allDrinks
+                              .flatMap((category) => category)
+                              .find((d) => d.id === drink.type_id);
+                            return drinkData?.name || "Unknown Drink"; // Handle undefined cases
+                          })
                           .join(", ")
                       : "(Please select)"}
                   </span>
@@ -113,13 +139,15 @@ const ExtraDrinkSection = ({
                       <label className="block border border-gray-300 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
                         <div className="flex items-center justify-between">
                           <div className="flex space-x-3">
-                            <img
-                              className="h-16 rounded-full"
-                              src={category.image}
-                              alt=""
-                            />
+                            <div className="w-16">
+                              <img
+                                className="h-16 w-16 rounded-full border border-gray-300 bg-cover shadow-md hover:shadow-lg transition duration-300 hover:scale-105 border-gradient-to-r from-blue-400 to-purple-500"
+                                src={category.image}
+                                alt={category.name}
+                              />
+                            </div>
                             <div>
-                              <p className="font-medium text-gray-800">
+                              <p className="font-paragraphFont font-semibold text-base text-black">
                                 {category.name}
                               </p>
                               <div className="flex gap-2 text-gray-600">
@@ -136,8 +164,8 @@ const ExtraDrinkSection = ({
                             </div>
                           </div>
                           <input
-                            type="checkbox"
-                            className="checkbox checkbox-primary rounded"
+                            type="radio"
+                            className="radio radio-primary"
                             checked={selectedDrinks.some(
                               (drink) => drink.type_id === category.id
                             )}
@@ -148,8 +176,12 @@ const ExtraDrinkSection = ({
                           (drink) => drink.type_id === category.id
                         ) && (
                           <div>
-                            <CustomDrinkModal />
-                            <div className="flex items-center justify-center  ml-3">
+                            <CustomExtraDrinkModal
+                              onDrinkSelect={(selectedDrinkId) =>
+                                handleDrinkSelect(selectedDrinkId, category)
+                              }
+                            />
+                            <div className="flex items-center justify-center">
                               <div className="flex items-center gap-3">
                                 <button
                                   className="p-1.5 border border-gray-300 rounded-md hover:bg-gray-100"
@@ -187,12 +219,12 @@ const ExtraDrinkSection = ({
                         <h1 className="text-2xl font-semibold">No Drink</h1>
                       </div>
                       <input
-                        type="checkbox"
-                        className="checkbox checkbox-primary rounded"
+                        type="radio"
+                        className="radio radio-primary"
                         checked={selectedDrinks.length === 0}
                         onChange={() => {
                           setSelectedDrinks([]);
-                          onSelectedDrinksChange([]); // Notify parent component
+                          onSelectedExtraDrinksChange([]); // Notify parent component
                         }}
                       />
                     </div>

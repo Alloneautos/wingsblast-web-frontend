@@ -247,6 +247,39 @@ const MyCart = () => {
       }
     });
   };
+  const handleDeleteAll = async () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await API.delete(`/card/all/${guestUser}`);
+          console.log(response);
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your All item has been deleted.",
+            icon: "success",
+            confirmButtonColor: "#3085d6",
+          });
+          refetch(); // Refresh data after deletion
+        } catch (error) {
+          console.error("Error deleting item:", error);
+          Swal.fire({
+            title: "Error!",
+            text: "Failed to delete the item.",
+            icon: "error",
+            confirmButtonColor: "#3085d6",
+          });
+        }
+      }
+    });
+  };
 
   const myOrder = {
     sub_total: cartSubtotal,
@@ -362,9 +395,19 @@ const MyCart = () => {
         <div className="lg:w-4/6 md:w-1/2 w-full  rounded-lg mb-10 lg:mb-0">
           <NewFoodAddCard />
           <div>
-            <h1 className="text-4xl font-sans font-semibold text-black mt-3 ml-3">
-              Review Order
-            </h1>
+            <div className="flex items-center justify-between">
+              <h1 className="text-4xl font-TitleFont text-black mt-3 ml-3">
+                Review Order
+              </h1>
+              {mycard.length > 1 && (
+                <button
+                  onClick={handleDeleteAll}
+                  className="btn rounded bg-ButtonColor hover:bg-ButtonHover text-white text-lg font-normal font-TitleFont"
+                >
+                  <RiDeleteBin6Line /> Delete All
+                </button>
+              )}
+            </div>
 
             {isLoading ? (
               <div className="flex items-center justify-center">
@@ -375,7 +418,9 @@ const MyCart = () => {
                 <div key={item.id} className="my-3 mx-4 text-black">
                   <div className="divider"></div>
                   <div className="flex justify-between text-xl sm:text-2xl">
-                    <h2 className="text-xl font-semibold">{item.food_name}</h2>
+                    <h2 className="text-2xl font-TitleFont">
+                      {item.food_name}
+                    </h2>
                     <div className="flex gap-2">
                       <button className="bg-red-600 rounded-full p-1.5 hover:bg-red-800 transition-all duration-300">
                         <RiDeleteBin6Line
@@ -414,7 +459,7 @@ const MyCart = () => {
                       {item.sides.map((side, index) => (
                         <div key={index} className="flavor-item cursor-pointer">
                           <h1 title="side" className="flex items-center">
-                            {side.name}{" "}
+                            {side.name} X {side.quantity}
                             <span>
                               {side.is_paid_type === 1
                                 ? `($${side.price})`
@@ -439,10 +484,12 @@ const MyCart = () => {
                       {item?.bakery?.map((bakery, index) => (
                         <div key={index} className="flavor-item cursor-pointer">
                           <h1 title="bakery" className="flex items-center">
-                            {bakery.name}{" "}
+                            {bakery.name} X{bakery.quantity}{" "}
                             <span>
                               {bakery.is_paid_type === 1
-                                ? `($${bakery.price})`
+                                ? `($${(bakery.quantity * bakery.price).toFixed(
+                                    2
+                                  )})`
                                 : ""}
                             </span>
                           </h1>
@@ -463,7 +510,7 @@ const MyCart = () => {
                       {item?.sandwich?.map((sandCust, index) => (
                         <div key={index} className="flavor-item cursor-pointer">
                           <h1 title="sandCust" className="flex items-center">
-                            {sandCust.name} X{sandCust.quantity}{" "}
+                            {sandCust.name} X1{" "}
                             <span>
                               {sandCust.is_paid_type === 1
                                 ? `($${sandCust.price})`
@@ -515,7 +562,7 @@ const MyCart = () => {
                         <FaPlus />
                       </button>
                     </div>
-                    <span className="text-2xl font-semibold">
+                    <span className="text-3xl font-TitleFont">
                       $
                       {calculateSubtotal(
                         item.price,
@@ -545,7 +592,7 @@ const MyCart = () => {
           {/* Order Summary and Checkout */}
           <div className="mb-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-gray-800 text-2xl font-semibold">
+              <h2 className="text-gray-800 text-4xl font-TitleFont">
                 {orderStatus}
               </h2>
 
@@ -683,45 +730,6 @@ const MyCart = () => {
             </button>
           </form>
 
-          {/* <label className="block text-gray-700 text-sm font-bold mb-2 mt-4">
-            <span className="block text-lg font-medium text-gray-800 mb-1">
-              Phone Number
-            </span>
-            <div className="relative">
-              <input
-                type="number"
-                name="phone"
-                defaultValue={user?.phone}
-                placeholder="Enter Your Phone Number"
-                className="w-full px-4 py-4 border border-gray-300 rounded focus:outline-none focus:ring-1 text-gray-700 placeholder-gray-700"
-              />
-              <span className="absolute inset-y-0 right-4 flex items-center text-gray-400">
-                📞
-              </span>
-            </div>
-          </label>
-
-          <div className="mt-2">
-            <div className="flex items-center gap-5 mb-2">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-md !rounded checkbox-primary"
-              />
-
-              <p>Use this number in future?</p>
-            </div>
-          </div> */}
-
-          {/* <div className="w-full mt-4 mb-2">
-            <label className="block text-lg font-semibold text-gray-700 mb-2">
-              <textarea
-                type="text"
-                placeholder="Add Note..."
-                className="textarea textarea-info w-full h-24 border border-gray-300 rounded px-4 py-2 text-gray-700 placeholder-gray-500"
-              ></textarea>
-            </label> 
-          </div> */}
-
           {/* tips */}
           {orderStatus === "Delivery" && (
             <div>
@@ -823,7 +831,9 @@ const MyCart = () => {
 
               <tr className="font-bold text-2xl text-gray-800">
                 <td className="py-2">Total</td>
-                <td className="text-right">${cartTotalPrice.toFixed(2)}</td>
+                <td className="text-right font-TitleFont font-normal">
+                  ${cartTotalPrice.toFixed(2)}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -839,7 +849,7 @@ const MyCart = () => {
           <button
             onClick={handleToCheckout}
             disabled={!isASAP && (!selectedDate || !selectedTime)}
-            className={`w-full py-3 rounded-lg shadow-lg transition font-bold text-white hidden md:block lg:block ${
+            className={`w-full py-2 rounded shadow-lg transition font-TitleFont text-2xl text-white hidden md:block lg:block ${
               !isASAP && (!selectedDate || !selectedTime)
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-ButtonColor hover:bg-ButtonHover"
@@ -854,7 +864,7 @@ const MyCart = () => {
         <button
           onClick={handleToCheckout}
           disabled={!isASAP && (!selectedDate || !selectedTime)}
-          className={`w-full py-3 rounded-lg shadow-lg transition font-bold text-white ${
+          className={`w-full py-3 rounded-lg shadow-lg transition font-TitleFont text-2xl text-white ${
             !isASAP && (!selectedDate || !selectedTime)
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-ButtonColor hover:bg-ButtonHover"

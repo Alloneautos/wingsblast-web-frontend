@@ -1,17 +1,22 @@
 import { useState } from "react";
 import { useAllDrinksName } from "../../../api/api";
+import { CgClose } from "react-icons/cg";
+import LoadingComponent from "../../../components/LoadingComponent";
 
 const CustomDrinkModal = ({ onDrinkSelect }) => {
-  const { allDrinksName, isLoading, isError, error } = useAllDrinksName();
+  const { allDrinksName, isLoading } = useAllDrinksName();
   const [selectedDrink, setSelectedDrink] = useState({});
 
   const handleApply = () => {
     onDrinkSelect(selectedDrink.id); // Pass selectedDrink to parent
     document.getElementById("costomizeDrinkModal").close();
   };
+  const handleCancel = () => {
+    document.getElementById("costomizeDrinkModal").close();
+  };
 
   if (isLoading) {
-    return <dip>Loading...</dip>;
+    return <LoadingComponent />;
   }
 
   return (
@@ -31,18 +36,19 @@ const CustomDrinkModal = ({ onDrinkSelect }) => {
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
       <dialog id="costomizeDrinkModal" className="modal rounded">
         <div className="modal-box rounded h-[500px]">
-          <form method="dialog">
-            {/* Close button */}
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-              ✕
-            </button>
-          </form>
-          <h3 className="font-bold text-lg text-center">CUSTOMIZE</h3>
-          <p className="text-center text-gray-600 mt-2">
-            Selected: {selectedDrink?.name}
-          </p>
+          <div className="sticky -top-[27px] bg-white z-30 py-5">
+            <h3 className="font-bold text-lg text-center">CUSTOMIZE</h3>
+            <p className="text-center text-gray-600 mt-0.5 pb-4">
+              Selected: {selectedDrink?.name || "None"}
+            </p>
+            <div className="flex justify-end -mt-[50px]">
+              <button className="text-xl" onClick={handleCancel}>
+                <CgClose />
+              </button>
+            </div>
+          </div>
           <div className="mt-4">
-            {allDrinksName.map((drink, index) => (
+            {allDrinksName?.map((drink, index) => (
               <div
                 key={index}
                 className={`flex items-center justify-between ${
@@ -54,7 +60,7 @@ const CustomDrinkModal = ({ onDrinkSelect }) => {
                     <img
                       src={drink.image}
                       alt={drink.name}
-                      className="w-[70px] h-12 rounded-full"
+                      className="w-14 h-14 rounded-full"
                     />
                     <span className="font-medium">{drink.name}</span>
                   </div>

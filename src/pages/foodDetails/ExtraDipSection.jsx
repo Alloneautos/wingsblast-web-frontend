@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { RxCross2 } from "react-icons/rx";
-import { BsHeartPulseFill } from "react-icons/bs";
-import { useAllDips } from "../../api/api";
+import { BiSolidError } from "react-icons/bi";
+import { FaChevronRight } from "react-icons/fa";
 
 const ExtraDipSection = ({
+  allDips,
+  loading,
+  error,
   onDipPriceChange,
   onDipSelected,
 }) => {
-  const { allDips, loading, error } = useAllDips(); // Assuming useAllDrinks fetches dips data
   const [selectedDips, setSelectedDips] = useState([]); // Track selected dips
   const [dipQuantities, setDipQuantities] = useState({}); // Track quantities for dips
 
@@ -36,7 +38,7 @@ const ExtraDipSection = ({
 
       // Update price
       const price = selectedDips.reduce(
-        (total, d) => total + ((d.price || 0) * newQuantities[d.id]), // Ensure price defaults to 0
+        (total, d) => total + (d.price || 0) * newQuantities[d.id], // Ensure price defaults to 0
         0
       );
       onDipPriceChange(price);
@@ -65,7 +67,7 @@ const ExtraDipSection = ({
 
     // Update price and selected dips
     const price = dips.reduce(
-      (total, d) => total + ((d.price || 0) * newQuantities[d.id]), // Ensure price defaults to 0
+      (total, d) => total + (d.price || 0) * newQuantities[d.id], // Ensure price defaults to 0
       0
     );
     onDipPriceChange(price);
@@ -74,7 +76,7 @@ const ExtraDipSection = ({
 
   useEffect(() => {
     const price = selectedDips.reduce(
-      (total, dip) => total + ((dip.price || 0) * dipQuantities[dip.id]), // Ensure price defaults to 0
+      (total, dip) => total + (dip.price || 0) * dipQuantities[dip.id], // Ensure price defaults to 0
       0
     );
     onDipPriceChange(price);
@@ -85,16 +87,23 @@ const ExtraDipSection = ({
   }, [selectedDips]);
 
   return (
-    <div className="w-full lg:w-10/12 mx-auto my-1 p-2 bg-white rounded-lg shadow-lg">
+    <div className="w-full lg:w-10/12 mx-auto my-1 p-2 bg-white">
       <Disclosure>
-        {() => (
+        {({open}) => (
           <>
-            <Disclosure.Button className="grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-md transition ease-in-out duration-300">
+            <Disclosure.Button className="grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-blue-50 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition ease-in-out duration-300">
               <div>
-                <span className="text-lg font-TitleFont lg:text-xl font-semibold">
+                <span className="font-TitleFont text-2xl flex items-center gap-1">
+                  <span
+                    className={`text-lg transform transition-transform duration-300 ${
+                      open ? "rotate-90" : "rotate-0"
+                    }`}
+                  >
+                    <FaChevronRight />
+                  </span>{" "}
                   CHOOSE EXTRA DIP
                 </span>
-                <h2 className=" font-bold mt-2 text-gray-600">
+                <h2 className=" font-semibold text-xs mt-2 text-gray-900">
                   <span>Up To Select: </span>
                   <span className="text-black">
                     {selectedDips.length > 0
@@ -127,17 +136,17 @@ const ExtraDipSection = ({
                               alt=""
                             />
                             <div>
-                              <p className="font-medium text-gray-800">
-                                {category.name}
+                              <p className="font-paragraphFont font-semibold text-base text-black">
+                                {category.name.toUpperCase()}
                               </p>
                               <div className="flex gap-2 text-gray-600">
                                 <p className="text-green-500 font-semibold">
-                                    <span className="text-black font-medium">
-                                      $ {category.price}
-                                    </span>
+                                  <span className="text-black font-medium">
+                                    $ {category.price}
+                                  </span>
                                 </p>
-                                <p className="flex items-center gap-1.5">
-                                  <BsHeartPulseFill className="text-red-500" />
+                                <p className="flex items-center gap-0.5 text-xs font-medium text-black">
+                                  <BiSolidError className="text-black" />
                                   {category.cal}
                                 </p>
                               </div>
@@ -152,9 +161,7 @@ const ExtraDipSection = ({
                             onChange={() => handleSelectDip(category)}
                           />
                         </div>
-                        {selectedDips.some(
-                          (d) => d.id === category.id
-                        ) && (
+                        {selectedDips.some((d) => d.id === category.id) && (
                           <div className="mt-3 ml-[90px] mx-auto items-center gap-2 text-gray-700">
                             <span className="font-medium">Quantity:</span>
                             <div className="flex items-center border p-2 w-[148px] rounded-md overflow-hidden">
@@ -185,7 +192,6 @@ const ExtraDipSection = ({
                           </div>
                         )}
                       </label>
-
                     </div>
                   ))}
                 <div className="w-full">

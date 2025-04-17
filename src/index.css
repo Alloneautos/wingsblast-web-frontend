@@ -5,6 +5,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=RocGrotesk:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+
 
 @tailwind base;
 @tailwind components;
@@ -22,6 +26,26 @@
 
 body{
   font-family: 'Roc Grotesk', sans-serif;
+}
+
+.bebas-neue-regular {
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 1px;
+}
+
+.saira-condensed-regular {
+  font-family: "Saira Condensed", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.josefin-sans-regular {
+  font-family: "Josefin Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .react-multiple-carousel__arrow{

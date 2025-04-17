@@ -57,7 +57,7 @@ const FlavorSelector = () => {
     >
       <div className="absolute inset-0 bg-black bg-opacity-60"></div>
       <div className="relative z-10 text-center">
-        <h1 className="text-4xl font-bold mb-2 italic">FIND YOUR FLAVOR</h1>
+        <h1 className="text-5xl mb-2 font-TitleFont">FIND YOUR FLAVOR</h1>
         <p className="mb-6">
           Explore our saucy or dry rub flavors that range from mild to hot, in
           sweet or savory.

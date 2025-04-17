@@ -47,7 +47,7 @@ const BestFood = () => {
       <div className="container px-1 py-4 md:py-5 lg:py-24 mx-auto">
         {/* Title Section */}
         <div className="text-center mb-8">
-          <h1 className="font-bold text-TextColor text-4xl italic">FOR YOU</h1>
+          <h1 className="text-TextColor text-5xl font-TitleFont">FOR YOU</h1>
           <p className="my-5 text-gray-600">Curated by Your Flavor Experts</p>
         </div>
 
@@ -77,19 +77,19 @@ const BestFood = () => {
             {allFood?.map((foodMenu, index) => (
               <div key={index} className="p-2 sm:p-4 cursor-pointer">
                 <div
-                  className="h-full w-full border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transform transition duration-300 ease-in-out hover:scale-105 bg-white"
+                  className="h-full w-full border border-green-200 rounded overflow-hidden hover:border-2 hover:border-green-700 bg-white"
                   onClick={() => handleLinkClick(foodMenu?.id)}
                 >
                   <div className="relative overflow-hidden">
                     <img
-                      className="h-40 sm:h-48 w-full object-cover object-center transition-all duration-300"
+                      className="h-[180px] w-[180px] mx-auto object-cover object-center transition-all duration-300"
                       src={foodMenu.image}
                       alt={foodMenu.name || 'Food Item'}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-30 hover:opacity-20 transition-opacity duration-300"></div>
                   </div>
 
-                  <div className="p-4 sm:p-6 space-y-2 sm:space-y-4">
+                  <div className="p-2 sm:p-6 space-y-1 sm:space-y-2">
                     <h2 className="title-font text-lg sm:text-xl font-semibold text-gray-800 truncate">
                       {foodMenu.name}
                     </h2>
@@ -98,7 +98,7 @@ const BestFood = () => {
                     </p>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-TextColor text-sm sm:text-base">
+                      <span className="text-black font-paragraphFont text-sm">
                         {foodMenu.cal}
                       </span>
                       <div className="text-gray-800 font-bold text-base sm:text-lg">

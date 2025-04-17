@@ -14,6 +14,8 @@ export default {
       },
       fontFamily: {
         'TitleFont': ['"Bebas Neue"', 'sans-serif'],
+        'paragraphFont': ['"Saira Condensed", sans-serif'],
+        'paragraphFont2': ['"Josefin Sans", sans-serif'],
       },
     },
   },

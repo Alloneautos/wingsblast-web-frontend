@@ -1,21 +1,29 @@
 import { useState } from "react";
-import SpriteImg from "../../../assets/images/spriteimg.png";
+
 import { useAllDrinksName } from "../../../api/api";
+import LoadingComponent from "../../../components/LoadingComponent";
+import { CgClose } from "react-icons/cg";
 
-const CustomDrinkModal = ({ onDrinkSelect }) => {
+const CustomExtraDrinkModal = ({ onDrinkSelect }) => {
   const [selectedDrink, setSelectedDrink] = useState("");
-
-  const { allDrinksName, isLoading, isError, error, refetch } =
-    useAllDrinksName();
+  const { allDrinksName, isLoading } = useAllDrinksName();
 
   const handleApply = () => {
-    onDrinkSelect(selectedDrink); // Pass selectedDrink to parent
+    onDrinkSelect(selectedDrink.id);
     document.getElementById("costomizeDrink").close();
   };
 
+  const handleCancel = () => {
+    document.getElementById("costomizeDrink").close();
+  };
+
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
+
   return (
     <div>
-      <div className="ml-[75px] -mt-[25px]">
+      <div className="ml-[74px] -mt-[20px]">
         <button
           className="text-green-600"
           onClick={(e) => {
@@ -25,21 +33,22 @@ const CustomDrinkModal = ({ onDrinkSelect }) => {
         >
           Customize
         </button>
-        <p className="text-xs">{selectedDrink}</p>
+        <p className="text-xs">{selectedDrink?.name}</p>
       </div>
-      {/* You can open the modal using document.getElementById('ID').showModal() method */}
+      {/* You can method  */}
       <dialog id="costomizeDrink" className="modal rounded">
         <div className="modal-box rounded h-[500px]">
-          <form method="dialog">
-            {/* Close button */}
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-              ✕
-            </button>
-          </form>
-          <h3 className="font-bold text-lg text-center">CUSTOMIZE</h3>
-          <p className="text-center text-gray-600 mt-2">
-            Selected: {selectedDrink}
-          </p>
+          <div className="sticky -top-[27px] bg-white z-30 py-5">
+            <h3 className="font-bold text-lg text-center">CUSTOMIZE</h3>
+            <p className="text-center text-gray-600 mt-0.5 pb-4">
+              Selected: {selectedDrink?.name}
+            </p>
+            <div className="flex justify-end -mt-[50px]">
+              <button className="text-xl" onClick={handleCancel}>
+                <CgClose />
+              </button>
+            </div>
+          </div>
           <div className="mt-4">
             {allDrinksName.map((drink, index) => (
               <div
@@ -53,7 +62,7 @@ const CustomDrinkModal = ({ onDrinkSelect }) => {
                     <img
                       src={drink.image}
                       alt={drink.name}
-                      className="w-[70px] h-12 rounded-full"
+                      className="w-14 h-14 rounded-full"
                     />
                     <span className="font-medium">{drink.name}</span>
                   </div>
@@ -62,7 +71,7 @@ const CustomDrinkModal = ({ onDrinkSelect }) => {
                     name="drink"
                     className="radio radio-primary"
                     {...(index === 0 && { defaultChecked: true })}
-                    onChange={() => setSelectedDrink(drink.name)}
+                    onChange={() => setSelectedDrink(drink)}
                   />
                 </label>
               </div>
@@ -71,7 +80,7 @@ const CustomDrinkModal = ({ onDrinkSelect }) => {
           <div className="flex space-x-2 bg-white z-30 sticky -bottom-[22px]">
             <button
               className="btn rounded btn-primary w-[50%] text-white"
-              onClick={() => document.getElementById("costomizeDrink").close()}
+              onClick={handleCancel}
             >
               Cancel
             </button>
@@ -88,4 +97,4 @@ const CustomDrinkModal = ({ onDrinkSelect }) => {
   );
 };
 
-export default CustomDrinkModal;
+export default CustomExtraDrinkModal;

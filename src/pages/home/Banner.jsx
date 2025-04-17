@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import BannarImage1 from "../../assets/bannarimage/wbannar1.jpeg";
+import BannarImage2 from "../../assets/bannarimage/wbannar2.jpeg";
+import BannarImage3 from "../../assets/bannarimage/wbannar3.jpeg";
 
 const Banner = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
     {
-      url: "https://i.ibb.co.com/XjmHvnk/01.jpg",
+      url: BannarImage3,
       content: "Slide 1",
     },
     {
-      url: "https://i.ibb.co.com/GCYmJvs/03.png",
+      url: BannarImage2,
       content: "Slide 2",
     },
     {
-      url: "https://i.ibb.co.com/bvSVm3p/05.png",
+      url: BannarImage1,
       content: "Slide 3",
     },
   ];
@@ -25,7 +28,7 @@ const Banner = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % totalSlides);
-    }, 2000); // Change slide every 3 seconds
+    }, 3000); // Change slide every 3 seconds
 
     return () => clearInterval(interval); // Clean up the interval on component unmount
   }, [totalSlides]);
@@ -39,7 +42,7 @@ const Banner = () => {
   };
 
   return (
-    <header className="bg-white w-full lg:w-10/12 mt-0 lg:mt-7 mx-auto">
+    <header className="bg-white w-full lg:w-10/12 mt-0 mx-auto">
       <div className="container grid md:flex lg:flex flex-col lg:flex-row gap-3 lg:gap-6 px-1 lg:px-0 py-3 lg:py-10 mx-auto space-y-6 lg:h-[32rem] lg:items-center">
         <div className="flex items-center justify-center w-full lg:w-4/6 order-2 lg:order-1">
           <div className="relative w-full overflow-hidden">
@@ -53,7 +56,7 @@ const Banner = () => {
                   <img
                     src={slide.url}
                     alt={slide.content}
-                    className="w-full  object-cover rounded-xl md:rounded-none lg:rounded-none"
+                    className="w-full object-cover rounded-xl lg:rounded-lg"
                   />
                 </div>
               ))}
@@ -78,15 +81,15 @@ const Banner = () => {
         </div>
         <div className="w-full lg:w-2/6 order-1 lg:order-2">
           <div className="lg:max-w-lg">
-            <h1 className="text-2xl font-bold tracking-wide italic text-TextColor text-center lg:text-4xl">
+            <h1 className="text-4xl font-base tracking-wide uppercase text-TextColor font-TitleFont text-center lg:text-6xl">
               Your journey to incredible teste begins here
             </h1>
-            <p className="mt-4 text-black text-center ">
+            <p className="mt-4 text-black text-center font-paragraphFont ">
               We know one flavor does not fit all, that is why we perfected 30
               of them. Your next flavor obsession starts with just one click.
             </p>
             <Link to="/foodmenu">
-              <button className="w-full md:w-6/12 lg:w-full mx-auto btn bg-ButtonColor hover:bg-ButtonHover text-white mt-7">
+              <button className="w-full md:w-6/12 lg:w-full mx-auto btn rounded bg-ButtonColor hover:bg-ButtonHover text-white mt-7 uppercase font-TitleFont font-normal text-3xl">
                 Order Now
               </button>
             </Link>

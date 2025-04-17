@@ -2,26 +2,27 @@ import { useEffect, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { RxCross2 } from "react-icons/rx";
 import { BiSolidError } from "react-icons/bi";
-import { FaMinus, FaPlus } from "react-icons/fa";
+import { FaChevronRight, FaMinus, FaPlus } from "react-icons/fa";
 import CustomDrinkModal from "./CustomDrinkModal";
 
 const DrinkSection = ({
-  drinks,
+  myDrink,
   loading,
   error,
-  onDrinkPriceChange,
+  onDrinkRegulerPrice,
   onDrinkSelected,
   onSelectedDrinksChange,
 }) => {
   const [selectedDrinks, setSelectedDrinks] = useState([]);
   const [drinksNameId, setDrinksNameId] = useState(0);
+  const drinks = myDrink.data;
 
   const handleDrinkSelect = (selectedDrinkId, drink) => {
     setDrinksNameId(selectedDrinkId);
 
     const newDrink = {
       type: "Drink",
-      type_id: drink.drink_id,
+      type_id: drink.id,
       is_paid_type: drink.isPaid,
       quantity: 1,
       child_item_id: selectedDrinkId,
@@ -33,18 +34,17 @@ const DrinkSection = ({
 
   const handleSelectDrink = (drink) => {
     const isAlreadySelected = selectedDrinks.some(
-      (selected) => selected.type_id === drink.drink_id
+      (selected) => selected.type_id === drink.id
     );
 
     if (isAlreadySelected) {
-      // Deselect the drink if it's already selected
       setSelectedDrinks([]);
       onSelectedDrinksChange([]); // Notify parent component
     } else {
       // Select the new drink and deselect any previously selected drink
       const newDrink = {
         type: "Drink",
-        type_id: drink.drink_id,
+        type_id: drink.id,
         is_paid_type: drink.isPaid,
         quantity: 1, // Assuming quantity is always 1 for drinks
         child_item_id: drinksNameId,
@@ -71,43 +71,47 @@ const DrinkSection = ({
   };
 
   useEffect(() => {
-    // Calculate total price of selected drinks
     const totalPrice = selectedDrinks.reduce((sum, drink) => {
       const drinkData = drinks
         .flatMap((category) => category)
-        .find((d) => d.drink_id === drink.type_id);
+        .find((d) => d.id === drink.type_id);
       return (
-        sum +
-        (drinkData?.isPaid === 1 ? drinkData.drink_price * drink.quantity : 0)
+        sum + (drinkData?.isPaid === 1 ? drinkData.price * drink.quantity : 0)
       );
     }, 0);
 
-    onDrinkPriceChange(totalPrice);
+    onDrinkRegulerPrice(totalPrice);
     onDrinkSelected(selectedDrinks);
-  }, [selectedDrinks, drinks, onDrinkPriceChange, onDrinkSelected]);
+  }, [selectedDrinks, drinks, onDrinkRegulerPrice, onDrinkSelected]);
 
   return (
-    <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg shadow-lg">
+    <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg">
       <Disclosure>
-        {() => (
+        {({ open }) => (
           <>
-            <Disclosure.Button className=" grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-md transition ease-in-out duration-300">
+            <Disclosure.Button className=" grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-blue-50 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition ease-in-out duration-300">
               <div>
-                <span className="text-lg font-TitleFont lg:text-xl font-semibold">
+                <span className="font-TitleFont text-2xl flex items-center gap-1">
+                  <span
+                    className={`text-lg transform transition-transform duration-300 ${
+                      open ? "rotate-90" : "rotate-0"
+                    }`}
+                  >
+                    <FaChevronRight />
+                  </span>{" "}
                   CHOOSE REGULER DRINK
                 </span>
-                <h2 className="font-bold mt-2 text-gray-600">
+                <h2 className="text-xs font-semibold mt-2 text-gray-900">
                   <span>Selected Drinks: </span>
                   <span className="text-black">
                     {selectedDrinks.length > 0
                       ? selectedDrinks
-                          .map(
-                            (drink) =>
-                              drinks
-                                .flatMap((category) => category)
-                                .find((d) => d.drink_id === drink.type_id)
-                                ?.drink_name
-                          )
+                          .map((drink) => {
+                            const drinkData = drinks
+                              .flatMap((category) => category)
+                              .find((d) => d.id === drink.type_id);
+                            return drinkData?.name || "Unknown Drink"; // Handle undefined cases
+                          })
                           .join(", ")
                       : "(Please select)"}
                   </span>
@@ -133,28 +137,30 @@ const DrinkSection = ({
                           <div className="flex space-x-3">
                             <div className="w-16">
                               <img
-                                className="h-16 rounded-full"
-                                src={category.drink_image}
-                                alt=""
+                                className="h-16 w-16 rounded-full border border-gray-300 bg-cover shadow-md hover:shadow-lg transition duration-300 hover:scale-105 border-gradient-to-r from-blue-400 to-purple-500"
+                                src={category.image}
+                                alt={category.name}
                               />
                             </div>
                             <div>
                               <p className="font-medium text-gray-800">
-                                {category.drink_name}
+                                {category.name}
                               </p>
                               <div className="flex gap-2 text-gray-600">
                                 <p className="text-green-500 font-semibold">
-                                  {category.isPaid == 1 ? (
-                                    <span className="text-black font-medium">
-                                      ${category.drink_price}
-                                    </span>
-                                  ) : (
-                                    "Free"
-                                  )}
+                                  <span className="text-green font-medium">
+                                    {category.isPaid === 1 ? (
+                                      <span className="text-black">
+                                        +${category.price}
+                                      </span>
+                                    ) : (
+                                      "Free"
+                                    )}
+                                  </span>
                                 </p>
                                 <p className="flex items-center gap-1.5">
                                   <BiSolidError className="text-black" />
-                                  {category.drink_cal}
+                                  {category.cal}
                                 </p>
                               </div>
                             </div>
@@ -163,13 +169,13 @@ const DrinkSection = ({
                             type="radio"
                             className="radio radio-primary"
                             checked={selectedDrinks.some(
-                              (drink) => drink.type_id === category.drink_id
+                              (drink) => drink.type_id === category.id
                             )}
                             onChange={() => handleSelectDrink(category)}
                           />
                         </div>
                         {selectedDrinks.some(
-                          (drink) => drink.type_id === category.drink_id
+                          (drink) => drink.type_id === category.id
                         ) && (
                           <div>
                             <CustomDrinkModal
@@ -182,27 +188,20 @@ const DrinkSection = ({
                                 <button
                                   className="p-1.5 border border-gray-300 rounded-md hover:bg-gray-100"
                                   onClick={() =>
-                                    handleQuantityChange(
-                                      category.drink_id,
-                                      false
-                                    )
+                                    handleQuantityChange(category.id, false)
                                   }
                                 >
                                   <FaMinus />
                                 </button>
                                 <span className="p-2 border-gray-300 text-xl">
                                   {selectedDrinks.find(
-                                    (drink) =>
-                                      drink.type_id === category.drink_id
+                                    (drink) => drink.type_id === category.id
                                   )?.quantity || 1}
                                 </span>
                                 <button
                                   className="p-1.5 border border-gray-300 rounded-md hover:bg-gray-100"
                                   onClick={() =>
-                                    handleQuantityChange(
-                                      category.drink_id,
-                                      true
-                                    )
+                                    handleQuantityChange(category.id, true)
                                   }
                                 >
                                   <FaPlus />
@@ -222,8 +221,8 @@ const DrinkSection = ({
                         <h1 className="text-2xl font-semibold">No Drink</h1>
                       </div>
                       <input
-                        type="checkbox"
-                        className="checkbox checkbox-primary rounded"
+                        type="radio"
+                        className="radio radio-primary"
                         checked={selectedDrinks.length === 0}
                         onChange={() => {
                           setSelectedDrinks([]);

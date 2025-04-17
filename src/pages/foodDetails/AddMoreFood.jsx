@@ -2,7 +2,7 @@ import { useReletiveFood } from "../../api/api";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { Link } from "react-router-dom";
-import Loading from "../../assets/images/loader.gif";
+import LoadingComponent from "../../components/LoadingComponent";
 
 const AddMoreFood = ({ categoryID }) => {
   const { reletiveFood, isLoading } = useReletiveFood(categoryID);
@@ -27,18 +27,16 @@ const AddMoreFood = ({ categoryID }) => {
   };
 
   return (
-    <div className="w-full md:w-10/12 lg:w-10/12 mx-auto p-2 lg:p-6 rounded-lg shadow-2xl">
+    <div className="w-full md:w-10/12 lg:w-10/12 mx-auto p-2 lg:p-6">
       {/* Section Header */}
-      <h2 className="text-4xl text-center font-bold text-gray-800 mb-8">
+      <h2 className="text-4xl font-TitleFont text-black mb-8">
         ADD MORE
       </h2>
 
       {/* Carousel Container */}
       {isLoading ? (
         <div className="slider-container">
-          <div className="flex items-center justify-center h-screen">
-            <img src={Loading} alt="Loading..." className="w-[150px]" />
-          </div>
+          <LoadingComponent />
         </div>
       ) : reletiveFood.length > 1 ? (
         // Carousel with Food Items
@@ -62,22 +60,22 @@ const AddMoreFood = ({ categoryID }) => {
                 <div className="p-4 cursor-pointer hover:scale-105 transition-transform duration-300">
                   <div className="h-full border border-black rounded-lg bg-white overflow-hidden">
                     <img
-                      className="w-[180px] h-[180px] mx-auto object-cover"
+                      className="w-full h-[180px] mx-auto object-cover"
                       src={foodMenu.image}
                       alt={foodMenu.category_name}
                     />
                     <div className="p-4">
-                      <h3 className="text-lg font-bold text-gray-800 h-[48px]">
+                      <h3 className="text-lg font font-TitleFont line-clamp-1 text-black h-[28px]">
                         {foodMenu.name}
                       </h3>
-                      <p className="text-xs text-black h-[33px] line-clamp-2">
+                      <p className="text-black text-xs h-[33px] line-clamp-2">
                         {foodMenu.description}
                       </p>
                       <div className="flex justify-between items-center">
                         <span className="text-xl font-semibold">
                           ${foodMenu.price}
                         </span>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-black">
                           {foodMenu.cal}
                         </span>
                       </div>

@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { RxCross2 } from "react-icons/rx";
 import { BsHeartPulseFill } from "react-icons/bs";
-import { useAllDips } from "../../api/api";
+import LoadingComponent from "../../components/LoadingComponent";
+import { FaChevronRight } from "react-icons/fa";
 
-const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
-  const { allDips, loading, error } = useAllDips(); // Assuming useAllDrinks fetches dips data
-  const [selectedDips, setSelectedDips] = useState([]); // Track selected dips
-  const [dipQuantities, setDipQuantities] = useState({}); // Track quantities for dips
-
+const DipSection = ({ dips, loading, error, onDipSelected }) => {
+  const [selectedDips, setSelectedDips] = useState([]);
+  const [dipQuantities, setDipQuantities] = useState({});
+  const howManyDips = dips.how_many_select;
+  const howManyChoiceDips = dips.how_many_choice;
+  const allDips = dips.data;
   const selectedCount = selectedDips.length; // Number of selected dips
   const choiceItem = Object.values(dipQuantities).reduce(
     (sum, qty) => sum + qty,
@@ -24,12 +26,10 @@ const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
     } else if (selectedDips.length < howManyDips) {
       updatedDips = [...selectedDips, dip];
     } else {
-      return; // Do nothing if max dips are already selected
+      return;
     }
 
     setSelectedDips(updatedDips);
-
-    // Distribute quantities equally among selected dips
     distributeQuantities(updatedDips);
   };
 
@@ -52,8 +52,6 @@ const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
       is_paid_type: 0,
       quantity: newQuantities[d.id],
     }));
-
-    console.log("Formatted Data:", formattedData); // Log the formatted data
     onDipSelected(formattedData); // Pass formatted data
   };
 
@@ -102,26 +100,39 @@ const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
   };
 
   return (
-    <div className="w-full lg:w-10/12 mx-auto my-1 p-2 bg-white rounded-lg shadow-lg">
+    <div className="w-full lg:w-10/12 mx-auto my-1 p-2 bg-white">
       <Disclosure>
-        {() => (
+        {({open}) => (
           <>
-            <Disclosure.Button className="grid items-center w-full rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-md transition ease-in-out duration-300">
+            <Disclosure.Button className="grid items-center w-full rounded-lg bg-blue-50 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition ease-in-out duration-300">
               <div className="flex justify-between items-center w-full">
-                <span className="text-lg font-TitleFont lg:text-xl font-semibold">
+                <span className="font-TitleFont text-2xl flex items-center gap-1">
+                  <span
+                    className={`text-lg transform transition-transform duration-300 ${
+                      open ? "rotate-90" : "rotate-0"
+                    }`}
+                  >
+                    <FaChevronRight />
+                  </span>{" "}
                   CHOOSE REGULAR DIP
                 </span>
-                <span
-                  className={
-                    selectedCount > 0 ? "text-green-600" : "text-red-700"
-                  }
-                >
-                  {selectedCount > 0 ? "Done" : "Required"}
+                <span>
+                  {dips.is_required === 1 && selectedCount === 0 ? (
+                    <span className="text-red-700">
+                      <span className="text-sm font-semibold">Required</span>
+                    </span>
+                  ) : (
+                    <span className="text-green-600">
+                      <span className="text-sm font-semibold">
+                        {selectedCount > 0 ? "Done" : "Optional"}
+                      </span>
+                    </span>
+                  )}
                 </span>
               </div>
               <div className="flex justify-between items-center w-full">
                 <h2 className="font-bold mb-4">
-                  <span className="text-base text-gray-500">
+                  <span className="text-xs text-gray-900">
                     Up To Choose
                     <span className="text-black ">
                       ({selectedCount} of {howManyDips} Selected)
@@ -130,7 +141,7 @@ const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
                 </h2>
                 <div className="text-gray-500">
                   <h2 className="grid text-lg font-bold mb-1">
-                    <span className="text-sm text-gray-500">
+                    <span className="text-xs text-gray-900">
                       ( {choiceItem} of {howManyChoiceDips} Selected)
                     </span>
                   </h2>
@@ -142,7 +153,7 @@ const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
                 Error loading Dips. Please try again.
               </p>
             )}
-            {loading && <p className="text-gray-500 mt-4">Loading Dips...</p>}
+            {loading && <LoadingComponent />}
             <Disclosure.Panel className="px-4 pt-6 pb-4 text-sm text-gray-700">
               <div className="flavor-selection grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                 {!loading &&
@@ -183,44 +194,48 @@ const DipSection = ({ onDipSelected, howManyDips, howManyChoiceDips }) => {
                             onChange={() => handleSelectDip(category)}
                           />
                         </div>
-                        {selectedDips.some((d) => d.id === category.id) && (
-                          <div className="mt-3 ml-[90px] mx-auto items-center gap-2 text-gray-700">
-                            <span className="font-medium">Quantity:</span>
-                            <div className="flex items-center border p-2 w-[148px] rounded-md overflow-hidden">
-                              <button
-                                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
-                                onClick={() =>
-                                  handleQuantityChange(category.id, -1)
-                                }
-                                disabled={dipQuantities[category.id] <= 1}
-                              >
-                                -
-                              </button>
-                              <input
-                                type="number"
-                                value={dipQuantities[category.id] || 1}
-                                readOnly
-                                className="w-16 text-center text-lg border-l border-r outline-none"
-                              />
-                              <button
-                                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
-                                onClick={() =>
-                                  handleQuantityChange(category.id, 1)
-                                }
-                                disabled={
-                                  dipQuantities[category.id] >=
-                                    howManyChoiceDips ||
-                                  Object.values(dipQuantities).reduce(
-                                    (sum, qty) => sum + qty,
-                                    0
-                                  ) >= howManyChoiceDips
-                                }
-                              >
-                                +
-                              </button>
+                        <div
+                          className={`${selectedCount === 1 ? "hidden" : ""}`}
+                        >
+                          {selectedDips.some((d) => d.id === category.id) && (
+                            <div className="mt-3 ml-[90px] mx-auto items-center gap-2 text-gray-700">
+                              <span className="font-medium">Quantity:</span>
+                              <div className="flex items-center border p-2 w-[148px] rounded-md overflow-hidden">
+                                <button
+                                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
+                                  onClick={() =>
+                                    handleQuantityChange(category.id, -1)
+                                  }
+                                  disabled={dipQuantities[category.id] <= 1}
+                                >
+                                  -
+                                </button>
+                                <input
+                                  type="number"
+                                  value={dipQuantities[category.id] || 1}
+                                  readOnly
+                                  className="w-16 text-center text-lg border-l border-r outline-none"
+                                />
+                                <button
+                                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
+                                  onClick={() =>
+                                    handleQuantityChange(category.id, 1)
+                                  }
+                                  disabled={
+                                    dipQuantities[category.id] >=
+                                      howManyChoiceDips ||
+                                    Object.values(dipQuantities).reduce(
+                                      (sum, qty) => sum + qty,
+                                      0
+                                    ) >= howManyChoiceDips
+                                  }
+                                >
+                                  +
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </label>
                     </div>
                   ))}

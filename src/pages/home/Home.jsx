@@ -7,6 +7,7 @@ import BestFood from "./BestFood";
 import FindFlavor from "./FindFlavor";
 import OtherCompany from "./OtherCompany";
 import DelivaryLocation from "./DelivaryLocation";
+import { Helmet } from "react-helmet-async";
 
 const Home = () => {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
@@ -16,10 +17,14 @@ const Home = () => {
     setIsLocationModalOpen(true);
   };
   const orderStatus = localStorage.getItem("orderStatus");
-  console.log(orderStatus);
 
   return (
     <div> 
+      <Helmet>
+        <title>Home | Wingsblast</title>
+        <meta name="description" content="Wingsblast Home Page" />
+        <link rel="canonical" href="/" />
+      </Helmet>
       <Banner />
       <div className="hidden lg:block">
         <DelivaryLocation />

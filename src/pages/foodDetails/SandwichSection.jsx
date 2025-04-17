@@ -1,15 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { RxCross2 } from "react-icons/rx";
+import { FaChevronRight } from "react-icons/fa";
 
 const ToppingSection = ({
-  sandCust,
+  mySandwich,
   loading,
   error,
   onSandCustChange,
   onSandCustPriceChnge,
 }) => {
   const [selectedSandCust, setSelectedSandCust] = useState([]);
+
+  const sandCust = mySandwich.data;
 
   // Initialize the first 5 items in selectedSandCust
   useEffect(() => {
@@ -20,7 +23,7 @@ const ToppingSection = ({
 
   const selectTop = useMemo(() => {
     return selectedSandCust.map((sandwich) => ({
-      id: sandwich.sandCust_id,
+      id: sandwich.id,
       isPaid: sandwich.isPaid,
     }));
   }, [selectedSandCust]);
@@ -40,22 +43,29 @@ const ToppingSection = ({
 
   useEffect(() => {
     const totalPrice = selectedSandCust.reduce((acc, sandCust) => {
-      return acc + (sandCust.isPaid === 1 ? sandCust.sandCust_price : 0);
+      return acc + (sandCust.isPaid === 1 ? sandCust.price : 0);
     }, 0);
     onSandCustPriceChnge(totalPrice);
   }, [selectedSandCust, onSandCustPriceChnge]);
 
   return (
-    <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg shadow-lg">
+    <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg">
       <Disclosure>
         {({ open }) => (
           <>
-            <Disclosure.Button className="grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-md transition ease-in-out duration-300">
+            <Disclosure.Button className="grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-blue-50 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition ease-in-out duration-300">
               <div>
-                <span className="text-xl lg:text-xl font-semibold">
+                <span className="text-2xl font-TitleFont flex items-center gap-1">
+                  <span
+                    className={`text-lg transform transition-transform duration-300 ${
+                      open ? "rotate-90" : "rotate-0"
+                    }`}
+                  >
+                    <FaChevronRight />
+                  </span>{" "}
                   CHOOSE REGULER SANDWICH
                 </span>
-                <h2 className="font-bold mt-2 text-gray-600">
+                <h2 className="font-semibold mt-2 text-xs text-gray-900">
                   <span>Up To Select: </span>
                   <span className="text-black">
                     {selectedSandCust.length} selected
@@ -83,28 +93,26 @@ const ToppingSection = ({
                         <div className="flex items-center justify-between">
                           <div className="flex space-x-3">
                             <img
-                              className="h-16 rounded-full"
-                              src={category.sandCust_image}
+                              className="h-16 w-16 rounded-full"
+                              src={category.image}
                               alt=""
                             />
                             <div>
-                              <p className="font-medium text-gray-800">
-                                {category.sandCust_name}
+                              <p className="font-TitleFont text-lg text-gray-800">
+                                {category.name}
                               </p>
                               <div className="flex gap-2 text-gray-600">
                                 {category.isPaid === 1 && (
-                                  <p>+${category.sandCust_price}</p>
+                                  <p>+${category.price}</p>
                                 )}
-                                <p className="flex">
-                                  💪{category.sandCust_cal}
-                                </p>
+                                <p className="flex">💪{category.cal}</p>
                               </div>
                             </div>
                           </div>
                           <input
                             type="checkbox"
                             name="topping"
-                            className="checkbox checkbox-primary"
+                            className="checkbox checkbox-primary rounded"
                             checked={selectedSandCust.includes(category)}
                             onChange={() => handleSelectTopping(category)}
                           />
@@ -122,7 +130,7 @@ const ToppingSection = ({
                       <input
                         type="checkbox"
                         name="noTopping"
-                        className="checkbox checkbox-primary"
+                        className="checkbox checkbox-primary rounded"
                         checked={selectedSandCust.length === 0}
                         onChange={() => {
                           setSelectedSandCust([]);

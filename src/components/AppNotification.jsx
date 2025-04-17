@@ -3,15 +3,15 @@ import { RiDownloadCloud2Line } from "react-icons/ri";
 
 const AppNotification = () => {
   return (
-    <div className="bg-gray-100">
+    <div className="">
       <div className="flex items-center p-1 px-5">
-        <div className="rounded bg-gray-300 text-white p-1">
+        <div className="rounded text-white p-1">
           <img src={Apple} width={50} alt="Apple App" />
         </div>
 
         {/* Text Section */}
         <div className="ml-4">
-          <h3 className="text-lg font-bold text-gray-800">WingsBlast</h3>
+          <h3 className="text-xl font-TitleFont text-gray-800">WingsBlast</h3>
           <p className="text-xs">Wings for Delivery or Carryout</p>
         </div>
 

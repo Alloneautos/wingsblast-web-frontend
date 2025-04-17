@@ -1,13 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import { Disclosure } from "@headlessui/react";
-import { useFlavor } from "../../api/api";
 import { HiFire } from "react-icons/hi2";
+import LoadingComponent from "../../components/LoadingComponent";
+import { FaChevronRight } from "react-icons/fa";
 
-const FlavorSelection = ({ flavorReq, choiceFlavorReq, sendFlavorData }) => {
+const FlavorSelection = ({ flavor: myFlavor, loading, sendFlavorData }) => {
   const [selectedCount, setSelectedCount] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [wingsDistribution, setWingsDistribution] = useState({});
-  const { flavor, isLoading, error } = useFlavor();
+  const flavor = myFlavor.data;
+  const choiceFlavorReq = myFlavor.how_many_choice;
   const [choiceItem, setChoiceItem] = useState(0);
 
   const getWingsDistribution = useCallback(
@@ -123,20 +125,25 @@ const FlavorSelection = ({ flavorReq, choiceFlavorReq, sendFlavorData }) => {
     honey: flavor?.filter((item) => item.isHoney),
   };
 
-  if (isLoading) {
-    return (
-      <p className="text-center text-lg font-medium">Loading flavors...</p>
-    );
+  if (loading) {
+    return <LoadingComponent />;
   }
   return (
-    <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg shadow-lg">
+    <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white ">
       <Disclosure>
-        {() => (
+        {({open}) => (
           <>
-            <Disclosure.Button className="grid w-full rounded-lg bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 shadow-lg">
+            <Disclosure.Button className="grid w-full rounded-lg  px-6 py-3 text-left text-sm font-medium text-black bg-blue-50 hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75">
               <div className="flex justify-between items-center w-full">
-                <h1 className="text-lg font-TitleFont lg:text-xl font-semibold">
-                  CHOOSE FLAVORS
+                <h1 className="font-TitleFont text-2xl flex items-center gap-1">
+                  <span
+                    className={`text-lg transform transition-transform duration-300 ${
+                      open ? "rotate-90" : "rotate-0"
+                    }`}
+                  >
+                    <FaChevronRight />
+                  </span>{" "}
+                  CHOOSE REGULAR FLAVORS
                 </h1>
                 <span
                   className={
@@ -148,28 +155,27 @@ const FlavorSelection = ({ flavorReq, choiceFlavorReq, sendFlavorData }) => {
               </div>
               <div className="flex justify-between items-center w-full">
                 <h2 className="font-bold mb-4">
-                  <span className="text-base text-gray-500">
+                  <span className="text-xs text-gray-900">
                     Up To Choose
-                    <span className="text-black ">
-                      ({selectedCount} of {flavorReq} Selected)
+                    <span className="text-black">
+                      ({selectedCount} of {myFlavor.how_many_select} Selected)
                     </span>
                   </span>
                 </h2>
                 <div className="text-gray-500">
                   <h2 className="grid text-lg font-bold mb-1">
-                    <span className="text-sm text-gray-500">
+                    <span className="text-xs text-gray-900">
                       ( {choiceItem} of {choiceFlavorReq} Selected)
                     </span>
                   </h2>
                 </div>
               </div>
             </Disclosure.Button>
-            {error && <p className="text-red-500">Error loading flavors.</p>}
             <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-700">
               {Object.entries(categorizedFlavors).map(([key, flavors]) => (
                 <div key={key} className="mb-6">
                   <div className="my-3">
-                    <h3 className="text-xl font-semibold uppercase">
+                    <h3 className="text-2xl font-TitleFont text-black uppercase">
                       {key} Flavors
                     </h3>
                     <p>More info about our {key} Flavors can be found</p>
@@ -186,8 +192,8 @@ const FlavorSelection = ({ flavorReq, choiceFlavorReq, sendFlavorData }) => {
                                 alt=""
                               />
                               <div>
-                                <p className="font-medium text-gray-800">
-                                  {category.name}
+                                <p className="font-medium font-paragraphFont text-black">
+                                  {category.name.toUpperCase()}
                                 </p>
                                 <div className="rating flex items-center my-1">
                                   {[...Array(category.flavor_rating)].map(
@@ -231,7 +237,7 @@ const FlavorSelection = ({ flavorReq, choiceFlavorReq, sendFlavorData }) => {
                               checked={selectedOptions[category.name] || false}
                               disabled={
                                 !selectedOptions[category.name] &&
-                                selectedCount >= flavorReq
+                                selectedCount >= myFlavor.how_many_select
                               }
                             />
                           </div>

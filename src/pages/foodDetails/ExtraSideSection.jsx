@@ -5,17 +5,17 @@ import LoadingComponent from "../../components/LoadingComponent";
 import { BiSolidError } from "react-icons/bi";
 import { FaChevronRight } from "react-icons/fa";
 
-const SideSection = ({ sides, loading, error, onSideSelected }) => {
+const ExtraSideSection = ({
+  sides,
+  loading,
+  error,
+  onExtraSideSelected,
+  onSidePriceChange,
+}) => {
   const [selectedSides, setSelectedSides] = useState([]);
   const [sideQuantities, setSideQuantities] = useState({});
-  const howManySides = sides.how_many_select;
-  const howManyChoiceSides = sides.how_many_choice;
   const allSides = sides.data;
   const selectedCount = selectedSides.length;
-  const choiceItem = Object.values(sideQuantities).reduce(
-    (sum, qty) => sum + qty,
-    0
-  );
 
   const handleSelectSide = (side) => {
     const isSelected = selectedSides.some((s) => s.id === side.id);
@@ -23,10 +23,8 @@ const SideSection = ({ sides, loading, error, onSideSelected }) => {
 
     if (isSelected) {
       updatedSides = selectedSides.filter((s) => s.id !== side.id);
-    } else if (selectedSides.length < howManySides) {
-      updatedSides = [...selectedSides, side];
     } else {
-      return;
+      updatedSides = [...selectedSides, side];
     }
 
     setSelectedSides(updatedSides);
@@ -34,13 +32,12 @@ const SideSection = ({ sides, loading, error, onSideSelected }) => {
   };
 
   const distributeQuantities = (sides) => {
-    const totalSides = sides.length;
-    const baseQuantity = Math.floor(howManyChoiceSides / totalSides);
-    const remainder = howManyChoiceSides % totalSides;
+    const newQuantities = { ...sideQuantities }; // Start with existing quantities
+    let totalPrice = 0;
 
-    const newQuantities = {};
-    sides.forEach((s, index) => {
-      newQuantities[s.id] = baseQuantity + (index < remainder ? 1 : 0);
+    sides.forEach((s) => {
+      newQuantities[s.id] = sideQuantities[s.id] || 1; // Ensure quantity is set to 1 if not already set
+      totalPrice += (s.price || 0) * newQuantities[s.id]; // Calculate total price
     });
 
     setSideQuantities(newQuantities);
@@ -48,52 +45,35 @@ const SideSection = ({ sides, loading, error, onSideSelected }) => {
     const formattedData = sides.map((s) => ({
       type: "Side",
       type_id: s.id,
-      is_paid_type: 0,
+      is_paid_type: 1,
       quantity: newQuantities[s.id],
     }));
-    onSideSelected(formattedData);
+    onExtraSideSelected(formattedData);
+    onSidePriceChange(totalPrice); // Pass total price
   };
 
   const handleQuantityChange = (sideId, change) => {
     setSideQuantities((prevQuantities) => {
       const newQuantities = { ...prevQuantities };
       newQuantities[sideId] = Math.max(
-        0,
-        Math.min((newQuantities[sideId] || 0) + change, howManyChoiceSides)
-      );
+        1,
+        (newQuantities[sideId] || 1) + change
+      ); // Minimum quantity is 1
 
-      const totalSelected = Object.values(newQuantities).reduce(
-        (sum, qty) => sum + qty,
-        0
-      );
+      let totalPrice = 0;
+      selectedSides.forEach((s) => {
+        totalPrice += (s.price || 0) * (newQuantities[s.id] || 1); // Recalculate total price
+      });
 
-      let excess = totalSelected - howManyChoiceSides;
-      if (excess > 0) {
-        const otherSides = selectedSides.filter((s) => s.id !== sideId);
-        for (const side of otherSides) {
-          if (excess <= 0) break;
-          const reduceBy = Math.min(newQuantities[side.id], excess);
-          newQuantities[side.id] -= reduceBy;
-          excess -= reduceBy;
-        }
-      }
+      const formattedData = selectedSides.map((s) => ({
+        type: "Side",
+        type_id: s.id,
+        is_paid_type: 1,
+        quantity: newQuantities[s.id],
+      }));
 
-      let deficit =
-        howManyChoiceSides -
-        Object.values(newQuantities).reduce((sum, qty) => sum + qty, 0);
-      if (deficit > 0) {
-        const otherSides = selectedSides.filter((s) => s.id !== sideId);
-        for (const side of otherSides) {
-          if (deficit <= 0) break;
-          const increaseBy = Math.min(
-            howManyChoiceSides - newQuantities[side.id],
-            deficit
-          );
-          newQuantities[side.id] += increaseBy;
-          deficit -= increaseBy;
-        }
-      }
-
+      onExtraSideSelected(formattedData); // Pass updated formatted data
+      onSidePriceChange(totalPrice); // Pass updated total price
       return newQuantities;
     });
   };
@@ -101,7 +81,7 @@ const SideSection = ({ sides, loading, error, onSideSelected }) => {
   return (
     <div className="w-full lg:w-10/12 mx-auto my-1 p-2 bg-white">
       <Disclosure>
-        {({ open }) => (
+        {({open}) => (
           <>
             <Disclosure.Button className="grid items-center w-full rounded-lg bg-blue-50 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition ease-in-out duration-300">
               <div className="flex justify-between items-center w-full">
@@ -113,7 +93,7 @@ const SideSection = ({ sides, loading, error, onSideSelected }) => {
                   >
                     <FaChevronRight />
                   </span>{" "}
-                  CHOOSE REGULAR SIDE
+                  CHOOSE EXTRA SIDE
                 </span>
                 <span>
                   {sides.is_required === 1 && selectedCount === 0 ? (
@@ -132,17 +112,10 @@ const SideSection = ({ sides, loading, error, onSideSelected }) => {
                   <span className="text-xs text-gray-900">
                     Up To Choose
                     <span className="text-black ">
-                      ({selectedCount} of {howManySides} Selected)
+                      ({selectedCount} Selected)
                     </span>
                   </span>
                 </h2>
-                <div className="text-gray-500">
-                  <h2 className="grid text-lg font-bold mb-1">
-                    <span className="text-xs text-gray-900">
-                      ( {choiceItem} of {howManyChoiceSides} Selected)
-                    </span>
-                  </h2>
-                </div>
               </div>
             </Disclosure.Button>
             {error && (
@@ -172,7 +145,9 @@ const SideSection = ({ sides, loading, error, onSideSelected }) => {
                                 {category.name}
                               </p>
                               <div className="flex gap-2 text-gray-600">
-                                <p className="text-green-600">Free</p>
+                                <p className="text-black">
+                                  +$ {category.price}
+                                </p>
                                 <p className="flex items-center gap-1.5 text-black">
                                   <BiSolidError />
                                   {category.cal}
@@ -189,9 +164,7 @@ const SideSection = ({ sides, loading, error, onSideSelected }) => {
                             onChange={() => handleSelectSide(category)}
                           />
                         </div>
-                        <div
-                          className={`${selectedCount === 1 ? "hidden" : ""}`}
-                        >
+                        <div>
                           {selectedSides.some((s) => s.id === category.id) && (
                             <div className="mt-3 ml-[90px] mx-auto items-center gap-2 text-gray-700">
                               <span className="font-medium">Quantity:</span>
@@ -215,14 +188,6 @@ const SideSection = ({ sides, loading, error, onSideSelected }) => {
                                   className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
                                   onClick={() =>
                                     handleQuantityChange(category.id, 1)
-                                  }
-                                  disabled={
-                                    sideQuantities[category.id] >=
-                                      howManyChoiceSides ||
-                                    Object.values(sideQuantities).reduce(
-                                      (sum, qty) => sum + qty,
-                                      0
-                                    ) >= howManyChoiceSides
                                   }
                                 >
                                   +
@@ -259,4 +224,4 @@ const SideSection = ({ sides, loading, error, onSideSelected }) => {
   );
 };
 
-export default SideSection;
+export default ExtraSideSection;
