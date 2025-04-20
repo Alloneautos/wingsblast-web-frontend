@@ -32,15 +32,15 @@ const FoodDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [isScrolled, setIsScrolled] = useState(false);
   const { foodDetails, loading, error } = useFoodDetails(foodDetailsID);
-  const [dipSelects, setDipSelects] = useState(null);
-  const [sideSelects, setSideSelects] = useState(null);
-  const [extraSideSelects, setExtraSideSelects] = useState(null);
-  const [ricePlattarSelects, setRicePlattarSelects] = useState(null);
+  const [dipSelects, setDipSelects] = useState([]); // Initialize as an empty array
+  const [sideSelects, setSideSelects] = useState([]);
+  const [extraSideSelects, setExtraSideSelects] = useState([]);
+  const [ricePlattarSelects, setRicePlattarSelects] = useState([]);
   const [drinkId, setDrinkId] = useState(null);
-  const [bakerySelects, setBakerySelects] = useState(null);
-  const [toppingsData, setToppingsData] = useState(null);
-  const [sandCustData, setSandCustData] = useState(null);
-  const [flavorData, setFlavorData] = useState(null);
+  const [bakerySelects, setBakerySelects] = useState([]);
+  const [toppingsData, setToppingsData] = useState([]);
+  const [sandCustData, setSandCustData] = useState([]);
+  const [flavorData, setFlavorData] = useState([]); // Initialize as an empty array
   const [cartLoading, setCartLoading] = useState(false);
   const [selectedDrinks, setSelectedDrinks] = useState([]);
   const [selectedExtraDrinks, setSelectedExtraDrinks] = useState([]);
@@ -133,7 +133,7 @@ const FoodDetails = () => {
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
-    setIsScrolled(scrollPosition > 200);
+    setIsScrolled(scrollPosition > 650);
   };
 
   useEffect(() => {
@@ -215,7 +215,6 @@ const FoodDetails = () => {
   const handleSelectedExtraDrinksChange = (drinks) => {
     setSelectedExtraDrinks(drinks);
   };
-
   const components = [
     {
       component:
@@ -320,7 +319,83 @@ const FoodDetails = () => {
     .filter((item) => item.component !== null)
     .sort((a, b) => a.sn_number - b.sn_number);
 
+
+    console.log(ricePlattarSelects, "dipSelects");
+
   const handleAddToBag = async () => {
+    if (foodDetails?.flavor?.is_required === 1 && (!flavorData || flavorData.length === 0)) {
+      Swal.fire({
+        title: "Flavor is Required",
+        text: "Please select at least one flavor.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+    if (foodDetails?.dip?.is_required === 1 && (!dipSelects || dipSelects.length === 0)) {
+      Swal.fire({
+        title: "Dip is Required",
+        text: "Please select at least one dip.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+    if (foodDetails?.side?.is_required === 1 && (!sideSelects || sideSelects.length === 0)) {
+      Swal.fire({
+        title: "Side is Required",
+        text: "Please select at least one side.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+    if (foodDetails?.drink?.is_required === 1 && (!selectedDrinks || selectedDrinks.length === 0)) {
+      Swal.fire({
+        title: "Drink is Required",
+        text: "Please select at least one drink.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+      }
+    if(foodDetails?.sandwichCustomize?.is_required === 1 && (!sandCustData || sandCustData.length === 0)) {
+      Swal.fire({
+        title: "Sandwich is Required",
+        text: "Please select at least one sandwich.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+    if (foodDetails?.topping?.is_required === 1 && (!toppingsData || toppingsData.length === 0)) {
+      Swal.fire({
+        title: "Topping is Required",
+        text: "Please select at least one topping.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+    if (foodDetails?.bakery?.is_required === 1 && (!bakerySelects || bakerySelects.length === 0)) {  
+      Swal.fire({
+        title: "Bakery is Required",
+        text: "Please select at least one bakery.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+    if (foodDetails?.ricePlatter?.is_required === 1 && (!ricePlattarSelects || ricePlattarSelects.length === 0)) {
+      Swal.fire({
+        title: "Rice Platter is Required",
+        text: "Please select at least one rice platter.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
     try {
       const formattedFeatures = [
         ...(dipSelects?.map((dip) => ({
@@ -368,7 +443,7 @@ const FoodDetails = () => {
           quantity: side.quantity,
         })) || []),
         ...(ricePlattarSelects?.map((ricePlattar) => ({
-          type: "RicePlatter",
+          type: "Rice Platter",
           type_id: ricePlattar.type_id,
           is_paid_type: ricePlattar.is_paid_type,
           quantity: ricePlattar.quantity,
@@ -434,14 +509,14 @@ const FoodDetails = () => {
 
   return (
     <>
-     <Helmet>
+      <Helmet>
         <title>{foodDetails.name} | Wingsblast</title>
       </Helmet>
       <div className="flex flex-col w-full lg:w-10/12 mx-auto">
-        <div className="container mx-auto p-6 bg-white -mt-[15px] lg:mt-6">
+        <div className="container mx-auto px-6 py-1 bg-white -mt-[15px] lg:mt-6">
           <div className="flex flex-col md:flex-row lg:flex-row items-center lg:gap-10">
             <div className="w-full lg:w-1/3 flex justify-center items-center">
-              <div className="bg-white rounded-lg p-4">
+              <div className="bg-white rounded-lg">
                 <img
                   src={foodDetails.image}
                   alt={foodDetails.name}
@@ -450,22 +525,22 @@ const FoodDetails = () => {
               </div>
             </div>
 
-            <div className="w-auto p-4">
+            <div className="w-auto py-1 px-5 ">
               <h1 className="font-TitleFont text-4xl md:text-4xl lg:text-5xl font-s mb-2 text-black">
                 {foodDetails.name.toUpperCase()}
               </h1>
-              <p className="text-black text-2xl font-TitleFont mb-4">
+              <p className="text-black text-2xl font-TitleFont mb-1">
                 ${foodDetails.price}
-                <span className="text-xs text-gray-900">
+                <span className="text-xs text-gray-600">
                   {" "}
                   {foodDetails.cal}
                 </span>
               </p>
-              <p className="text-black mb-6 font-paragraphFont leading-relaxed text-sm md:text-base lg:text-base">
+              <p className="text-black mb-0.5 font-paragraphFont leading-relaxed text-sm md:text-base lg:text-base">
                 {foodDetails.description}
               </p>
 
-              <div className="flex-col md:flex-row justify-start items-center gap-9 p-4 bg-white flex md:gap-4 lg:gap-6">
+              <div className="justify-start items-center gap-3 bg-white flex md:gap-4 lg:gap-6">
                 {/* Quantity Controls */}
                 <div className="flex items-center gap-2">
                   <button
@@ -492,7 +567,7 @@ const FoodDetails = () => {
                   </div>
                   <button
                     onClick={handleAddToBag}
-                    className={`flex items-center justify-center py-2 px-6 md:py-3 text-white font-TitleFont text-xl rounded-r-md bg-ButtonColor transition duration-300 ease-in-out transform hover:bg-ButtonHover ${
+                    className={`flex items-center justify-center py-2 px-2 md:py-3 whitespace-nowrap text-white font-TitleFont text-lg rounded-r-md bg-ButtonColor transition duration-300 ease-in-out transform hover:bg-ButtonHover ${
                       cartLoading ? "opacity-70 cursor-not-allowed" : ""
                     }`}
                     disabled={cartLoading}

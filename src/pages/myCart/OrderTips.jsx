@@ -37,13 +37,13 @@ function OrderTips({ sendCustomTips, sendSelectTipsRate }) {
 
   return (
     <div className="">
-      <h2 className="font-bold text-2xl">TIP:</h2>
-      <p className="">100% of the tip goes to your driver</p>
+      <h2 className="font-TitleFont text-black text-3xl">TIP:</h2>
+      <p className="text-sm text-gray-700">100% of the tip goes to your driver !</p>
       <div className="flex gap-2 mt-3">
         {tipsRate.map((tipRate) => (
           <button
             onClick={() => handleTips(tipRate.amount_rate)}
-            className={`py-[10px] px-4 rounded-md bg-gray-200 border 
+            className={`py-[5px] px-4 rounded bg-gray-200 border 
                 ${
                   selectTipsRate === tipRate.amount_rate && customTips === 0
                     ? "border-lime-600"
@@ -58,7 +58,7 @@ function OrderTips({ sendCustomTips, sendSelectTipsRate }) {
       {customTips <= 0 ? (
         <button
           onClick={handleCutomTips}
-          className="mt-3 py-[10px] px-4 rounded-md bg-gray-200 border hover:border-lime-600 "
+          className="mt-3 py-[5px] px-4 rounded bg-gray-200 border hover:border-lime-600 "
         >
           Custom
         </button>
@@ -96,7 +96,7 @@ function OrderTips({ sendCustomTips, sendSelectTipsRate }) {
           />
           <button
             type="submit"
-            className="flex items-center justify-center px-4 py-[10px] bg-green-600 hover:bg-green-700 text-white"
+            className="flex items-center justify-center px-4 py-[10px] bg-ButtonColor hover:bg-ButtonHover text-white"
           >
             +
           </button>

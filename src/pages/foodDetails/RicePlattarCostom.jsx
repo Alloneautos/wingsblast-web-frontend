@@ -46,7 +46,7 @@ const RicePlattarCostom = ({ ricePlatter, loading, error, onRicePlattarSelected 
     setRicePlattarQuantities(newQuantities);
 
     const formattedData = riceplattar.map((s) => ({
-      type: "RicePlattar",
+      type: "Rice Platter",
       type_id: s.id,
       is_paid_type: 0,
       quantity: newQuantities[s.id],

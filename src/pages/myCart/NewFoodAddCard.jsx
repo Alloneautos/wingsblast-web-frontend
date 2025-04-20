@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { useAllFood } from "../../api/api";
@@ -9,7 +9,19 @@ const NewFoodAddCard = () => {
   const { allFood, loading } = useAllFood();
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [foodId, setFoodId] = useState(0);
+  const [foodDiscounts, setFoodDiscounts] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (allFood) {
+      const discounts = {};
+      allFood.forEach((food) => {
+        const randomDiscount = [10, 15, 20, 25][Math.floor(Math.random() * 4)];
+        discounts[food.id] = randomDiscount;
+      });
+      setFoodDiscounts(discounts);
+    }
+  }, [allFood]);
 
   const responsive = {
     desktop: {
@@ -75,16 +87,19 @@ const NewFoodAddCard = () => {
                     className="cursor-pointer"
                     onClick={() => handleLinkClick(foodMenu?.id)}
                   >
-                    <div className="bg-white border-[0.5px] hover:border-[2px] hover:border-[#006938] border-gray-800 rounded  overflow-hidden hover:shadow-xl transition duration-900 transform">
+                    <div className="bg-white border shadow-xl rounded-lg  overflow-hidden hover:shadow-xl transition duration-900 transform">
                       <div className="relative ">
                         <img
                           className="rounded-t-lg w-[180px] h-[180px] mx-auto object-cover"
                           src={foodMenu.image}
                           alt={foodMenu.name}
                         />
-                        <span className="absolute top-2 right-2 bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded">
-                          POPULAR
+                        <span className="absolute rotate-45 top-5 -right-9 mt-1 bg-ButtonColor text-white text-xs px-9 py-1">
+                          {foodDiscounts[foodMenu.id]}% OFF
                         </span>
+                        {/* <span className="absolute rotate-45 top-5 right-0 mt-1 bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded">
+                          POPULAR
+                        </span> */}
                       </div>
                       <div className="p-2 space-y-1">
                         <h2 className="text-gray-900 text-xl h-[33px] font-TitleFont leading-tight line-clamp-2">

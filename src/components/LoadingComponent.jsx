@@ -1,4 +1,4 @@
-import Loader from "../assets/images/loader.gif"
+// import Loader from "../assets/images/loader.gif"
 const LoadingComponent = () => {
   return (
     <div className="flex items-center justify-center">

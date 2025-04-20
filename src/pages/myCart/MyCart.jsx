@@ -9,7 +9,6 @@ import {
   useGuestUser,
   useMyCart,
   useTax,
-  useUserProfile,
 } from "../../api/api";
 import Swal from "sweetalert2";
 import { FaMinus, FaPlus } from "react-icons/fa";
@@ -52,7 +51,6 @@ const MyCart = () => {
   const [note, setNote] = useState({});
   const [firstLine, setFirstLine] = useState("");
   const [secondLine, setSecondLine] = useState("");
-  const { user } = useUserProfile();
 
   const handleOpenNote = (id) => {
     setOpenNotes((prev) => ({
@@ -356,6 +354,15 @@ const MyCart = () => {
 
   const navigate = useNavigate();
   const handleToCheckout = () => {
+    if (cartSubtotal < 25) {
+      Swal.fire({
+        icon: "warning",
+        title: "Minimum Order Amount",
+        text: "Your order subtotal must be at least $25 to proceed to checkout.",
+        confirmButtonText: "OK",
+      });
+      return; // Prevent navigation to checkout
+    }
     setError("");
     navigate("/checkout", { state: { orderData: myOrder } });
   };
@@ -519,6 +526,18 @@ const MyCart = () => {
                           </h1>
                         </div>
                       ))}
+                      {item?.ricePlatter?.map((ricePlatter, index) => (
+                        <div key={index} className="flavor-item cursor-pointer">
+                          <h1 title="ricePlatter" className="flex items-center">
+                            {ricePlatter.name} X1{" "}
+                            <span>
+                              {ricePlatter.is_paid_type === 1
+                                ? `($${ricePlatter.price})`
+                                : ""}
+                            </span>
+                          </h1>
+                        </div>
+                      ))}
                     </div>
 
                     <button
@@ -620,7 +639,7 @@ const MyCart = () => {
 
           {/* Time Selection */}
           <div className="flex items-center justify-between mb-6">
-            <span className="text-lg font-semibold text-gray-700">
+            <span className="text-2xl font-TitleFont text-gray-900">
               Select Time
             </span>
             <div className="flex items-center gap-4">
@@ -661,10 +680,9 @@ const MyCart = () => {
                     Select Date
                   </option>
                   {dates.map((date, index) => {
-                    const isSunday = new Date(date).getDay() === 0; // Check if the day is Sunday
                     return (
-                      <option key={index} value={date} disabled={isSunday}>
-                        {date} {isSunday ? "(Close)" : ""}
+                      <option key={index} value={date}>
+                        {date}
                       </option>
                     );
                   })}
@@ -744,16 +762,16 @@ const MyCart = () => {
           <div className="divider "></div>
 
           {/* Pricing Table */}
-          <table className="w-full text-lg text-gray-700 mb-3">
+          <table className="w-full text-lg text-gray-900">
             <tbody>
-              <tr>
-                <td className="py-2">Subtotal</td>
+              <tr className="font-TitleFont">
+                <td className="py-0.5 font-TitleFont">Subtotal</td>
                 <td className="text-right">${cartSubtotal.toFixed(2)}</td>
               </tr>
 
               {orderStatus === "Delivery" ? (
-                <tr>
-                  <td className="py-2 flex items-center gap-1">
+                <tr className="font-TitleFont">
+                  <td className="py-0.5 flex items-center gap-1">
                     <span>Tax & Fees</span>
                     <span
                       className="cursor-pointer"
@@ -769,8 +787,8 @@ const MyCart = () => {
                   </td>
                 </tr>
               ) : (
-                <tr>
-                  <td className="py-2">Tax</td>
+                <tr className="font-TitleFont">
+                  <td className="py-0.5">Tax</td>
                   <td className="text-right">
                     + $
                     {isTaxLoading ? (
@@ -807,30 +825,30 @@ const MyCart = () => {
               </dialog>
 
               {orderStatus === "Delivery" && (
-                <tr>
-                  <td className="py-2">Delivery Fee</td>
+                <tr className="font-TitleFont">
+                  <td className="py-0.5">Delivery Fee</td>
                   <td className="text-right">+ ${delivaryFee}</td>
                 </tr>
               )}
 
               {orderStatus === "Delivery" && (
-                <tr>
-                  <td className="py-2">Tips</td>
+                <tr className="font-TitleFont">
+                  <td className="py-0.5">Tips</td>
                   <td className="text-right">+ ${tipsPrice.toFixed(2)}</td>
                 </tr>
               )}
 
               {couponPrice > 0 ? (
-                <tr>
-                  <td className="py-2">Coupon Discount</td>
+                <tr className="font-TitleFont">
+                  <td className="py-0.5">Coupon Discount</td>
                   <td className="text-right">- ${couponPrice.toFixed(2)}</td>
                 </tr>
               ) : (
                 ""
               )}
 
-              <tr className="font-bold text-2xl text-gray-800">
-                <td className="py-2">Total</td>
+              <tr className="text-2xl text-gray-800">
+                <td className="font-TitleFont">Total</td>
                 <td className="text-right font-TitleFont font-normal">
                   ${cartTotalPrice.toFixed(2)}
                 </td>

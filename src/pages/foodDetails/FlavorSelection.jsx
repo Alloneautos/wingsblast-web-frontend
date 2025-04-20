@@ -145,12 +145,18 @@ const FlavorSelection = ({ flavor: myFlavor, loading, sendFlavorData }) => {
                   </span>{" "}
                   CHOOSE REGULAR FLAVORS
                 </h1>
-                <span
-                  className={
-                    selectedCount > 0 ? "text-green-600" : "text-red-700"
-                  }
-                >
-                  {selectedCount > 0 ? "Done" : "Required"}
+                <span>
+                  {myFlavor.is_required === 1 && selectedCount === 0 ? (
+                    <span className="text-red-700">
+                      <span className="text-sm font-semibold">Required</span>
+                    </span>
+                  ) : (
+                    <span className="text-green-600">
+                      <span className="text-sm font-semibold">
+                        {selectedCount > 0 ? "Done" : "Optional"}
+                      </span>
+                    </span>
+                  )}
                 </span>
               </div>
               <div className="flex justify-between items-center w-full">

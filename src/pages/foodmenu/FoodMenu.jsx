@@ -4,16 +4,19 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useCategory, useCategoryWithFood } from "../../api/api";
 import LocationModal from "../../components/LocationModal";
-import Loader from "../../assets/images/loader.gif";
 import "react-multi-carousel/lib/styles.css";
 import FoodMenuAbout from "./FoodMenuAbout";
 import { Helmet } from "react-helmet-async";
+import LoadingComponent from "../../components/LoadingComponent";
 
 const FoodMenu = () => {
-  const [activeTab, setActiveTab] = useState("Wingsblast");
+  // Set first category as default active tab
+  const { category } = useCategory();
+  const firstCategoryId = category?.[0]?.id || 0;
+  const [activeTab, setActiveTab] = useState(firstCategoryId);
+  
   const sectionsRef = useRef({});
   const { allwithfood, isLoading } = useCategoryWithFood();
-  const { category } = useCategory();
   const [selectedItem, setSelectedItem] = useState(null);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [foodId, setFoodId] = useState(0);
@@ -23,37 +26,41 @@ const FoodMenu = () => {
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: "smooth" });
-      setActiveTab(sectionId); // Set active tab based on clicked section
+      setActiveTab(sectionId);
     }
   };
+
   useEffect(() => {
-    const options = {
-      root: null,
-      rootMargin: "0px",
-      threshold: 0.5,
-    };
+    if (!category.length) return;
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveTab(entry.target.id);
-        }
-      });
-    }, options);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveTab(entry.target.id);
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        // 50% of the section needs to be visible
+      }
+    );
 
-    // Observe each section
-    const sections = Object.values(sectionsRef.current);
-    sections.forEach((section) => {
+    // Observe all sections
+    Object.values(sectionsRef.current).forEach((section) => {
       if (section) observer.observe(section);
     });
 
     return () => {
-      if (sections) {
-        sections.forEach((section) => observer.unobserve(section));
-      }
+      Object.values(sectionsRef.current).forEach((section) => {
+        if (section) observer.unobserve(section);
+      });
     };
-  }, []);
+  }, [allwithfood, category]); // Re-run when data changes
 
+  // Rest of your existing functions remain the same...
   const handleSelectItem = (item) => {
     setSelectedItem(item);
     document.getElementById("select_cal").showModal();
@@ -74,10 +81,10 @@ const FoodMenu = () => {
       <Helmet>
         <title>Menu | Wingsblast</title>
       </Helmet>
-      <h1 className="text-3xl font-sans ml-[10px] lg:ml-[140px] py-4 font-semibold">
+      <h1 className="text-3xl font-TitleFont ml-[10px] lg:ml-[140px] py-4">
         MENU
       </h1>
-      {/* tab menu section  */}
+      {/* tab menu section - updated with better active state */}
       <div
         role="tablist"
         className="tabs overflow-x-scroll scrollbar-hide w-full border-b-2 sticky px-0 lg:px-[120px] bg-white shadow-2xl"
@@ -85,9 +92,10 @@ const FoodMenu = () => {
         {category.map((catgr) => (
           <a
             key={catgr.id}
+            data-id={catgr.id}
             role="tab"
-            className={`tab whitespace-nowrap text-xl text-black font-TitleFont ${
-              activeTab === catgr.id ? "tab-active text-green-600" : ""
+            className={`tab whitespace-nowrap text-xl font-TitleFont ${
+              activeTab == catgr.id ? "text-green-600" : "text-black"
             }`}
             onClick={() => handleScrollToSection(catgr.id)}
           >
@@ -96,7 +104,7 @@ const FoodMenu = () => {
         ))}
       </div>
 
-      {/* Food Menu Sections */}
+      {/* Rest of your existing JSX remains the same... */}
       {allwithfood.length === 0 && !isLoading ? (
         <div className="flex items-center justify-center h-screen">
           <h1 className="text-2xl font-semibold text-gray-500">
@@ -105,14 +113,9 @@ const FoodMenu = () => {
         </div>
       ) : null}
 
-      {/* Display Food Menus */}
       {isLoading ? (
-        // Skeleton Loading UI
-        <div className="flex items-center justify-center">
-          <img src={Loader} alt="Loading..." className="w-[150px]" />
-        </div>
+        <LoadingComponent />
       ) : (
-        // Actual Content Display
         allwithfood.map((foodMenu) => (
           <section
             key={foodMenu.id}
@@ -120,39 +123,30 @@ const FoodMenu = () => {
             ref={(el) => (sectionsRef.current[foodMenu.id] = el)}
           >
             <div className="container px-3 lg:px-5 py-2 w-full lg:w-10/12 mx-auto">
-              {/* Category Name */}
-              <h1 className="text-3xl lg:text-4xl  font-TitleFont mb-5 text-black">
+              <h1 className="text-3xl lg:text-4xl font-TitleFont mb-5 text-black">
                 {foodMenu.food_menus.length > 0 &&
                   foodMenu.category_name.toUpperCase()}
               </h1>
-
-              {/* Food Items */}
               <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {foodMenu.food_menus.map((food) => (
                   <div
                     key={food.id}
                     className="p-4 w-full mb-6 border rounded-xl shadow-xl transition duration-300"
                   >
-                     {/* Food Name */}
-                     <h2 className="text-xl font-TitleFont black">
+                    <h2 className="text-xl font-TitleFont">
                       {food.name.toUpperCase()}
                     </h2>
-                    {/* Food Image */}
                     <div className="rounded-lg w-full h-[300px] overflow-hidden cursor-pointer">
                       <img
                         alt={food.name}
                         onClick={() => handleSelectItem(food)}
                         className="object-cover object-center h-full bg-white w-full"
-                        src={food.image || "placeholder-image-url"} // Use fallback image
+                        src={food.image || "placeholder-image-url"}
                       />
                     </div>
-
-                    {/* Food Details */}
                     <p className="text-xs leading-relaxed line-clamp-4 mt-2">
                       {food.details}
                     </p>
-
-                    {/* Food Sub-details */}
                     {food.food_details.map((food_detail) => (
                       <div key={food_detail.id} className="my-1">
                         <div
@@ -168,7 +162,7 @@ const FoodMenu = () => {
                               <MdOutlineKeyboardArrowRight />
                             </span>
                           </div>
-                          <h4 className="flex items-center gap-2 text-sm text-gray-700">
+                          <h4 className="flex items-center gap-2 text-[10px] text-gray-700">
                             {food_detail.cal.toLowerCase()} <BiSolidError />
                           </h4>
                         </div>
@@ -184,9 +178,8 @@ const FoodMenu = () => {
 
       <FoodMenuAbout />
 
-      {/* Dialog Box */}
       <dialog id="select_cal" className="modal">
-        <div className="modal-box !p-5  max-w-[350px] !rounded">
+        <div className="modal-box !p-5 max-w-[350px] !rounded">
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
               ✕
@@ -227,7 +220,6 @@ const FoodMenu = () => {
         </div>
       </dialog>
 
-      {/* location modal */}
       <LocationModal
         isOpen={isLocationModalOpen}
         onClose={() => setIsLocationModalOpen(false)}

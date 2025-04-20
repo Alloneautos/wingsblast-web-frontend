@@ -77,7 +77,7 @@ const BestFood = () => {
             {allFood?.map((foodMenu, index) => (
               <div key={index} className="p-2 sm:p-4 cursor-pointer">
                 <div
-                  className="h-full w-full border border-green-200 rounded overflow-hidden hover:border-2 hover:border-green-700 bg-white"
+                  className="h-full w-full border shadow-xl rounded-lg overflow-hidden bg-white"
                   onClick={() => handleLinkClick(foodMenu?.id)}
                 >
                   <div className="relative overflow-hidden">

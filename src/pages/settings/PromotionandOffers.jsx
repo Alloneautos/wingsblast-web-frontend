@@ -3,7 +3,7 @@ const PromotionandOffers = () => {
     {
       title: "FOR ALL OFFERS OR PROMOTIONS",
       description:
-        "Available only for a limited time at participating locations in the US on orders for carryout or delivery placed via Wingsblast.com or the Wingsblast App. Minimum purchase may be required. Prices may vary by location. Prices may be higher in Alaska, California, and Hawaii. Does not include applicable service fees, delivery fees, surcharges, taxes or gratuities. May not be combined with any other offers or promotions. May not be available on third party marketplaces. While supplies last. Wingsblast Restaurants Inc. reserves the right to cancel, suspend and/or modify any offer or promotion if any fraud, technical failures, human error, or any other factor impairs the integrity or proper performance of the offer, as determined by Wingsblast Restaurants Inc. in its sole discretion.",
+        "Available only for a limited time at participating locations in the US on orders for carryout or delivery placed via Wingsblast.com or the Wingsblast App. Minimum purchase may be required. Prices may vary by location. Prices may be higher in Alaska, California, and Hawaii. Does not include applicable service fees, delivery fees, surcharges, taxes or gratuities. May not be combined with any other offers or promotions. May not be available on third party marketplaces. While supplies last. Wings Blast Food Mart Inc . reserves the right to cancel, suspend and/or modify any offer or promotion if any fraud, technical failures, human error, or any other factor impairs the integrity or proper performance of the offer, as determined by Wingsblast Restaurants Inc. in its sole discretion.",
     },
     {
       title: "FOR SAVINGS ON COMBOS, PACKS, BUNDLES, AND MEAL DEALS",
@@ -25,10 +25,10 @@ const PromotionandOffers = () => {
       </h1>
       {promotions.map((promo, index) => (
         <div key={index} className="bg-white shadow-md rounded-lg p-4 mb-4">
-          <h2 className="text-xl font-semibold font-TitleFont text-blue-600 mb-2">
+          <h2 className="text-2xl font-TitleFont text-black mb-2">
             {promo.title}
           </h2>
-          <p className="text-gray-700">{promo.description}</p>
+          <p className="text-gray-900 font-paragraphFont">{promo.description}</p>
         </div>
       ))}
     </div>

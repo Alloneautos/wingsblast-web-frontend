@@ -58,7 +58,7 @@ const AddMoreFood = ({ categoryID }) => {
                 }}
               >
                 <div className="p-4 cursor-pointer hover:scale-105 transition-transform duration-300">
-                  <div className="h-full border border-black rounded-lg bg-white overflow-hidden">
+                  <div className="h-full border shadow-xl rounded-lg bg-white overflow-hidden">
                     <img
                       className="w-full h-[180px] mx-auto object-cover"
                       src={foodMenu.image}
@@ -71,11 +71,11 @@ const AddMoreFood = ({ categoryID }) => {
                       <p className="text-black text-xs h-[33px] line-clamp-2">
                         {foodMenu.description}
                       </p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xl font-semibold">
+                      <div className="flex justify-between items-center font-TitleFont">
+                        <span className="text-xl">
                           ${foodMenu.price}
                         </span>
-                        <span className="text-sm text-black">
+                        <span className="text-sm text-gray-700">
                           {foodMenu.cal}
                         </span>
                       </div>

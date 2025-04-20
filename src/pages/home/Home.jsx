@@ -19,7 +19,7 @@ const Home = () => {
   const orderStatus = localStorage.getItem("orderStatus");
 
   return (
-    <div> 
+    <div>
       <Helmet>
         <title>Home | Wingsblast</title>
         <meta name="description" content="Wingsblast Home Page" />

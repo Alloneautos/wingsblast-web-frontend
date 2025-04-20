@@ -1,5 +1,5 @@
 import { FiChevronRight } from "react-icons/fi";
-import Combo from "../../assets/images/10_Mix__Match_Combo.png";
+import Combo from "../../assets/images/combopack-r.png";
 
 const ExtraCombo = () => {
   return (

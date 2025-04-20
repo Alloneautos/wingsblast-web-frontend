@@ -72,17 +72,17 @@ const CheckOut = () => {
 
   return (
     <section className="text-gray-600 bg-gray-50 body-font  mx-auto">
-      <div className="container px-0 lg:px-5 py-2 lg:py-12 w-full lg:w-10/12 mx-auto flex flex-wrap ">
+      <div className="container px-0 lg:px-5 rounded-lg shadow-lg my-3 py-2 lg:py-3 w-full lg:w-10/12 mx-auto flex flex-wrap ">
         {/* Left side section  */}
-        <div className="w-full lg:w-4/6 md:w-1/2 mx-auto shadow-none lg:shadow-lg ">
+        <div className="w-full lg:w-4/6 md:w-1/2 mx-auto border-r">
           <div className=" rounded-t-md">
-            <h1 className="font-sans font-bold text-4xl text-gray-900 pt-5 mb-6 text-center lg:text-start">
+            <h1 className="font-TitleFont text-4xl text-gray-900 px-4 text-center lg:text-start">
               CHECKOUT
             </h1>
           </div>
             <div className="divider"></div>
           <div className="my-3 mx-4 text-black">
-            <div className="flex justify-between text-center text-2xl">
+            <div className="flex justify-between text-center font-TitleFont text-2xl">
               <h1>CONTACT INFORMATION</h1>
             </div>
           </div>
@@ -98,7 +98,7 @@ const CheckOut = () => {
                       defaultValue={user?.first_name}
                       required
                       placeholder="Fast Name"
-                      className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-800 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                      className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-800 rounded focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                     />
                   </div>
                   <div>
@@ -109,7 +109,7 @@ const CheckOut = () => {
                       required
                       placeholder="Last Name"
                       type="text"
-                      className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-800 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                      className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-800 rounded focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                     />
                   </div>
 
@@ -122,7 +122,7 @@ const CheckOut = () => {
                       readOnly
                       placeholder="Email Address"
                       type="email"
-                      className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-800 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                      className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-800 rounded focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                     />
                   </div>
 
@@ -134,7 +134,7 @@ const CheckOut = () => {
                       defaultValue={user?.phone}
                       placeholder="xxx xxx xxxx"
                       type="text"
-                      className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-800 rounded-md focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
+                      className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-800 rounded focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
                     />
                   </div>
                 </div>
@@ -144,7 +144,7 @@ const CheckOut = () => {
                     type="submit"
                     value={isEditing ? "Saving..." : "Save Information"}
                     disabled={isEditing}
-                    className={`btn bg-ButtonColor text-white hover:bg-ButtonHover px-12 mx-auto text-center mt-4 ${
+                    className={`btn bg-ButtonColor text-white hover:bg-ButtonHover font-TitleFont font-normal text-xl rounded px-12 mx-auto text-center mt-4 ${
                       isEditing ? "btn-disabled cursor-not-allowed" : ""
                     }`}
                   />
@@ -162,7 +162,7 @@ const CheckOut = () => {
             {myOrderData?.foods?.map((food, foodIndex) => (
               <div key={foodIndex} className="p-4 text-black">
                 <div className="divider"></div>
-                <h3 className="text-xl font-semibold">{food.name}</h3>
+                <h3 className="text-2xl font-TitleFont">{food.name}</h3>
 
                 {food?.addons?.flavor?.map((flavor, flavorIndex) => (
                   <div key={flavorIndex} className="flex gap-2">
@@ -216,10 +216,10 @@ const CheckOut = () => {
 
                 <div className="flex justify-between">
                   <p>
-                    <span className="font-semibold">Quantity:</span>{" "}
+                    <span className="font-TitleFont">Quantity:</span>{" "}
                     {food.quantity}
                   </p>
-                  <p>Price: ${food.price}</p>
+                  <p className="font-TitleFont">Price: ${food.price}</p>
                 </div>
               </div>
             ))}
@@ -227,13 +227,13 @@ const CheckOut = () => {
         </div>
 
         {/* Right Side section  */}
-        <div className="lg:w-2/6 md:w-1/2 border border-gray-300 rounded-lg  flex flex-col md:ml-auto w-full mt-10 md:mt-0">
+        <div className="lg:w-2/6 md:w-1/2 rounded  flex flex-col md:ml-auto w-full mt-10 md:mt-0">
           <div className="px-4 pt-4">
-            <h2 className="text-gray-900 text-2xl font-semibold title-font text-center lg:text-start">
+            <h2 className="text-black text-2xl font-TitleFont text-center lg:text-start">
               {orderStatus == "Delivery" ? "DELIVERY ADDRESS" : "CARRYOUT"}
             </h2>
               {orderStatus == "Delivery" ? (
-                <p className="text-gray-600 text-base mt-2 flex justify-center lg:justify-start">
+                <p className="text-gray-900 text-sm mt-2 flex justify-center lg:justify-start">
                   {saveLocation}
                 </p>
               ) : (
@@ -243,23 +243,23 @@ const CheckOut = () => {
 
           <div className="divider"></div>
           <div className="bg-white w-full rounded-lg p-4 mx-auto">
-            <h2 className="text-3xl font-semibold text-gray-800 text-center mb-4">
+            <h2 className="text-3xl font-TitleFont text-gray-950 text-center mb-4">
               Order Summary
             </h2>
             <table className="w-full text-lg text-left text-gray-700">
-              <thead className="text-xl text-gray-900 uppercase bg-gray-50">
+              <thead className="text-xl text-gray-900 uppercase ">
                 <tr>
-                  <th scope="col" className="py-3 px-6">
+                  <th scope="col" className="py-1 px-6 font-TitleFont font-normal">
                     Item
                   </th>
-                  <th scope="col" className="py-3 px-6 text-right">
+                  <th scope="col" className="py-3 px-6 text-right font-TitleFont font-normal">
                     Price
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="bg-gray-50 text-gray-800 border-b border-gray-200">
-                  <td className="py-3 px-6 font-medium">Subtotal</td>
+                  <td className="py-3 px-6 font-TitleFont text-base">Subtotal</td>
                   <td className="py-3 px-6 text-right">
                     ${parseFloat(myOrderData?.sub_total || 0).toFixed(2)}
                   </td>
@@ -267,7 +267,7 @@ const CheckOut = () => {
 
                 {orderStatus == "Delivery" && (
                   <tr className="bg-white text-gray-800 border-b border-gray-200">
-                    <td className="py-3 px-6 font-medium">Delivary Fee</td>
+                    <td className="py-3 px-6 font-TitleFont text-base">Delivary Fee</td>
                     <td className="py-3 px-6 text-right">
                       + ${myOrderData?.delivery_fee}
                     </td>
@@ -277,7 +277,7 @@ const CheckOut = () => {
                 {/* Service Fee */}
                 {orderStatus == "Delivery" && (
                   <tr className="bg-white text-gray-800 border-b border-gray-200">
-                    <td className="py-3 px-6 font-medium">Tips</td>
+                    <td className="py-3 px-6 font-TitleFont text-base">Tips</td>
                     <td className="py-3 px-6 text-right">
                       + ${myOrderData?.tips.toFixed(2)}
                     </td>
@@ -285,7 +285,7 @@ const CheckOut = () => {
                 )}
 
                 <tr className="bg-gray-50 text-gray-800 border-b border-gray-200">
-                  <td className="py-3 px-6 font-medium">
+                  <td className="py-3 px-6 font-TitleFont text-base">
                     {orderStatus == "Delivery" ? "Tax & Fees" : "Tax"}{" "}
                   </td>
                   <td className="py-3 px-6 text-right">
@@ -295,7 +295,7 @@ const CheckOut = () => {
 
                 {myOrderData?.coupon_discount > 0 && (
                   <tr className="bg-gray-50 text-gray-800 border-b border-gray-200">
-                    <td className="py-3 px-6 font-medium">Coupon Discount</td>
+                    <td className="py-3 px-6 font-TitleFont text-base">Coupon Discount</td>
                     <td className="py-3 px-6 text-right">
                       -$
                       {parseFloat(myOrderData?.coupon_discount || 0).toFixed(2)}
@@ -303,8 +303,8 @@ const CheckOut = () => {
                   </tr>
                 )}
 
-                <tr className="bg-white text-gray-900 font-semibold text-xl">
-                  <td className="py-4 px-6">Total</td>
+                <tr className="bg-white text-gray-900 font-TitleFont text-2xl">
+                  <td className="py-4 px-6 ">Total</td>
                   <td className="py-4 px-6 text-right">
                     ${parseFloat(myOrderData?.total_price || 0).toFixed(2)}
                   </td>
@@ -312,8 +312,6 @@ const CheckOut = () => {
               </tbody>
             </table>
           </div>
-
-          <div className="divider"></div>
           <div className="z-10">
             <PayPal
               guestUsers={guestUser}

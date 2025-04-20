@@ -7,7 +7,7 @@ import Google from "../assets/images/google-play.png";
 const Footer = () => {
   return (
     <>
-      <div className="h-[7px] w-full bg-[#006435] "></div>
+      <div className="h-[7px] w-full bg-ButtonColor "></div>
       <footer className="bg-black text-white py-4">
         <div className="container mx-auto px-4">
           <div className="text-center mb-2">
@@ -103,10 +103,16 @@ const Footer = () => {
             >
               <FaFacebookF />
             </a>
-            <a className="text-xl md:text-2xl hover:text-gray-400">
+            <a
+              href="https://www.instagram.com/wingsblast255"
+              className="text-xl md:text-2xl hover:text-gray-400"
+            >
               <FaInstagram />
             </a>
-            <a className="text-xl md:text-2xl hover:text-gray-400">
+            <a
+              href="https://www.tiktok.com/@wingsblast"
+              className="text-xl md:text-2xl hover:text-gray-400"
+            >
               <BsTiktok />
             </a>
           </nav>
@@ -118,7 +124,7 @@ const Footer = () => {
             }}
           ></div>
           <p className="text-center text-xs">
-            © Wingsblast Restaurants Inc. 2025
+            © Wings Blast Food Mart Inc. 2025
           </p>
         </div>
       </footer>
