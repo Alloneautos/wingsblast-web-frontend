@@ -54,7 +54,7 @@ const NewFoodAddCard = () => {
   return (
     <div className="bg-gray-50 rounded-t-md pb-6">
       {/* Header Section */}
-      <h1 className="font-TitleFont text-xl lg:text-3xl text-gray-900 p-4">
+      <h1 className="font-TitleFont text-2xl lg:text-3xl text-gray-900 p-4">
         Add something extra to your order
       </h1>
 

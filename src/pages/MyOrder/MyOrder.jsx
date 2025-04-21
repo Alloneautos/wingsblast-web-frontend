@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useMyOrder, useUserProfile } from "../../api/api";
-import Loader from "../../assets/images/loader.gif"
+import Loader from "../../assets/images/loader.gif";
+import { IoMdEye } from "react-icons/io";
 
 const MyOrder = () => {
   const { user } = useUserProfile();
@@ -12,14 +13,14 @@ const MyOrder = () => {
         <div className="w-full max-w-full px-3 mb-6">
           <div className="bg-gray-100 rounded-lg shadow-lg">
             <div className="border-dashed border rounded-2xl border-gray-200 bg-light/30">
-              <div className="px-6 py-4 flex justify-between items-center bg-gradient-to-r from-orange-200 via-orange-300 to-orange-400 rounded-t-lg">
-                <h3 className="text-2xl font-semibold text-dark">My Order</h3>
+              <div className="px-6 py-4 flex justify-between items-center bg-gradient-to-r from-orange-400 via-orange-300 to-orange-400 rounded-t-lg">
+                <h3 className="text-3xl text-black font-TitleFont">My Order</h3>
               </div>
-              <div className="py-6">
+              <div className="">
                 <div className="overflow-x-auto">
                   <table className="min-w-full border-collapse border border-gray-200 table-zebra">
                     <thead className="bg-orange-100">
-                      <tr className="text-left text-lg font-semibold text-gray-700">
+                      <tr className="text-left text-md text-black font-normal font-TitleFont">
                         <th className="px-4 py-2">Order ID</th>
                         <th className="px-4 py-2">Address</th>
                         <th className="px-4 py-2">Type</th>
@@ -34,14 +35,14 @@ const MyOrder = () => {
                     <tbody>
                       {isLoading ? (
                         <tr>
-                           <td colSpan="9" className="text-center py-8">
-                          <div className="flex items-center justify-center">
-                            <img
-                              src={Loader}
-                              alt="Loading..."
-                              className="w-[150px]"
-                            />
-                          </div>
+                          <td colSpan="9" className="text-center py-8">
+                            <div className="flex items-center justify-center">
+                              <img
+                                src={Loader}
+                                alt="Loading..."
+                                className="w-[150px]"
+                              />
+                            </div>
                           </td>
                         </tr>
                       ) : myorder?.length > 0 ? (
@@ -56,7 +57,7 @@ const MyOrder = () => {
                             <td className="px-4 py-2">
                               {orderMenu.delevery_address}
                             </td>
-                            <td className="px-4 py-2">
+                            <td className="px-4 py-2 font-TitleFont">
                               {orderMenu.delivery_type}
                             </td>
                             <td className="px-4 py-2 text-center">
@@ -66,11 +67,11 @@ const MyOrder = () => {
                               )}
                             </td>
                             <td className="px-4 py-2 text-center">
-                              <span className="inline-flex px-2 py-1 rounded-md bg-green-100 text-green-600">
+                              <span className="inline-flex whitespace-nowrap px-2 py-1 rounded-md bg-green-100 text-green-600">
                                 {orderMenu.later_slot}
                               </span>
                             </td>
-                            <td className="px-4 py-2 text-center">
+                            <td className="px-4 py-2 text-center whitespace-nowrap">
                               {new Date(
                                 orderMenu.later_date
                               ).toLocaleDateString("en-US", {
@@ -84,7 +85,7 @@ const MyOrder = () => {
                             </td>
                             <td className="px-4 py-2 text-center">
                               <span
-                                className={`px-2 py-1 rounded-lg font-semibold ${
+                                className={`px-2 py-1 rounded whitespace-nowrap ${
                                   orderMenu.status === "Completed"
                                     ? "bg-green-200 text-green-800"
                                     : "bg-red-200 text-red-800"
@@ -95,8 +96,8 @@ const MyOrder = () => {
                             </td>
                             <td className="px-4 py-2 text-center">
                               <Link to={`/orderdetails/${orderMenu.id}`}>
-                                <button className="btn btn-secondary btn-sm">
-                                  Details
+                                <button className="text-white text-xs p-1.5 gap-1 rounded flex items-center bg-ButtonColor hover:bg-ButtonHover">
+                                  <IoMdEye /> Details
                                 </button>
                               </Link>
                             </td>

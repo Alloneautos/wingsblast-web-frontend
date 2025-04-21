@@ -7,7 +7,7 @@ import Google from "../assets/images/google-play.png";
 const Footer = () => {
   return (
     <>
-      <div className="h-[7px] w-full bg-ButtonColor "></div>
+      <div className="h-[5px] w-full bg-ButtonColor "></div>
       <footer className="bg-black text-white py-4">
         <div className="container mx-auto px-4">
           <div className="text-center mb-2">

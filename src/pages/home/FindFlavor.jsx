@@ -79,7 +79,7 @@ const FlavorSelector = () => {
             }}
           />
         </div>
-        <div className="flex justify-between mt-2 text-sm">
+        <div className="flex justify-between mt-2 text-lg font-TitleFont">
           <span className={heatLevel < 30 ? "text-green-400" : ""}>HONEY</span>
           <span
             className={heatLevel >= 30 && heatLevel < 70 ? "text-red-500" : ""}
@@ -115,7 +115,7 @@ const FlavorSelector = () => {
               ))
             : filteredFlavors?.map((item, index) => (
                 <div className="px-2" key={index}>
-                  <div className="bg-gray-100 text-black py-6 px-2 rounded-lg text-center shadow-lg">
+                  <div className="bg-gray-100 text-black py-6 px-2 rounded text-center shadow-lg">
                     {/* Image */}
                     <div className="w-20 h-20 inline-flex items-center justify-center border rounded-full mb-2 flex-shrink-0 mx-auto overflow-hidden">
                       <img
@@ -126,7 +126,7 @@ const FlavorSelector = () => {
                     </div>
 
                     {/* Name */}
-                    <h3 className="text-lg font-bold">{item.name}</h3>
+                    <h3 className="text-lg font-TitleFont">{item.name}</h3>
 
                     {/* Rating */}
                     <div className="rating flex justify-center my-3">
@@ -159,7 +159,7 @@ const FlavorSelector = () => {
                     </div>
 
                     {/* Description */}
-                    <p className="text-sm line-clamp-3 h-[60px] mt-4">
+                    <p className="text-sm line-clamp-2 h-[42px] font-paragraphFont mt-4">
                       {item.description}
                     </p>
                   </div>

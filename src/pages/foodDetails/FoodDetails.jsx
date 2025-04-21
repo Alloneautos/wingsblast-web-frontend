@@ -421,13 +421,13 @@ const FoodDetails = () => {
         ...(sandCustData?.map((sand) => ({
           type: "Sandwich",
           type_id: sand.id,
-          is_paid_type: sand.isPaid,
+          is_paid_type: sand.is_paid_type,
           quantity: sand.quantity,
         })) || []),
         ...(toppingsData?.map((topping) => ({
           type: "Topping",
           type_id: topping.id,
-          is_paid_type: topping.isPaid,
+          is_paid_type: topping.is_paid_type,
           quantity: topping.quantity,
         })) || []),
         ...(sideSelects?.map((side) => ({
@@ -471,6 +471,7 @@ const FoodDetails = () => {
         features: formattedFeatures,
         flavers: formattedFlavors,
       };
+      console.log(data, "data")
       setCartLoading(true);
       const response = await API.post("/card/addtocard", data);
       queryClient.invalidateQueries(["wishListVechile", guestUser]);

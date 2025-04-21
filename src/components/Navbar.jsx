@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { FaBagShopping } from "react-icons/fa6";
-import {
-  MdOutlineBorderColor,
-  MdRestaurantMenu,
-} from "react-icons/md";
+import { MdOutlineBorderColor, MdRestaurantMenu } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Language from "./Language";
 import Search from "./Search";
@@ -193,7 +190,7 @@ function Navbar() {
                     <li>
                       <Link
                         to="/userprofile"
-                        className="text-base font-semibold flex items-center"
+                        className="text-lg text-black font-TitleFont flex items-center"
                       >
                         <LuUserCog /> User Profile
                       </Link>
@@ -201,14 +198,14 @@ function Navbar() {
                     <li>
                       <Link
                         to="/myorder"
-                        className="text-base font-semibold flex items-center"
+                        className="text-lg text-black font-TitleFont flex items-center"
                       >
                         <MdOutlineBorderColor /> My Order
                       </Link>
                     </li>
                     <li>
                       <button onClick={handleSignOut}>
-                        <span className="text-base font-semibold flex items-center cursor-pointer">
+                        <span className="text-lg text-black font-TitleFont flex items-center gap-2 cursor-pointer">
                           <CgLogOut /> Log Out
                         </span>
                       </button>
@@ -311,10 +308,8 @@ function Navbar() {
           orderStatus === "Delivery" ? (
             <div className="border-t p-1">
               <h1 className="text-gray-800 text-center flex justify-center items-center">
-                 DELIVERY:
-                <span className="ml-1 text-black">
-                  {shortAddress}
-                </span>
+                DELIVERY:
+                <span className="ml-1 text-black">{shortAddress}</span>
               </h1>
             </div>
           ) : (

@@ -25,6 +25,8 @@ const ToppingSection = ({
     return selectedSandCust.map((sandwich) => ({
       id: sandwich.id,
       isPaid: sandwich.isPaid,
+      is_paid_type: 0,
+      quantity: 1
     }));
   }, [selectedSandCust]);
 

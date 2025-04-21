@@ -8,9 +8,9 @@ import { LuDownload, LuPrinter } from "react-icons/lu";
 const InvoiceOrder = () => {
   const { detailsID } = useParams();
   const { orderDetails } = useOrderDetails(detailsID);
-  console.log(orderDetails);
   const [downloadLoading, setDownloadLoading] = useState(false);
   const [printLoading, setPrintLoading] = useState(false);
+  console.log(orderDetails, "orderDetails");
   const {
     order_id,
     first_name,
@@ -29,6 +29,7 @@ const InvoiceOrder = () => {
     created_at,
     foods,
     coupon_discount,
+    delivery_fee,
   } = orderDetails || {};
 
   const dateObject = new Date(later_date);
@@ -90,10 +91,10 @@ const InvoiceOrder = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-0 sm:p-6 lg:p-8">
+    <div className="bg-gray-200 p-0 sm:p-6 lg:p-8">
       <div className="w-full lg:w-8/12 mx-auto">
         {/* Status Steps */}
-        <ul className="relative flex flex-row gap-x-2 py-4 px-3 bg-gray-50 rounded-lg shadow-xl border border-gray-200 overflow-x-auto">
+        <ul className="relative flex flex-row gap-x-2 py-4 px-3 bg-gray-50 rounded-lg border border-gray-200 overflow-x-auto">
           {["Pending", "Processing", "Completed", "Cancelled"].map(
             (stepLabel, index, array) => {
               const stepIndex =
@@ -151,39 +152,49 @@ const InvoiceOrder = () => {
         </ul>
       </div>
 
-      <div className="p-4 sm:p-6 lg:p-8 flex items-center justify-center">
-        <div>
+      <div className="py-5 flex items-center justify-center">
+        <div className="w-11/12 lg:w-8/12">
           <div
             id="content"
             className="bg-white shadow-2xl rounded-lg w-full overflow-hidden"
           >
             {/* Invoice Header */}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center my-5 text-yellow-400">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-TitleFont text-center my-5 text-black">
               Invoice
             </h1>
 
             {/* Customer Information */}
-            <div className="flex flex-col md:flex-row justify-between bg-yellow-50 p-4 sm:p-6 border-b border-yellow-200">
+            <div className="flex flex-col md:flex-row justify-between bg-teal-50 p-4 sm:p-6 border-b border-teal-600">
               <div>
-                <p>Order ID: {order_id || orderDetails.id}</p>
-                <h2 className="font-semibold text-lg text-gray-800">
-                  Invoice To:
-                </h2>
-                <p className="font-bold text-gray-800">
+                <p>
+                  <span className="font-TitleFont text-lg">Order ID:</span>{" "}
+                  {order_id || orderDetails.id}
+                </p>
+                <p className="text-gray-800 text-md">
+                  <span className="font-TitleFont text-lg">Name:</span>{" "}
                   {first_name} {last_name}
                 </p>
-                <p className="text-gray-700">Phone: {phone}</p>
-                <p className="text-gray-700">Email: {email}</p>
-                <p className="text-gray-700">
-                  Delivery Type:{" "}
-                  {delivery_type === "CarryOut" ? "CARRYOUT" : "DELIVERY"}
+                <p className="text-gray-800 text-md">
+                  <span className="font-TitleFont text-lg">Phone:</span> {phone}
+                </p>
+                <p className="text-gray-800 text-md">
+                  <span className="font-TitleFont text-lg">Email:</span> {email}
+                </p>
+                <p className="text-gray-800 text-md">
+                  <span className="font-TitleFont text-lg">
+                    Delivery Type:{" "}
+                  </span>
+                  {delivery_type === "CarryOut" ? "Carryout" : "Delivery"}
                 </p>
                 {delivery_type === "Delivery" && (
-                  <p className="text-gray-700">Address: {delevery_address}</p>
+                  <p className="text-gray-800 text-lg">
+                    <span className="font-TitleFont">Address:</span>{" "}
+                    {delevery_address}
+                  </p>
                 )}
               </div>
               <div className="text-right mt-4 md:mt-0">
-                <p className="text-xl font-semibold text-gray-800">Invoice</p>
+                <p className="text-2xl font-TitleFont text-gray-800">Invoice</p>
                 <p className="text-sm text-gray-600">
                   Date:{" "}
                   {created_at
@@ -195,14 +206,17 @@ const InvoiceOrder = () => {
             {/* Scheduled Delivery */}
             {isLater ? (
               <div className="p-6 bg-gray-100 border-b border-gray-200">
-                <h2 className="font-semibold text-lg text-gray-800">
+                <h2 className="font-TitleFont text-2xl text-black">
                   Scheduled Delivery
                 </h2>
-                <p className="text-gray-700">
-                  Date:
+                <p className="text-gray-800">
+                  <span className="font-TitleFont text-lg">Date:</span>{" "}
                   {formattedDate}
                 </p>
-                <p className="text-gray-700">Time Slot:{later_slot}</p>
+                <p className="text-gray-800">
+                  <span className="font-TitleFont text-lg">Time Slot:</span>{" "}
+                  {later_slot}
+                </p>
               </div>
             ) : (
               ""
@@ -210,11 +224,11 @@ const InvoiceOrder = () => {
 
             {/* Order Items */}
             <div className="p-4 sm:p-6">
-              <h2 className="font-semibold text-2xl text-gray-800 mb-4">
+              <h2 className="font-TitleFont text-3xl text-gray-800 mb-4">
                 Order Items
               </h2>
-              <div className="rounded-lg border shadow-md">
-                <div className="grid grid-cols-3 gap-3 justify-around font-semibold bg-yellow-100 text-gray-800 py-3 px-4 border-b border-yellow-200">
+              <div className="rounded border">
+                <div className="grid grid-cols-3 gap-3 justify-around font-TitleFont text-xl bg-yellow-100 text-gray-900 py-3 px-4 border-b border-yellow-200">
                   <span>Item</span>
                   <span className="text-center">Qty</span>
                   <span className="text-center">Total</span>
@@ -227,11 +241,12 @@ const InvoiceOrder = () => {
                     <span className="font-medium text-gray-800">
                       {index + 1}. {food.name}
                     </span>
+
                     <span className="text-gray-700 text-center">
                       {food?.quantity || 0}
                     </span>
                     <span className="text-gray-700 text-center">
-                      ${sub_total.toFixed(2)}
+                      ${food?.quantity * food.price.toFixed(2)}
                     </span>
 
                     {/* Addons (collapsible) */}
@@ -256,6 +271,7 @@ const InvoiceOrder = () => {
                           ))}
                         </div>
                       )}
+                      {/* toppings addon  */}
                       {food.addons?.toppings && (
                         <div>
                           <h1 className="font-semibold text-black">
@@ -265,7 +281,10 @@ const InvoiceOrder = () => {
                             <div key={idx} className="ml-4">
                               {addon.name ? (
                                 <p>
-                                  {addon.name}-${addon.price}{" "}
+                                  {addon.name} X{addon.quantity}{" "}
+                                  {addon.isPaid === 1 && (
+                                    <span>(${addon.price})</span>
+                                  )}
                                 </p>
                               ) : (
                                 ""
@@ -274,6 +293,7 @@ const InvoiceOrder = () => {
                           ))}
                         </div>
                       )}
+                      {/* sandCust Addon  */}
                       {food.addons?.sandCust && (
                         <div>
                           <h1 className="font-semibold text-black">
@@ -285,6 +305,9 @@ const InvoiceOrder = () => {
                                 <p>
                                   {addon.name}{" "}
                                   {addon.quantity ? ` X ${addon.quantity}` : ""}
+                                  {addon.isPaid === 1 && (
+                                    <span>(${addon.price})</span>
+                                  )}
                                 </p>
                               ) : (
                                 ""
@@ -293,96 +316,118 @@ const InvoiceOrder = () => {
                           ))}
                         </div>
                       )}
-
                       {/* Dip Addon */}
-                      {food.addons?.dip ? (
+                      {food.addons?.dip && (
                         <div>
-                          <p className="font-semibold capitalize text-gray-700"></p>
+                          <h1 className="font-semibold text-black">
+                            {food.addons.dip.length > 0 && "Dip:"}
+                          </h1>
                           {food.addons.dip.map((addon, idx) => (
                             <div key={idx} className="ml-4">
-                              <p>
-                                {addon.name ? (
-                                  <>
-                                    Dip: {addon.name} -{" "}
-                                    {addon.price
-                                      ? `$${addon.price.toFixed(2)}`
-                                      : " "}
-                                  </>
-                                ) : (
-                                  ""
-                                )}
-                              </p>
+                              {addon.name ? (
+                                <p>
+                                  {addon.name}{" "}
+                                  {addon.quantity ? ` X ${addon.quantity}` : ""}
+                                  {addon.isPaid === 1 && (
+                                    <span>(${addon.price})</span>
+                                  )}
+                                </p>
+                              ) : (
+                                ""
+                              )}
                             </div>
                           ))}
                         </div>
-                      ) : (
-                        ""
                       )}
-
                       {/* Side Addon */}
-                      {food.addons?.side ? (
+                      {food.addons?.side && (
                         <div>
-                          <p className="font-semibold capitalize text-gray-700"></p>
+                          <h1 className="font-semibold text-black">
+                            {food.addons.side.length > 0 && "Side:"}
+                          </h1>
                           {food.addons.side.map((addon, idx) => (
                             <div key={idx} className="ml-4">
-                              <p>
-                                {addon.name ? (
-                                  <>
-                                    Dip: {addon.name} -{" "}
-                                    {addon.price
-                                      ? `$${addon.price.toFixed(2)}`
-                                      : " "}
-                                  </>
-                                ) : (
-                                  ""
-                                )}
-                              </p>
+                              {addon.name ? (
+                                <p>
+                                  {addon.name}{" "}
+                                  {addon.quantity ? ` X ${addon.quantity}` : ""}
+                                  {addon.isPaid === 1 && (
+                                    <span>(${addon.price})</span>
+                                  )}
+                                </p>
+                              ) : (
+                                ""
+                              )}
                             </div>
                           ))}
                         </div>
-                      ) : (
-                        ""
                       )}
-
                       {/* Drink Addon */}
                       {food.addons?.drink && (
                         <div>
+                          <h1 className="font-semibold text-black">
+                            {food.addons.drink.length > 0 && "Drink:"}
+                          </h1>
                           {food.addons.drink.map((addon, idx) => (
                             <div key={idx} className="ml-4">
-                              <p>
-                                {addon.name ? (
-                                  <span>
-                                    Side: {addon.name} -{" "}
-                                    {addon.price
-                                      ? `$${addon.price.toFixed(2)}`
-                                      : " "}
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                              </p>
+                              {addon.name ? (
+                                <p>
+                                  {addon.name}{" "}
+                                  {addon.quantity ? ` X ${addon.quantity}` : ""}
+                                  {addon.isPaid === 1 && (
+                                    <span>(${addon.price})</span>
+                                  )}
+                                </p>
+                              ) : (
+                                ""
+                              )}
                             </div>
                           ))}
                         </div>
                       )}
-
                       {/* Beverage (Bakery) Addon */}
-                      {food.addons?.bakery && (
+                      {food.addons?.beverage && (
                         <div>
-                          {food.addons.bakery.map((addon, idx) => (
+                          <h1 className="font-semibold text-black">
+                            {food.addons.beverage.length > 0 && "Bakery:"}
+                          </h1>
+                          {food.addons.beverage.map((addon, idx) => (
                             <div key={idx} className="ml-4">
-                              <p>
-                                {addon.name ? (
-                                  <span>
-                                    Side: {addon.name} -{" "}
-                                    {addon.price
-                                      ? `$${addon.price.toFixed(2)}`
-                                      : " "}
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                              </p>
+                              {addon.name ? (
+                                <p>
+                                  {addon.name}{" "}
+                                  {addon.quantity ? ` X${addon.quantity}` : ""}
+                                  {addon.isPaid === 1 && (
+                                    <span>(${addon.price})</span>
+                                  )}
+                                </p>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {/* Rice Platter Addon */}
+                      {food.addons?.ricePlatter && (
+                        <div>
+                          <h1 className="font-semibold text-black">
+                            {food.addons.ricePlatter.length > 0 &&
+                              "Rice Platter:"}
+                          </h1>
+                          {food.addons.ricePlatter.map((addon, idx) => (
+                            <div key={idx} className="ml-4">
+                              {addon.name ? (
+                                <p>
+                                  {addon.name}{" "}
+                                  {addon.quantity ? ` X ${addon.quantity}` : ""}
+                                  {addon.isPaid === 1 && (
+                                    <span>(${addon.price})</span>
+                                  )}
+                                </p>
+                              ) : (
+                                ""
+                              )}
                             </div>
                           ))}
                         </div>
@@ -394,16 +439,16 @@ const InvoiceOrder = () => {
             </div>
 
             {/* Order Summary */}
-            <div className="my-4 sm:my-6 text-right px-4 sm:px-6">
-              <p className="text-lg font-medium text-gray-800">
-                Subtotal: ${sub_total.toFixed(2)}
-              </p>
-              <p className="text-gray-700">Tax: ${tax.toFixed(2)}</p>
+            <div className="my-4 sm:my-6 text-right px-4 sm:px-6 text-lg font-TitleFont">
+              <p className="text-gray-900">Subtotal: ${sub_total.toFixed(2)}</p>
+              <p className="text-gray-900">Tax: ${tax.toFixed(2)}</p>
               {delivery_type === "Delivery" && (
-                <p className="text-gray-700">Delivery Fee: $4.99</p>
+                <p className="text-gray-900">Delivery Fee: ${delivery_fee}</p>
               )}
-              {coupon_discount && <p>Coupon Discount: -$ {coupon_discount}</p>}
-              <p className="text-xl font-bold text-gray-800">
+              {coupon_discount > 0 && (
+                <p>Coupon Discount: (-${coupon_discount})</p>
+              )}
+              <p className="text-xl text-gray-800">
                 Total: ${total_price.toFixed(2)}
               </p>
             </div>
@@ -418,11 +463,14 @@ const InvoiceOrder = () => {
           {/* Buttons */}
           <div className="mt-4 flex flex-wrap justify-center gap-4">
             {downloadLoading ? (
-              <button className="btn btn-primary">
+              <button className="btn bg-blue-400">
                 <span className="loading loading-spinner"></span> Loading
               </button>
             ) : (
-              <button className="btn btn-primary" onClick={downloadPDF}>
+              <button
+                className="btn bg-blue-700 hover:bg-blue-900 text-white"
+                onClick={downloadPDF}
+              >
                 <LuDownload /> Download PDF
               </button>
             )}
@@ -431,7 +479,10 @@ const InvoiceOrder = () => {
                 <span className="loading loading-spinner"></span> Loading
               </button>
             ) : (
-              <button className="btn btn-primary" onClick={printInvoice}>
+              <button
+                className="btn bg-ButtonColor hover:bg-ButtonHover text-white"
+                onClick={printInvoice}
+              >
                 <LuPrinter /> Print Invoice
               </button>
             )}

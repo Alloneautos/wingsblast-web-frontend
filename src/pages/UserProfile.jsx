@@ -216,7 +216,7 @@ const UserProfile = () => {
         <div className="p-6">
           {/* Section Header */}
           <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-700 flex items-center gap-2">
+            <h2 className="text-xl font-TitleFont text-gray-900 flex items-center gap-2">
               <BiUser className="text-indigo-500" />
               Personal Information
             </h2>
@@ -224,9 +224,9 @@ const UserProfile = () => {
               onClick={() =>
                 document.getElementById("profile_edit").showModal()
               }
-              className="btn text-white bg-blue-600 hover:bg-blue-700"
+              className="btn text-white rounded font-TitleFont font-normal bg-green-600 hover:bg-green-700"
             >
-              <BiEdit /> Edit Profile Info
+              <BiEdit /> Edit Info
             </button>
           </div>
 

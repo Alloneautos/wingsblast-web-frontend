@@ -20,6 +20,7 @@ import OrderTips from "./OrderTips";
 import { MdEditNote } from "react-icons/md";
 import Loader from "../../assets/images/loader.gif";
 import MakeOffer from "./MakeOffer";
+import { FiEdit } from "react-icons/fi";
 
 const MyCart = () => {
   const { tax, isTaxLoading } = useTax();
@@ -396,9 +397,11 @@ const MyCart = () => {
     }
   }, [orderStatus, savedAddress]);
 
+  console.log(mycard, "mycard");
+
   return (
     <section className="text-gray-600 body-font mx-auto">
-      <div className="container px-0 lg:px-5 py-2 lg:py-12 mx-auto flex flex-wrap w-full lg:w-10/12">
+      <div className="container px-0 lg:px-5 py-2 lg:py-4 mx-auto flex flex-wrap w-full lg:w-10/12">
         <div className="lg:w-4/6 md:w-1/2 w-full  rounded-lg mb-10 lg:mb-0">
           <NewFoodAddCard />
           <div>
@@ -435,6 +438,11 @@ const MyCart = () => {
                           className="text-2xl text-white "
                         />
                       </button>
+                      <Link to={`/food-details/${item.food_details_id}`}>
+                        <button className="bg-green-600 rounded-full p-1.5 hover:bg-green-800 transition-all duration-300">
+                          <FiEdit className="text-2xl text-white " />
+                        </button>
+                      </Link>
                     </div>
                   </div>
                   <div>

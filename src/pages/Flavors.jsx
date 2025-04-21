@@ -3,10 +3,10 @@ import BannarImg from "../assets/images/bannar.jpg";
 import { useState } from "react";
 import { useFlavor } from "../api/api";
 import { BsFire } from "react-icons/bs";
-import Loader from "../assets/images/loader.gif"
+import Loader from "../assets/images/loader.gif";
 const Flavors = () => {
   const [heatLevel, setHeatLevel] = useState(100);
-  const { flavor, isLoading, error,  } = useFlavor();
+  const { flavor, isLoading, error } = useFlavor();
 
   // Filter options for wet, dry, honey flavors
   const [isWet, setIsWet] = useState(true);
@@ -50,7 +50,7 @@ const Flavors = () => {
         <div className="hero-overlay bg-opacity-60"></div>
         <div className=" text-neutral-content text-center mx-auto w-11/12 lg:w-5/12">
           <div>
-            <h1 className="mb-5 text-4xl md:text-5xl font-bold">
+            <h1 className="mb-5 text-4xl md:text-5xl font-TitleFont">
               Find your Flavor
             </h1>
 
@@ -66,7 +66,7 @@ const Flavors = () => {
                   background: `linear-gradient(to right, #008000 0%, #e35336 ${heatLevel}%, #d20a2e ${heatLevel}%)`,
                 }}
               />
-              <div className="flex justify-between mt-2">
+              <div className="flex justify-between font-TitleFont mt-2">
                 <span className={heatLevel < 30 ? "text-green-400" : ""}>
                   NO DRY
                 </span>
@@ -84,10 +84,10 @@ const Flavors = () => {
             </div>
 
             {/* Flavor filter section */}
-            <h2 className="text-center my-3 font-semibold text-xl">
+            <h2 className="text-center my-3 font-TitleFont text-3xl">
               Flavor Type
             </h2>
-            <div className="flex flex-wrap ml-[10px] lg:ml-[120px] py-2 justify-center lg:justify-start gap-4">
+            <div className="flex flex-wrap ml-[10px] lg:ml-[120px] py-2 justify-center lg:justify-start gap-4 font-TitleFont">
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -95,7 +95,7 @@ const Flavors = () => {
                   checked={isWet}
                   onChange={() => setIsWet(!isWet)}
                 />
-                <span className="font-bold">WET</span>
+                <span className="">WET</span>
               </div>
               <div className="flex items-center gap-2">
                 <input
@@ -104,7 +104,7 @@ const Flavors = () => {
                   checked={isDry}
                   onChange={() => setIsDry(!isDry)}
                 />
-                <span className="font-bold">DRY</span>
+                <span className="">DRY</span>
               </div>
               <div className="flex items-center gap-2">
                 <input
@@ -113,7 +113,7 @@ const Flavors = () => {
                   checked={isHoney}
                   onChange={() => setIsHoney(!isHoney)}
                 />
-                <span className="font-bold">HONEY</span>
+                <span className="">HONEY</span>
               </div>
             </div>
           </div>
@@ -128,8 +128,12 @@ const Flavors = () => {
         <div className="container py-14 mx-auto w-full lg:w-10/12">
           {isLoading && (
             <div className="flex items-center justify-center">
-            <img src={Loader} alt="Loading..." className="w-[150px] text-red-600" />
-          </div>
+              <img
+                src={Loader}
+                alt="Loading..."
+                className="w-[150px] text-red-600"
+              />
+            </div>
           )}
           {error && <p className="text-red-500">Error loading flavors.</p>}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 mx-2 gap-3">
@@ -146,10 +150,10 @@ const Flavors = () => {
                       alt={item.name || "Flavor"}
                     />
                   </div>
-                  <h2 className="text-gray-900 text-lg title-font font-medium mb-3">
+                  <h2 className="text-gray-900 text-xl font-TitleFont mb-1">
                     {item.name}
                   </h2>
-                  <div className="rating flex justify-center my-3">
+                  <div className="rating flex justify-center my-1">
                     {[...Array(item.flavor_rating)].map((_, i) => (
                       <BsFire
                         key={i}
@@ -179,9 +183,9 @@ const Flavors = () => {
                       />
                     ))}
                   </div>
-                  <p className="line-clamp-2 h-[50px]">{item.description}</p>
+                  <p className="line-clamp-2 h-[40px] text-sm">{item.description}</p>
                   <Link to="/foodmenu" className="w-full">
-                    <button className="w-11/12 rounded mx-[15px] my-3 py-4 hover:bg-ButtonColor bg-ButtonHover text-white font-semibold">
+                    <button className="w-11/12 rounded mx-[15px] font-TitleFont my-3 py-2 hover:bg-ButtonHover bg-ButtonColor text-white text-xl">
                       ORDER NOW
                     </button>
                   </Link>
