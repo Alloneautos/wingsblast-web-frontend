@@ -23,6 +23,11 @@
   background-color: white;
   padding: 5px 0;
 }
+.tabs {
+  scroll-behavior: smooth;
+  display: flex;
+  white-space: nowrap;
+}
 
 body{
   font-family: 'Roc Grotesk', sans-serif;

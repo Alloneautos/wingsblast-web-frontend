@@ -12,10 +12,13 @@ import LoadingComponent from "../../components/LoadingComponent";
 const FoodMenu = () => {
   // Set first category as default active tab
   const { category } = useCategory();
-  const firstCategoryId = category?.[0]?.id || 0;
-  const [activeTab, setActiveTab] = useState(firstCategoryId);
-  
+  const categoryId = category?.[0]?.id || 0;
+  const [activeTab, setActiveTab] = useState(categoryId);
+  const [isActive, setIsActive] = useState(categoryId);
+
+
   const sectionsRef = useRef({});
+  const tabRefs = useRef({});
   const { allwithfood, isLoading } = useCategoryWithFood();
   const [selectedItem, setSelectedItem] = useState(null);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
@@ -24,9 +27,18 @@ const FoodMenu = () => {
 
   const handleScrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
+
     if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
-      setActiveTab(sectionId);
+      const offset = 100; // Adjust this to match your sticky header height
+      const topPos = section.offsetTop - offset;
+
+      window.scrollTo({
+        top: topPos,
+        behavior: "smooth",
+      });
+
+      // setActiveTab(sectionId);
+      setIsActive(sectionId);
     }
   };
 
@@ -37,14 +49,14 @@ const FoodMenu = () => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActiveTab(entry.target.id);
+            // setActiveTab(entry.target.id);
+            setIsActive(entry.target.id);
           }
         });
       },
       {
         root: null,
         rootMargin: "0px",
-        // 50% of the section needs to be visible
       }
     );
 
@@ -59,6 +71,29 @@ const FoodMenu = () => {
       });
     };
   }, [allwithfood, category]); // Re-run when data changes
+
+  // useEffect(() => {
+  //   const activeTabEl = tabRefs.current[activeTab];
+  //   if (activeTabEl && typeof activeTabEl.scrollIntoView === "function") {
+  //     activeTabEl.scrollIntoView({
+  //       behavior: "smooth",
+  //       inline: "center",
+  //       block: "nearest",
+  //     });
+  //   }
+  // }, [activeTab]);
+
+  useEffect(() => {
+    const activeTabEl = tabRefs.current[isActive];
+    if (activeTabEl && typeof activeTabEl.scrollIntoView === "function") {
+      // const isMobile = window.innerWidth <= 768;
+      activeTabEl.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+  }, [isActive]);
 
   // Rest of your existing functions remain the same...
   const handleSelectItem = (item) => {
@@ -87,16 +122,17 @@ const FoodMenu = () => {
       {/* tab menu section - updated with better active state */}
       <div
         role="tablist"
-        className="tabs overflow-x-scroll scrollbar-hide w-full border-b-2 sticky px-0 lg:px-[120px] bg-white shadow-2xl"
+        className="tabs w-full lg:w-10/12 mx-auto overflow-x-scroll scrollbar-hide border-b-2 sticky bg-white shadow-2xl"
       >
         {category.map((catgr) => (
           <a
             key={catgr.id}
+            ref={(el) => (tabRefs.current[catgr.id] = el)}
             data-id={catgr.id}
             role="tab"
-            className={`tab whitespace-nowrap text-xl font-TitleFont ${
-              activeTab == catgr.id ? "text-green-600" : "text-black"
-            }`}
+            className={`tab whitespace-nowrap text-xl font-TitleFont px-4 transition-all duration-300 ease-in-out
+           ${isActive == catgr.id ? "text-green-600" : "text-black"}
+         `}
             onClick={() => handleScrollToSection(catgr.id)}
           >
             {catgr.category_name.toUpperCase()}

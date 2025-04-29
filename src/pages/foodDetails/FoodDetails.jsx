@@ -78,12 +78,24 @@ const FoodDetails = () => {
     setIsBakeryPrice(bakeryPrice > 0 ? 1 : 0);
   }, [bakeryPrice]);
 
+  let mainPrice;
+
+  if (foodDetails?.is_discount_amount === 1) {
+    mainPrice = foodDetails.price - foodDetails.discount_amount;
+  } else if (foodDetails?.is_discount_percentage === 1) {
+    const discountAmount =
+      (foodDetails.price * foodDetails.discount_percentage) / 100;
+    mainPrice = foodDetails.price - discountAmount;
+  } else {
+    mainPrice = foodDetails.price;
+  }
+
   useEffect(() => {
-    if (foodDetails?.price) {
-      setUnitPrice(foodDetails.price);
-      setTotalPrice((quantity * foodDetails.price).toFixed(2));
+    if (mainPrice) {
+      setUnitPrice(mainPrice);
+      setTotalPrice((quantity * mainPrice).toFixed(2));
     }
-  }, [foodDetails.price, quantity]);
+  }, [mainPrice, quantity]);
   useEffect(() => {
     setTotalPrice(
       (
@@ -133,9 +145,16 @@ const FoodDetails = () => {
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
-    setIsScrolled(scrollPosition > 650);
-  };
+    const screenWidth = window.innerWidth;
 
+    if (screenWidth >= 768) {
+      // Medium (md) and larger devices
+      setIsScrolled(scrollPosition > 200); // example value for larger screens
+    } else {
+      // Small devices
+      setIsScrolled(scrollPosition > 400); // example value for small screens
+    }
+  };
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => {
@@ -177,7 +196,6 @@ const FoodDetails = () => {
   };
 
   const handleSideSelected = (selectedSides) => {
-    console.log("Selected Sides:", selectedSides); // Log the selected sides
     setSideSelects(selectedSides); // Store the formatted data
   };
   const handleExtraSideSelected = (selectedExtraSides) => {
@@ -319,11 +337,11 @@ const FoodDetails = () => {
     .filter((item) => item.component !== null)
     .sort((a, b) => a.sn_number - b.sn_number);
 
-
-    console.log(ricePlattarSelects, "dipSelects");
-
   const handleAddToBag = async () => {
-    if (foodDetails?.flavor?.is_required === 1 && (!flavorData || flavorData.length === 0)) {
+    if (
+      foodDetails?.flavor?.is_required === 1 &&
+      (!flavorData || flavorData.length === 0)
+    ) {
       Swal.fire({
         title: "Flavor is Required",
         text: "Please select at least one flavor.",
@@ -332,7 +350,10 @@ const FoodDetails = () => {
       });
       return;
     }
-    if (foodDetails?.dip?.is_required === 1 && (!dipSelects || dipSelects.length === 0)) {
+    if (
+      foodDetails?.dip?.is_required === 1 &&
+      (!dipSelects || dipSelects.length === 0)
+    ) {
       Swal.fire({
         title: "Dip is Required",
         text: "Please select at least one dip.",
@@ -341,7 +362,10 @@ const FoodDetails = () => {
       });
       return;
     }
-    if (foodDetails?.side?.is_required === 1 && (!sideSelects || sideSelects.length === 0)) {
+    if (
+      foodDetails?.side?.is_required === 1 &&
+      (!sideSelects || sideSelects.length === 0)
+    ) {
       Swal.fire({
         title: "Side is Required",
         text: "Please select at least one side.",
@@ -350,7 +374,10 @@ const FoodDetails = () => {
       });
       return;
     }
-    if (foodDetails?.drink?.is_required === 1 && (!selectedDrinks || selectedDrinks.length === 0)) {
+    if (
+      foodDetails?.drink?.is_required === 1 &&
+      (!selectedDrinks || selectedDrinks.length === 0)
+    ) {
       Swal.fire({
         title: "Drink is Required",
         text: "Please select at least one drink.",
@@ -358,8 +385,11 @@ const FoodDetails = () => {
         confirmButtonText: "OK",
       });
       return;
-      }
-    if(foodDetails?.sandwichCustomize?.is_required === 1 && (!sandCustData || sandCustData.length === 0)) {
+    }
+    if (
+      foodDetails?.sandwichCustomize?.is_required === 1 &&
+      (!sandCustData || sandCustData.length === 0)
+    ) {
       Swal.fire({
         title: "Sandwich is Required",
         text: "Please select at least one sandwich.",
@@ -368,7 +398,10 @@ const FoodDetails = () => {
       });
       return;
     }
-    if (foodDetails?.topping?.is_required === 1 && (!toppingsData || toppingsData.length === 0)) {
+    if (
+      foodDetails?.topping?.is_required === 1 &&
+      (!toppingsData || toppingsData.length === 0)
+    ) {
       Swal.fire({
         title: "Topping is Required",
         text: "Please select at least one topping.",
@@ -377,7 +410,10 @@ const FoodDetails = () => {
       });
       return;
     }
-    if (foodDetails?.bakery?.is_required === 1 && (!bakerySelects || bakerySelects.length === 0)) {  
+    if (
+      foodDetails?.bakery?.is_required === 1 &&
+      (!bakerySelects || bakerySelects.length === 0)
+    ) {
       Swal.fire({
         title: "Bakery is Required",
         text: "Please select at least one bakery.",
@@ -386,7 +422,10 @@ const FoodDetails = () => {
       });
       return;
     }
-    if (foodDetails?.ricePlatter?.is_required === 1 && (!ricePlattarSelects || ricePlattarSelects.length === 0)) {
+    if (
+      foodDetails?.ricePlatter?.is_required === 1 &&
+      (!ricePlattarSelects || ricePlattarSelects.length === 0)
+    ) {
       Swal.fire({
         title: "Rice Platter is Required",
         text: "Please select at least one rice platter.",
@@ -400,8 +439,8 @@ const FoodDetails = () => {
       const formattedFeatures = [
         ...(dipSelects?.map((dip) => ({
           type: "Dip",
-          type_id: dip.type_id,
-          is_paid_type: dip.is_paid_type,
+          type_id: dip.id,
+          is_paid_type: 0,
           quantity: dip.quantity,
         })) || []),
         ...(selectedDrinks?.map((drink) => ({
@@ -432,8 +471,8 @@ const FoodDetails = () => {
         })) || []),
         ...(sideSelects?.map((side) => ({
           type: "Side",
-          type_id: side.type_id,
-          is_paid_type: side.is_paid_type,
+          type_id: side.id,
+          is_paid_type: 0,
           quantity: side.quantity,
         })) || []),
         ...(extraSideSelects?.map((side) => ({
@@ -454,13 +493,12 @@ const FoodDetails = () => {
           is_paid_type: bakery.is_paid_type,
           quantity: bakery.quantity,
         })) || []),
-      ];
-
-      const formattedFlavors =
-        flavorData?.map((flavor) => ({
-          id: flavor.id,
+        ...(flavorData?.map((flavor) => ({
+          type: "flavor",
+          type_id: flavor.id,
           quantity: flavor.quantity,
-        })) || [];
+        })) || []),
+      ];
 
       const data = {
         user_id: user?.id || null,
@@ -469,9 +507,8 @@ const FoodDetails = () => {
         quantity,
         price: myFoodPrice,
         features: formattedFeatures,
-        flavers: formattedFlavors,
       };
-      console.log(data, "data")
+
       setCartLoading(true);
       const response = await API.post("/card/addtocard", data);
       queryClient.invalidateQueries(["wishListVechile", guestUser]);
@@ -511,7 +548,7 @@ const FoodDetails = () => {
   return (
     <>
       <Helmet>
-        <title>{foodDetails.name} | Wingsblast</title>
+        <title>{`${foodDetails?.name || "Loading"} | Wingsblast`}</title>
       </Helmet>
       <div className="flex flex-col w-full lg:w-10/12 mx-auto">
         <div className="container mx-auto px-6 py-1 bg-white -mt-[15px] lg:mt-6">
@@ -519,24 +556,46 @@ const FoodDetails = () => {
             <div className="w-full lg:w-1/3 flex justify-center items-center">
               <div className="bg-white rounded-lg">
                 <img
-                  src={foodDetails.image}
+                  src={foodDetails?.image}
                   alt={foodDetails.name}
-                  className=" w-[320px] md:w-[400px] lg:w-[400px] h-auto rounded-lg object-cover border-gray-200  transition-shadow duration-300"
+                  className=" w-[320px] md:w-[400px] lg:w-[350px] h-auto rounded-lg object-cover border-gray-200  transition-shadow duration-300"
                 />
               </div>
             </div>
 
             <div className="w-auto py-1 px-5 ">
               <h1 className="font-TitleFont text-4xl md:text-4xl lg:text-5xl font-s mb-2 text-black">
-                {foodDetails.name.toUpperCase()}
+                {foodDetails.name}
               </h1>
-              <p className="text-black text-2xl font-TitleFont mb-1">
-                ${foodDetails.price}
-                <span className="text-xs text-gray-600">
-                  {" "}
-                  {foodDetails.cal}
+              {foodDetails.is_discount_amount === 1 ? (
+                <p className="text-black text-4xl font-TitleFont">
+                  <span className="text-2xl text-gray-700 line-through">
+                    {" "}
+                    ${foodDetails.price}
+                  </span>{" "}
+                  ${mainPrice.toFixed(2)}{" "}
+                  <span className="text-[20px] text-green-600">
+                    (Save ${foodDetails.discount_amount})
+                  </span>
+                </p>
+              ) : foodDetails.is_discount_percentage === 1 ? (
+                <p className="text-black text-4xl font-TitleFont">
+                  <span className="text-2xl text-gray-700 line-through">
+                    {" "}
+                    ${foodDetails.price}
+                  </span>{" "}
+                  ${mainPrice.toFixed(2)}{" "}
+                  <span className="text-2xl text-green-600">
+                    (Save ${(foodDetails.price - mainPrice).toFixed(2)})
+                  </span>
+                </p>
+              ) : (
+                <span className="text-4xl font-TitleFont">
+                  ${foodDetails.price}
                 </span>
-              </p>
+              )}
+
+              <span className="text-xs text-gray-600">{foodDetails.cal}</span>
               <p className="text-black mb-0.5 font-paragraphFont leading-relaxed text-sm md:text-base lg:text-base">
                 {foodDetails.description}
               </p>
@@ -550,7 +609,7 @@ const FoodDetails = () => {
                   >
                     -
                   </button>
-                  <div className="flex items-center justify-center w-12 h-10 md:w-14 md:h-12 border border-gray-300 text-lg md:text-xl font-semibold rounded-">
+                  <div className="flex items-center justify-center w-12 h-10 md:w-14 md:h-12 border bg-gray-100 border-gray-300 text-lg md:text-xl font-semibold rounded-">
                     {quantity}
                   </div>
                   <button
@@ -582,7 +641,9 @@ const FoodDetails = () => {
         </div>
       </div>
 
-      <ExtraCombo />
+      {foodDetails?.upgrade_food_details?.length > 0 && (
+        <ExtraCombo extraPackege={foodDetails.upgrade_food_details} />
+      )}
 
       {sortedComponents.map((item, index) => (
         <div key={index}>{item.component}</div>
@@ -609,7 +670,7 @@ const FoodDetails = () => {
         />
       )}
       {/* // Extra Combo Drink Section */}
-      {foodDetails?.drink?.is_extra_addon === 0 && (
+      {foodDetails?.drink?.is_extra_addon === 1 && (
         <ExtraDrinkSection
           allDrinks={foodDetails.drink.data}
           loading={loading}

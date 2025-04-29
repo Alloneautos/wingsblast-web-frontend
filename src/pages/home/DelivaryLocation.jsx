@@ -5,7 +5,6 @@ import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import Swal from "sweetalert2";
 import { API, useGuestUser } from "../../api/api";
 import { useNavigate } from "react-router-dom";
-import Loader from "../../assets/images/loader.gif";
 
 const YOUR_GOOGLE_MAPS_API_KEY = "AIzaSyDHR63uSt3NXUnv9Ml87RMOPR_DzFsTlYY";
 
@@ -109,7 +108,7 @@ const DelivaryLocation = () => {
   if (!isLoaded) {
     return (
       <div className="flex items-center justify-center">
-        <img src={Loader} alt="Loading..." className="w-[150px]" />
+        <span className="loading loading-spinner text-accent"></span>
       </div>
     );
   }
@@ -126,7 +125,7 @@ const DelivaryLocation = () => {
       <div className="absolute inset-0 bg-black bg-opacity-50 z-0"></div>
       <div className="z-10 flex flex-col items-center text-white">
         <div className="flex items-center my-3">
-          <h1 className="text-3xl font-bold tracking-wide italic text-center">
+          <h1 className="text-4xl font-TitleFont tracking-wide text-center">
             FIND YOUR MENU
           </h1>
           <FaLocationDot className="text-2xl ml-2" />
@@ -135,7 +134,7 @@ const DelivaryLocation = () => {
         {/* Tab Buttons */}
         <div className="flex mb-6">
           <button
-            className={`px-6 py-2 text-sm md:text-base rounded-l-full font-medium transition-all ${
+            className={`px-6 py-2 text-lg md:text-xl rounded-l-full font-TitleFont transition-all ${
               activeTab === "carryout"
                 ? "bg-ButtonColor text-white"
                 : "bg-white text-black border"
@@ -145,7 +144,7 @@ const DelivaryLocation = () => {
             CARRYOUT
           </button>
           <button
-            className={`px-6 py-2 text-sm md:text-base rounded-r-full font-medium transition-all ${
+            className={`px-6 py-2 text-lg md:text-xl rounded-r-full font-medium transition-all font-TitleFont ${
               activeTab === "delivery"
                 ? "bg-ButtonColor text-white"
                 : "bg-white text-black border"
@@ -159,16 +158,16 @@ const DelivaryLocation = () => {
         {/* Tab Content */}
         <div className="w-full max-w-lg mx-auto">
           {activeTab === "carryout" ? (
-            <div className="bg-white shadow-lg rounded-lg p-6 text-center space-y-4">
-              <h1 className="text-2xl font-bold text-gray-800">
+            <div className="bg-white shadow-lg rounded p-6 text-center space-y-4">
+              <h1 className="text-3xl font-TitleFont text-black">
                 CARRYOUT INFORMATION
               </h1>
-              <p className="text-lg font-semibold text-gray-700">
-                <span className="text-indigo-600">CarryOut Time:</span> 10:00 AM
+              <p className="text-md text-black">
+                <span className="text-black text-xl font-TitleFont font-normal">CarryOut Time:</span> 10:00 AM
                 - 11:00 PM
               </p>
-              <p className="text-lg font-semibold text-gray-700">
-                <span className="text-indigo-600">Location:</span> 255 Kingston
+              <p className="text-md text-black">
+                <span className="text-black text-xl font-TitleFont font-normal">Location:</span> 255 Kingston
                 Ave Brooklyn, NY 11213
               </p>
               <button
@@ -180,7 +179,7 @@ const DelivaryLocation = () => {
             </div>
           ) : (
             <div className="bg-white shadow-lg rounded-lg p-6 space-y-4">
-              <label className="block text-sm font-semibold text-gray-700">
+              <label className="block text-lg font-TitleFont text-gray-900">
                 Enter Your Delivery Address
               </label>
 

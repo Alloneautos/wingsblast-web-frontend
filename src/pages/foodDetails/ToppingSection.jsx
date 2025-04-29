@@ -14,7 +14,6 @@ const ToppingSection = ({
 }) => {
   const [selectedToppings, setSelectedToppings] = useState([]);
   const toppings = myTopping.data;
-  console.log(toppings)
   const selectTop = useMemo(() => {
     return selectedToppings.map((topping) => ({
       type: "Topping",

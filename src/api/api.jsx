@@ -433,7 +433,7 @@ export const useSingleProjects = (projectID) => {
         const projectData = await getProject();
         setProject(projectData);
       } catch (error) {
-        setError("Failed to fetch project.");
+        setError("Failed to fetch project.", error);
       } finally {
         setLoading(false);
       }
@@ -675,3 +675,27 @@ export const useAllDips = () => {
 
   return { allDips, isLoading, isError, error, refetch };
 };
+
+
+// get Promotions
+export const useAllPromotions = () => {
+  const getAllPromotion = async () => {
+    const response = await API.get(`/promotion/all`);
+    return response.data.data;
+  };
+
+  const {
+    data: allPromotion = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["allPromotion"],
+    queryFn: getAllPromotion,
+  });
+
+  return { allPromotion, isLoading, isError, error, refetch };
+};
+
+

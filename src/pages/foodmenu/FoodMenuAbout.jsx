@@ -35,7 +35,6 @@ const FoodMenuAbout = () => {
           {" "}
           Visit wingblast.com/offers
         </Link>{" "}
-        Order
       </p>
     </div>
   );

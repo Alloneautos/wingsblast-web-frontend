@@ -18,9 +18,9 @@ import { RiEdit2Fill } from "react-icons/ri";
 import { LuBadgeInfo } from "react-icons/lu";
 import OrderTips from "./OrderTips";
 import { MdEditNote } from "react-icons/md";
-import Loader from "../../assets/images/loader.gif";
 import MakeOffer from "./MakeOffer";
 import { FiEdit } from "react-icons/fi";
+import LoadingComponent from "../../components/LoadingComponent";
 
 const MyCart = () => {
   const { tax, isTaxLoading } = useTax();
@@ -31,6 +31,11 @@ const MyCart = () => {
   const { guestUser } = useGuestUser();
   const { mycard, isLoading, isError, refetch } = useMyCart(guestUser);
   const [quantities, setQuantities] = useState({});
+
+
+  console.log(mycard);
+
+
   const [dates, setDates] = useState([]);
   const [savedAddress, setSavedAddress] = useState("");
   const [time, setTime] = useState(new Date());
@@ -72,6 +77,7 @@ const MyCart = () => {
     return currentHour >= 10 && currentHour < 23;
   };
 
+  // set delivery fee
   useEffect(() => {
     if (orderStatus === "Delivery") {
       setDeliveryFee(delivaryFee);
@@ -82,6 +88,7 @@ const MyCart = () => {
     }
   }, [orderStatus, delivaryFee, fees]);
 
+  // Set `isLater` based on the value of `isASAP`
   useEffect(() => {
     if (isASAP && !checkASAPAvailability()) {
       Swal.fire({
@@ -96,6 +103,7 @@ const MyCart = () => {
     }
   }, [isASAP]);
 
+  // set quantity
   useEffect(() => {
     const initialQuantities = {};
     mycard.forEach((item) => {
@@ -103,11 +111,11 @@ const MyCart = () => {
     });
     setQuantities(initialQuantities);
   }, [mycard]);
-
+  // set quantity
   const incrementQuantity = (id) => {
     setQuantities((prev) => ({ ...prev, [id]: (prev[id] || 1) + 1 }));
   };
-
+  // set quantity
   const decrementQuantity = (id) => {
     setQuantities((prev) => ({
       ...prev,
@@ -115,40 +123,78 @@ const MyCart = () => {
     }));
   };
 
+  // set Coupon
   const handleCoupons = async (event) => {
     event.preventDefault();
     const code = event.target.elements.code.value;
+    const food_ids = mycard.map((item) => ({
+      food_id: item.food_details_id,
+      quentity: quantities[item.id], // or item.qty jodi field ta different hoy
+    }));
 
-    if (code === "GRAND20") {
-      const discount = cartSubtotal * 0.2; // 20% discount
-      setCouponPrice(discount);
+    const user_id = guestUser || 1;
+    const delivery_type = orderStatus === "Delivery" ? "delivery" : "carryout";
 
+    const data = {
+      code,
+      user_id,
+      delivery_type,
+      food_ids,
+    };
+
+
+    try {
+      const response = await API.post("/coupons/check-offer", data);
+      console.log(response);
+      const discountData = response.data.data;
+      if (response.status === 200) {
+        if (discountData.is_discount_amount === 1) {
+          setCouponPrice(discountData.discount_amount);
+          Swal.fire({
+            icon: "success",
+            html: `
+               <div style="text-transform: capitalize; font-size: 24px; font-weight: bold;">
+              🎉 ${discountData.type} Applied
+               </div>
+               <div style="margin-top:10px; font-size:18px;">
+               Amount Saved: $${discountData.discount_amount.toFixed(2)}
+               </div>
+            `,
+            showConfirmButton: true,
+            confirmButtonText: "Awesome!",
+            confirmButtonColor: "#6366F1", // nice indigo color
+            background: "#f0f9ff", // light blue background
+          });
+        } else if (discountData.is_discount_percentage === 1) {
+          const discountAmount =
+            (cartSubtotal * discountData.discount_percentage) / 100;
+          setCouponPrice(discountAmount);
+          Swal.fire({
+            icon: "success",
+            html: `
+               <div style="text-transform: uppercase; font-size: 24px; font-weight: bold;">
+              🎉  ${discountData.type} Applied
+               </div>
+               <div style="margin-top:10px; font-size:18px;">
+               Discount: ${discountData.discount_percentage}%<br/>
+               Amount Saved: $${discountAmount.toFixed(2)}
+               </div>
+            `,
+            showConfirmButton: true,
+            confirmButtonText: "Awesome!",
+            confirmButtonColor: "#6366F1", // nice indigo color
+            background: "#f0f9ff", // light blue background
+          });
+        }
+      }
+    } catch (error) {
+      console.error(error);
       Swal.fire({
-        title: "Coupon Applied!",
-        text: `You have received a discount of $${discount.toFixed(2)}.`,
-        icon: "success",
-        confirmButtonText: "OK",
-      });
-    } else {
-      Swal.fire({
-        title: "Invalid Coupon",
-        text: "Please provide a valid coupon code.",
         icon: "error",
-        confirmButtonText: "Try Again",
+        title: "Invalid Coupon",
+        text: "Please check your code and try again!",
       });
-      setCouponPrice(0);
     }
-  };
-
-  const handleDiscount = () => {
-    const discount = cartSubtotal * 0.2;
-    setCouponPrice(discount);
-    Swal.fire({
-      title: "Discount Applied!",
-      text: `You have received a discount of $${discount.toFixed(2)}.`,
-      icon: "success",
-      confirmButtonText: "OK",
-    });
   };
 
   const calculateSubtotal = (price, quantity) => price * quantity;
@@ -355,11 +401,11 @@ const MyCart = () => {
 
   const navigate = useNavigate();
   const handleToCheckout = () => {
-    if (cartSubtotal < 25) {
+    if (cartSubtotal < 20) {
       Swal.fire({
         icon: "warning",
         title: "Minimum Order Amount",
-        text: "Your order subtotal must be at least $25 to proceed to checkout.",
+        text: "Your order subtotal must be at least $20 to proceed to checkout.",
         confirmButtonText: "OK",
       });
       return; // Prevent navigation to checkout
@@ -397,8 +443,6 @@ const MyCart = () => {
     }
   }, [orderStatus, savedAddress]);
 
-  console.log(mycard, "mycard");
-
   return (
     <section className="text-gray-600 body-font mx-auto">
       <div className="container px-0 lg:px-5 py-2 lg:py-4 mx-auto flex flex-wrap w-full lg:w-10/12">
@@ -420,9 +464,7 @@ const MyCart = () => {
             </div>
 
             {isLoading ? (
-              <div className="flex items-center justify-center">
-                <img src={Loader} alt="Loading..." className="w-[150px]" />
-              </div>
+              <LoadingComponent />
             ) : mycard.length > 0 ? (
               mycard.map((item) => (
                 <div key={item.id} className="my-3 mx-4 text-black">
@@ -681,7 +723,7 @@ const MyCart = () => {
                 <label className="block text-sm text-gray-700 mb-1">Date</label>
                 <select
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="select w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700"
+                  className="select w-full border border-red-900 focus:border-red-800 rounded-lg px-3 py-2 text-gray-700"
                   value={selectedDate || ""}
                 >
                   <option disabled value="">
@@ -700,7 +742,7 @@ const MyCart = () => {
                 <label className="block text-sm text-gray-700 mb-1">Time</label>
                 <select
                   onChange={(e) => setSelectedTime(e.target.value)}
-                  className="select w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700"
+                  className="select w-full border border-red-900 focus:border-red-800 rounded-lg px-3 py-2 text-gray-700"
                   value={selectedTime || ""}
                 >
                   <option disabled value="">
@@ -723,7 +765,7 @@ const MyCart = () => {
               </div>
             </div>
           )}
-
+          {/* ASAP Availability Message */}
           {!checkASAPAvailability() ? (
             <div className="border border-red-400 px-4 py-1.5 rounded-sm my-1">
               <h1 className="text-red-700 font-semibold">ASAP Unavailable</h1>
@@ -735,22 +777,18 @@ const MyCart = () => {
           ) : null}
 
           <div className="divider mb-3"></div>
-          <div className="flex items-center justify-between bg-red-100 rounded-lg py-1">
-            <MakeOffer handleDiscount={handleDiscount} />
-          </div>
-          {/* <div className="divider mb-3">or</div> */}
 
           {/* Coupon Code */}
-          <form onSubmit={handleCoupons} className="relative hidden ">
+          <form onSubmit={handleCoupons} className="relative">
             <input
               type="text"
               name="code"
-              className="w-full border border-gray-300 rounded-lg px-4 py-4 text-gray-700 focus:border-green-600 placeholder-gray-500"
-              placeholder="Enter Your Coupon Code"
+              className="w-full border border-gray-300 text-sm rounded px-4 py-3 text-gray-700 focus:border-green-600 placeholder-gray-500"
+              placeholder="Coupon Code"
             />
             <button
               type="submit"
-              className="absolute right-2 top-2 bg-ButtonColor text-white rounded-lg px-4 py-3 text-xs font-bold uppercase transition hover:bg-ButtonHover"
+              className="absolute right-1 top-1 bg-ButtonColor text-white rounded px-4 py-[10px] text-xs font-bold uppercase transition hover:bg-ButtonHover"
             >
               Submit
             </button>

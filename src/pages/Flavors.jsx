@@ -128,11 +128,7 @@ const Flavors = () => {
         <div className="container py-14 mx-auto w-full lg:w-10/12">
           {isLoading && (
             <div className="flex items-center justify-center">
-              <img
-                src={Loader}
-                alt="Loading..."
-                className="w-[150px] text-red-600"
-              />
+              <span className="loading loading-spinner text-accent"></span>
             </div>
           )}
           {error && <p className="text-red-500">Error loading flavors.</p>}
@@ -183,7 +179,9 @@ const Flavors = () => {
                       />
                     ))}
                   </div>
-                  <p className="line-clamp-2 h-[40px] text-sm">{item.description}</p>
+                  <p className="line-clamp-2 h-[40px] text-sm">
+                    {item.description}
+                  </p>
                   <Link to="/foodmenu" className="w-full">
                     <button className="w-11/12 rounded mx-[15px] font-TitleFont my-3 py-2 hover:bg-ButtonHover bg-ButtonColor text-white text-xl">
                       ORDER NOW

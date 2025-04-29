@@ -130,7 +130,7 @@ const LocationModel = ({ onClose, isOpen, foodId, activeTabHome }) => {
   return (
     <div>
       <dialog ref={dialogRef} className="modal">
-        <div className="modal-box">
+        <div className="modal-box rounded-lg">
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
               ✕
@@ -139,20 +139,20 @@ const LocationModel = ({ onClose, isOpen, foodId, activeTabHome }) => {
 
           <div className="flex space-x-1 mb-4 justify-center">
             <button
-              className={`px-5 py-2 rounded-l-full ${
+              className={`px-5 py-2 rounded-l-full font-TitleFont text-lg ${
                 activeTab === "carryout"
                   ? "bg-ButtonColor text-white"
-                  : "bg-gray-200 text-gray-700"
+                  : "bg-gray-200 text-gray-800"
               }`}
               onClick={() => setActiveTab("carryout")}
             >
               CARRYOUT
             </button>
             <button
-              className={`px-5 py-2 rounded-r-full ${
+              className={`px-5 py-2 rounded-r-full font-TitleFont text-lg ${
                 activeTab === "delivery"
                   ? "bg-ButtonColor text-white"
-                  : "bg-gray-200 text-gray-700"
+                  : "bg-gray-200 text-gray-800"
               }`}
               onClick={() => setActiveTab("delivery")}
             >
@@ -162,8 +162,8 @@ const LocationModel = ({ onClose, isOpen, foodId, activeTabHome }) => {
 
           <div className="w-full  mx-auto">
             {activeTab === "carryout" ? (
-              <div className="bg-white shadow-lg rounded-lg p-6 text-center space-y-4">
-                <h1 className="text-2xl font-bold text-gray-800">
+              <div className="bg-white shadow-lg rounded p-6 text-center space-y-4">
+                <h1 className="text-3xl font-TitleFont text-gray-950">
                   CARRYOUT INFORMATION
                 </h1>
                 <p className="text-lg font-semibold text-gray-700">
@@ -176,7 +176,7 @@ const LocationModel = ({ onClose, isOpen, foodId, activeTabHome }) => {
                 </p>
                 <button
                   onClick={handleToCarryOut}
-                  className="btn w-full py-3 bg-ButtonColor text-white hover:bg-ButtonHover transition-all"
+                  className="btn w-full py-3 font-TitleFont text-lg font-normal bg-ButtonColor text-white hover:bg-ButtonHover transition-all"
                 >
                   SELECT CARRYOUT
                 </button>

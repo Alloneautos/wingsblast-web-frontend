@@ -1,27 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { useAllFood } from "../../api/api";
 import { useNavigate } from "react-router-dom";
 import LocationModal from "../../components/LocationModal";
+import PercentisImage from "../../assets/images/purcentes.svg";
+import DiscountImage from "../../assets/images/discount.png";
 
 const NewFoodAddCard = () => {
   const { allFood, loading } = useAllFood();
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [foodId, setFoodId] = useState(0);
-  const [foodDiscounts, setFoodDiscounts] = useState({});
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (allFood) {
-      const discounts = {};
-      allFood.forEach((food) => {
-        const randomDiscount = [10, 15, 20, 25][Math.floor(Math.random() * 4)];
-        discounts[food.id] = randomDiscount;
-      });
-      setFoodDiscounts(discounts);
-    }
-  }, [allFood]);
 
   const responsive = {
     desktop: {
@@ -94,12 +84,52 @@ const NewFoodAddCard = () => {
                           src={foodMenu.image}
                           alt={foodMenu.name}
                         />
-                        <span className="absolute rotate-45 top-5 -right-9 mt-1 bg-ButtonColor text-white text-xs px-9 py-1">
-                          {foodDiscounts[foodMenu.id]}% OFF
-                        </span>
-                        {/* <span className="absolute rotate-45 top-5 right-0 mt-1 bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded">
+                        {foodMenu.is_discount_amount === 1 && (
+                          <span className="absolute top-0 right-0 text-white text-md font-TitleFont p-0.5 rounded-l-3xl">
+                            <div
+                              style={{
+                                backgroundImage: `url(${DiscountImage})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                              }}
+                              className="w-[70px] h-[70px] flex flex-col items-center justify-center relative overflow-hidden"
+                            >
+                              <div className="absolute inset-0 rounded-full"></div>{" "}
+                              {/* Red overlay for readability */}
+                              <div className="relative z-10  text-center">
+                                <div className="text-2xl leading-[25px]">
+                                  ${foodMenu.discount_amount}
+                                </div>
+                                <span className="text-xl leading-[0px]">
+                                  OFF
+                                </span>
+                              </div>
+                            </div>
+                          </span>
+                        )}
+                        {foodMenu.is_discount_percentage === 1 && (
+                          <span className="absolute top-0 right-0 text-white text-md font-TitleFont p-0.5 rounded-l-3xl">
+                            <div
+                              style={{
+                                backgroundImage: `url(${PercentisImage})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                              }}
+                              className="w-[70px] h-[70px] flex flex-col items-center justify-center relative overflow-hidden"
+                            >
+                              <div className="absolute inset-0 rounded-full"></div>{" "}
+                              {/* Red overlay for readability */}
+                              <div className="relative z-10 text-center leading-tight">
+                                <div className="text-3xl -mt-3 mr-3">
+                                  {foodMenu.discount_percentage}
+                                </div>
+                              </div>
+                            </div>
+                          </span>
+                        )}
+                        <span className="absolute left-3 top-3 mt-1 bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded">
                           POPULAR
-                        </span> */}
+                        </span>
                       </div>
                       <div className="p-2 space-y-1">
                         <h2 className="text-gray-900 text-xl h-[33px] font-TitleFont leading-tight line-clamp-2">

@@ -13,14 +13,14 @@ const MyOrder = () => {
         <div className="w-full max-w-full px-3 mb-6">
           <div className="bg-gray-100 rounded-lg shadow-lg">
             <div className="border-dashed border rounded-2xl border-gray-200 bg-light/30">
-              <div className="px-6 py-4 flex justify-between items-center bg-gradient-to-r from-orange-400 via-orange-300 to-orange-400 rounded-t-lg">
-                <h3 className="text-3xl text-black font-TitleFont">My Order</h3>
+              <div className="px-6 py-4 flex justify-between items-center bg-gradient-to-r from-pink-500 via-pink-300 to-pink-400 rounded-t-lg">
+                <h3 className="text-3xl text-white font-TitleFont">My Order</h3>
               </div>
               <div className="">
                 <div className="overflow-x-auto">
                   <table className="min-w-full border-collapse border border-gray-200 table-zebra">
                     <thead className="bg-orange-100">
-                      <tr className="text-left text-md text-black font-normal font-TitleFont">
+                      <tr className="text-left text-sm text-black uppercase">
                         <th className="px-4 py-2">Order ID</th>
                         <th className="px-4 py-2">Address</th>
                         <th className="px-4 py-2">Type</th>
@@ -57,7 +57,7 @@ const MyOrder = () => {
                             <td className="px-4 py-2">
                               {orderMenu.delevery_address}
                             </td>
-                            <td className="px-4 py-2 font-TitleFont">
+                            <td className="px-4 py-2">
                               {orderMenu.delivery_type}
                             </td>
                             <td className="px-4 py-2 text-center">
