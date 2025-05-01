@@ -13,9 +13,7 @@ const FoodMenu = () => {
   // Set first category as default active tab
   const { category } = useCategory();
   const categoryId = category?.[0]?.id || 0;
-  const [activeTab, setActiveTab] = useState(categoryId);
   const [isActive, setIsActive] = useState(categoryId);
-
 
   const sectionsRef = useRef({});
   const tabRefs = useRef({});
@@ -27,20 +25,24 @@ const FoodMenu = () => {
 
   const handleScrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
-
-    if (section) {
-      const offset = 100; // Adjust this to match your sticky header height
-      const topPos = section.offsetTop - offset;
-
-      window.scrollTo({
-        top: topPos,
-        behavior: "smooth",
-      });
-
-      // setActiveTab(sectionId);
-      setIsActive(sectionId);
+  
+    if (!section) {
+      console.warn(`Section with ID '${sectionId}' not found.`);
+      return;
     }
+      const header = document.querySelector('.sticky-header'); // Give your header a class
+    const offset = header ? header.offsetHeight + (40) : 80; // fallback offset
+  
+    const sectionTop = section.getBoundingClientRect().top + window.pageYOffset - offset;
+  
+    window.scrollTo({
+      top: sectionTop,
+      behavior: 'smooth',
+    });
+  
+    setIsActive(sectionId);
   };
+  
 
   useEffect(() => {
     if (!category.length) return;
@@ -49,7 +51,6 @@ const FoodMenu = () => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // setActiveTab(entry.target.id);
             setIsActive(entry.target.id);
           }
         });
@@ -73,7 +74,7 @@ const FoodMenu = () => {
   }, [allwithfood, category]); // Re-run when data changes
 
   // useEffect(() => {
-  //   const activeTabEl = tabRefs.current[activeTab];
+  //   const activeTabEl = tabRefs.current[isActive];
   //   if (activeTabEl && typeof activeTabEl.scrollIntoView === "function") {
   //     activeTabEl.scrollIntoView({
   //       behavior: "smooth",
@@ -81,12 +82,22 @@ const FoodMenu = () => {
   //       block: "nearest",
   //     });
   //   }
-  // }, [activeTab]);
+  // }, [isActive]);
 
   useEffect(() => {
     const activeTabEl = tabRefs.current[isActive];
     if (activeTabEl && typeof activeTabEl.scrollIntoView === "function") {
-      // const isMobile = window.innerWidth <= 768;
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        const header = document.querySelector(".sticky-header");
+        const offset = header ? header.offsetHeight + (40) : 80; // fallback offset
+        const sectionTop = activeTabEl.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({
+          top: sectionTop,
+          behavior: "smooth",
+        });
+      }
+
       activeTabEl.scrollIntoView({
         behavior: "smooth",
         inline: "center",
@@ -116,6 +127,7 @@ const FoodMenu = () => {
       <Helmet>
         <title>Menu | Wingsblast</title>
       </Helmet>
+      {/* Menu Section */}
       <h1 className="text-3xl font-TitleFont ml-[10px] lg:ml-[140px] py-4">
         MENU
       </h1>
@@ -172,7 +184,7 @@ const FoodMenu = () => {
                     <h2 className="text-xl font-TitleFont">
                       {food.name.toUpperCase()}
                     </h2>
-                    <div className="rounded-lg w-full h-[300px] overflow-hidden cursor-pointer">
+                    <div className="rounded-lg w-full h-[250px] lg:h-[300px] overflow-hidden cursor-pointer">
                       <img
                         alt={food.name}
                         onClick={() => handleSelectItem(food)}

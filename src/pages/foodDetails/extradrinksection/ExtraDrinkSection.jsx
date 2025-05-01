@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { RxCross2 } from "react-icons/rx";
 import { BiSolidError } from "react-icons/bi";
-import { FaChevronRight, FaMinus, FaPlus } from "react-icons/fa";
+import { FaChevronRight } from "react-icons/fa";
 import CustomExtraDrinkModal from "./CustomExtraDrinkModal";
 
 const ExtraDrinkSection = ({
@@ -14,22 +14,42 @@ const ExtraDrinkSection = ({
   onSelectedExtraDrinksChange,
 }) => {
   const [selectedDrinks, setSelectedDrinks] = useState([]);
-  const [drinksNameId, setDrinksNameId] = useState(0);
+  const [selectPrice, setSelectPrice] = useState(0);
 
-  const handleDrinkSelect = (selectedDrinkId, drink) => {
-    setDrinksNameId(selectedDrinkId);
-    console.log("Selected Drink ID:", selectedDrinkId); // Debugging line
 
-    const newDrink = {
-      type: "Drink",
-      type_id: drink.id,
-      is_paid_type: 1,
-      quantity: 1,
-      child_item_id: selectedDrinkId,
-    };
+  const handleDrinkSelect = (selectedDrinkId, drink, quantity) => {
+     console.log("Selected Drink ID:", selectedDrinkId);
+    const existingDrink = selectedDrinks.find(
+      (d) => d.child_item_id === selectedDrinkId && d.type_id === drink.id
+    );
 
-    setSelectedDrinks([newDrink]); // Only one drink can be selected
-    onSelectedExtraDrinksChange([newDrink]); // Notify parent component
+    if (existingDrink) {
+      // Update quantity if the drink is already selected
+      const updatedDrinks = selectedDrinks.map((d) =>
+        d.child_item_id === selectedDrinkId && d.type_id === drink.id
+          ? { ...d, quantity: d.quantity + quantity }
+          : d
+      );
+      setSelectedDrinks(updatedDrinks);
+      onSelectedExtraDrinksChange(updatedDrinks);
+
+      // console.log("Updated Drinks:", updatedDrinks);
+    } else {
+      // Add new drink
+      const newDrink = {
+        type: "Drink",
+        type_id: drink.id, // Use the category drink's ID
+        is_paid_type: 1,
+        quantity,
+        child_item_id: selectedDrinkId, // Use the selected drink's brand ID
+      };
+
+      console.log("New Drink:", newDrink);
+
+      const updatedDrinks = [...selectedDrinks, newDrink];
+      setSelectedDrinks(updatedDrinks);
+      onSelectedExtraDrinksChange(updatedDrinks);
+    }
   };
 
   const handleSelectDrink = (drink) => {
@@ -38,55 +58,41 @@ const ExtraDrinkSection = ({
     );
 
     if (isAlreadySelected) {
-      // Deselect the drink if it's already selected
-      setSelectedDrinks([]);
-      onSelectedExtraDrinksChange([]); // Notify parent component
+      // ❌ Remove drink if already selected
+      const updatedDrinks = selectedDrinks.filter(
+        (selected) => selected.type_id !== drink.id
+      );
+      setSelectedDrinks(updatedDrinks);
+      onSelectedExtraDrinksChange(updatedDrinks);
     } else {
-      // Select the new drink and deselect any previously selected drink
+      // ✅ Add new drink
       const newDrink = {
         type: "Drink",
         type_id: drink.id,
         is_paid_type: 1,
-        quantity: 1, // Assuming quantity is always 1 for drinks
-        child_item_id: drinksNameId,
+        quantity: 1,
+        child_item_id: null,
       };
-      setSelectedDrinks([newDrink]); // Only one drink can be selected
-      onSelectedExtraDrinksChange([newDrink]); // Notify parent component
+      const updatedDrinks = [...selectedDrinks, newDrink];
+      setSelectedDrinks(updatedDrinks);
+      onSelectedExtraDrinksChange(updatedDrinks);
     }
-  };
 
-  const handleQuantityChange = (drinkId, increment) => {
-    const updatedDrinks = selectedDrinks.map((drink) => {
-      if (drink.type_id === drinkId) {
-        return {
-          ...drink,
-          quantity: increment
-            ? drink.quantity + 1
-            : Math.max(1, drink.quantity - 1), // Ensure quantity is at least 1
-        };
-      }
-      return drink;
-    });
-    setSelectedDrinks(updatedDrinks);
-    onSelectedExtraDrinksChange(updatedDrinks); // Notify parent component
+    setSelectPrice(drink.price); // Always update price
   };
 
   useEffect(() => {
     const totalPrice = selectedDrinks.reduce((sum, drink) => {
-      const drinkData = allDrinks
-        .flatMap((category) => category)
-        .find((d) => d.id === drink.type_id);
-      return sum + drinkData.price * drink.quantity;
+      const category = allDrinks.find((cat) => cat.id === drink.type_id);
+      const drinkData = category?.data?.find((d) => d.id === drink.child_item_id);
+      return sum + (drinkData?.price || 0) * drink.quantity;
     }, 0);
 
     onExtraDrinkPriceChange(totalPrice);
     onExtraDrinkSelected(selectedDrinks);
-  }, [
-    selectedDrinks,
-    allDrinks,
-    onExtraDrinkPriceChange,
-    onExtraDrinkSelected,
-  ]);
+
+    // console.log("Selected Drinks:", selectedDrinks);
+  }, [selectedDrinks, allDrinks, onExtraDrinkPriceChange, onExtraDrinkSelected]);
 
   return (
     <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white">
@@ -164,50 +170,32 @@ const ExtraDrinkSection = ({
                             </div>
                           </div>
                           <input
-                            type="radio"
-                            className="radio radio-primary"
+                            type="checkbox"
+                            className="checkbox checkbox-primary rounded"
                             checked={selectedDrinks.some(
                               (drink) => drink.type_id === category.id
                             )}
                             onChange={() => handleSelectDrink(category)}
                           />
                         </div>
-                        {selectedDrinks.some(
-                          (drink) => drink.type_id === category.id
-                        ) && (
-                          <div>
-                            <CustomExtraDrinkModal
-                              onDrinkSelect={(selectedDrinkId) =>
-                                handleDrinkSelect(selectedDrinkId, category)
-                              }
-                            />
-                            <div className="flex items-center justify-center">
-                              <div className="flex items-center gap-3">
-                                <button
-                                  className="p-1.5 border border-gray-300 rounded-md hover:bg-gray-100"
-                                  onClick={() =>
-                                    handleQuantityChange(category.id, false)
+                        {selectedDrinks
+                          .filter((drink) => drink.type_id === category.id)
+                          .map((drink) => {
+                            return (
+                              <div key={drink.child_item_id || drink.type_id}>
+                                <CustomExtraDrinkModal
+                                  onDrinkSelect={(selectedDrinkId, quantity) =>
+                                    handleDrinkSelect(
+                                      selectedDrinkId,
+                                      category,
+                                      quantity
+                                    )
                                   }
-                                >
-                                  <FaMinus />
-                                </button>
-                                <span className="p-2 border-gray-300 text-xl">
-                                  {selectedDrinks.find(
-                                    (drink) => drink.type_id === category.id
-                                  )?.quantity || 1}
-                                </span>
-                                <button
-                                  className="p-1.5 border border-gray-300 rounded-md hover:bg-gray-100"
-                                  onClick={() =>
-                                    handleQuantityChange(category.id, true)
-                                  }
-                                >
-                                  <FaPlus />
-                                </button>
+                                  drinkPrice={selectPrice} // Pass the dynamically selected drink price
+                                />
                               </div>
-                            </div>
-                          </div>
-                        )}
+                            );
+                          })}
                       </label>
                     </div>
                   ))}

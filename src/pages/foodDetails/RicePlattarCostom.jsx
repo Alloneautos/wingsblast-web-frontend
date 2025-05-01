@@ -1,128 +1,157 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Disclosure } from "@headlessui/react";
-import { RxCross2 } from "react-icons/rx";
 import LoadingComponent from "../../components/LoadingComponent";
-import { BiSolidError } from "react-icons/bi";
 import { FaChevronRight } from "react-icons/fa";
+import { BiSolidError } from "react-icons/bi";
 
-const RicePlattarCostom = ({ ricePlatter, loading, error, onRicePlattarSelected }) => {
-  const [selectedRicePlattar, setSelectedRicePlattar] = useState([]);
-  const [ricePlattarQuantities, setRicePlattarQuantities] = useState({});
-  const howManyRicePlattar = ricePlatter.how_many_select;
-  const howManyChoiceRicePlattar = ricePlatter.how_many_choice;
-  const allRicePlattar = ricePlatter.data;
-  const selectedCount = selectedRicePlattar.length;
-  const choiceItem = Object.values(ricePlattarQuantities).reduce(
-    (sum, qty) => sum + qty,
-    0
+const RicePlattarCostom = ({ ricePlatter: myRicePlatter, loading, onRicePlattarSelected }) => {
+  const [selectedCount, setSelectedCount] = useState(0);
+  const [selectedOptions, setSelectedOptions] = useState({});
+  const [wingsDistribution, setWingsDistribution] = useState({});
+  const ricePlatter = myRicePlatter?.data;
+  const howManyRicePlatter = myRicePlatter.how_many_select;
+  const howManyChoiceRicePlatter = myRicePlatter.how_many_choice;
+  const [choiceItem, setChoiceItem] = useState(0);
+
+  const getWingsDistribution = useCallback(
+    (count) => {
+      if (count === 0) return [];
+      const base = Math.floor(howManyChoiceRicePlatter / count);
+      const remainder = howManyChoiceRicePlatter % count;
+      return Array(count)
+        .fill(base)
+        .map((val, idx) => (idx < remainder ? val + 1 : val));
+    },
+    [howManyChoiceRicePlatter]
   );
 
-  const handleSelectRicePlattar = (rice) => {
-    const isSelected = selectedRicePlattar.some((s) => s.id === rice.id);
-    let updatedRicePlattar;
-
-    if (isSelected) {
-      updatedRicePlattar = selectedRicePlattar.filter((s) => s.id !== rice.id);
-    } else if (selectedRicePlattar.length < howManyRicePlattar) {
-      updatedRicePlattar = [...selectedRicePlattar, rice];
-    } else {
-      return;
-    }
-
-    setSelectedRicePlattar(updatedRicePlattar);
-    distributeQuantities(updatedRicePlattar);
-  };
-
-  const distributeQuantities = (riceplattar) => {
-    const totalRicePlattar = riceplattar.length;
-    const baseQuantity = Math.floor(howManyChoiceRicePlattar / totalRicePlattar);
-    const remainder = howManyChoiceRicePlattar % totalRicePlattar;
-
-    const newQuantities = {};
-    riceplattar.forEach((s, index) => {
-      newQuantities[s.id] = baseQuantity + (index < remainder ? 1 : 0);
-    });
-
-    setRicePlattarQuantities(newQuantities);
-
-    const formattedData = riceplattar.map((s) => ({
-      type: "Rice Platter",
-      type_id: s.id,
-      is_paid_type: 0,
-      quantity: newQuantities[s.id],
-    }));
-    onRicePlattarSelected(formattedData);
-  };
-
-  const handleQuantityChange = (riceplattarId, change) => {
-    setRicePlattarQuantities((prevQuantities) => {
-      const newQuantities = { ...prevQuantities };
-      newQuantities[riceplattarId] = Math.max(
-        0,
-        Math.min((newQuantities[riceplattarId] || 0) + change, howManyChoiceRicePlattar)
+  const updateWingsDistribution = useCallback(
+    (newSelectedOptions) => {
+      const selectedKeys = Object.keys(newSelectedOptions).filter(
+        (key) => newSelectedOptions[key]
       );
+      const distribution = getWingsDistribution(selectedKeys.length);
+      const newDistribution = {};
+      selectedKeys.forEach((key, index) => {
+        newDistribution[key] = distribution[index];
+      });
+      setWingsDistribution(newDistribution);
+    },
+    [getWingsDistribution]
+  );
 
-      const totalSelected = Object.values(newQuantities).reduce(
-        (sum, qty) => sum + qty,
+  const handleSelection = (optionName, checked) => {
+    setSelectedOptions((prev) => {
+      const newSelectedOptions = { ...prev, [optionName]: checked };
+      const newCount = Object.values(newSelectedOptions).filter(Boolean).length;
+      setSelectedCount(newCount);
+      updateWingsDistribution(newSelectedOptions);
+      return newSelectedOptions;
+    });
+  };
+
+  // Update dipSelected only when wingsDistribution or selectedOptions change
+  useEffect(() => {
+    const dipSelected = Object.entries(wingsDistribution)
+      .filter(([key]) => selectedOptions[key])
+      .map(([key, quantity]) => {
+        const selectedRicePlatter = ricePlatter.find((item) => item.name === key);
+        return { id: selectedRicePlatter?.id, quantity };
+      });
+
+    onRicePlattarSelected(dipSelected);
+  }, [wingsDistribution, selectedOptions]);
+
+  const handleWingsChange = (optionName, newValue) => {
+    setWingsDistribution((prev) => {
+      const newDistribution = {
+        ...prev,
+        [optionName]: Math.max(0, Math.min(newValue, howManyChoiceRicePlatter)),
+      };
+      const totalSelected = Object.values(newDistribution).reduce(
+        (sum, val) => sum + val,
         0
       );
+      let excess = totalSelected - howManyChoiceRicePlatter;
 
-      let excess = totalSelected - howManyChoiceRicePlattar;
       if (excess > 0) {
-        const otherRicePlattar = selectedRicePlattar.filter((s) => s.id !== riceplattarId);
-        for (const ricePlattar of otherRicePlattar) {
-          if (excess <= 0) break;
-          const reduceBy = Math.min(newQuantities[ricePlattar.id], excess);
-          newQuantities[ricePlattar.id] -= reduceBy;
+        const keys = Object.keys(newDistribution).filter(
+          (key) => key !== optionName
+        );
+        for (let key of keys) {
+          if (excess < 0) break;
+          const reduceBy = Math.min(newDistribution[key], excess);
+          newDistribution[key] -= reduceBy;
           excess -= reduceBy;
         }
       }
 
       let deficit =
-        howManyChoiceRicePlattar -
-        Object.values(newQuantities).reduce((sum, qty) => sum + qty, 0);
+        howManyChoiceRicePlatter -
+        Object.values(newDistribution).reduce((sum, val) => sum + val, 0);
       if (deficit > 0) {
-        const otherRicePlattar = selectedRicePlattar.filter((s) => s.id !== riceplattarId);
-        for (const ricePlattar of otherRicePlattar) {
+        const keys = Object.keys(newDistribution).filter(
+          (key) => key !== optionName
+        );
+        for (let key of keys) {
           if (deficit <= 0) break;
           const increaseBy = Math.min(
-            howManyChoiceRicePlattar - newQuantities[ricePlattar.id],
+            howManyChoiceRicePlatter - newDistribution[key],
             deficit
           );
-          newQuantities[ricePlattar.id] += increaseBy;
+          newDistribution[key] += increaseBy;
           deficit -= increaseBy;
         }
       }
 
-      return newQuantities;
+      return newDistribution;
     });
   };
 
+  
+  
+  useEffect(() => {
+    updateWingsDistribution(selectedOptions);
+  }, [howManyChoiceRicePlatter, updateWingsDistribution]);
+
+  useEffect(() => {
+    const totalSelectedWings = Object.values(wingsDistribution).reduce(
+      (sum, num) => sum + num,
+      0
+    );
+    setChoiceItem(totalSelectedWings);
+  }, [wingsDistribution]);
+
+  if (loading) {
+    return <LoadingComponent />;
+  }
   return (
-    <div className="w-full lg:w-10/12 mx-auto my-1 p-2 bg-white">
+    <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white ">
       <Disclosure>
         {({ open }) => (
           <>
-            <Disclosure.Button className="grid items-center w-full rounded-lg bg-blue-50 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition ease-in-out duration-300">
+            <Disclosure.Button className="grid w-full rounded-lg  px-6 py-3 text-left text-sm font-medium text-black bg-blue-50 hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75">
               <div className="flex justify-between items-center w-full">
-                <span className="font-TitleFont text-2xl flex items-center gap-1">
+                <h1 className="font-TitleFont text-2xl flex items-center gap-1">
                   <span
                     className={`text-lg transform transition-transform duration-300 ${
                       open ? "rotate-90" : "rotate-0"
                     }`}
                   >
                     <FaChevronRight />
-                  </span>
-                  CHOOSE REGULAR RICEPLATTER
-                </span>
+                  </span>{" "}
+                  CHOOSE REGULER RICEPLATTER
+                </h1>
                 <span>
-                  {ricePlatter.is_required === 1 && selectedCount === 0 ? (
+                  {myRicePlatter.is_required === 1 && selectedCount === 0 ? (
                     <span className="text-red-700">
                       <span className="text-sm font-semibold">Required</span>
                     </span>
                   ) : (
                     <span className="text-green-600">
-                      <span className="text-sm font-semibold">Optional</span>
+                      <span className="text-sm font-semibold">
+                        {selectedCount > 0 ? "Done" : "Optional"}
+                      </span>
                     </span>
                   )}
                 </span>
@@ -131,44 +160,35 @@ const RicePlattarCostom = ({ ricePlatter, loading, error, onRicePlattarSelected 
                 <h2 className="font-bold mb-4">
                   <span className="text-xs text-gray-900">
                     Up To Choose
-                    <span className="text-black ">
-                      ({selectedCount} of {howManyRicePlattar} Selected)
+                    <span className="text-black">
+                      ({selectedCount} of {howManyRicePlatter} Selected)
                     </span>
                   </span>
                 </h2>
                 <div className="text-gray-500">
                   <h2 className="grid text-lg font-bold mb-1">
                     <span className="text-xs text-gray-900">
-                      ( {choiceItem} of {howManyChoiceRicePlattar} Selected)
+                      ( {choiceItem} of {howManyChoiceRicePlatter} Selected)
                     </span>
                   </h2>
                 </div>
               </div>
             </Disclosure.Button>
-            {error && (
-              <p className="text-red-500 mt-4">
-                Error loading RicePlattar. Please try again.
-              </p>
-            )}
-            {loading && <LoadingComponent />}
-            <Disclosure.Panel className="px-4 pt-6 pb-4 text-sm text-gray-700">
-              <div className="flavor-selection grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-                {!loading &&
-                  allRicePlattar.map((category, index) => (
+            <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-700">
+              <div className="mb-6">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+                  {ricePlatter.map((category, index) => (
                     <div key={index} className="w-full">
-                      <h3 className="text-md font-semibold mb-2 text-blue-600">
-                        {category.category}
-                      </h3>
-                      <label className="block border border-gray-300 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
+                      <label className="block border border-gray-300 p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer">
                         <div className="flex items-center justify-between">
-                          <div className="flex space-x-3">
+                          <div className="flex items-center space-x-3">
                             <img
-                              className="w-[70px] h-[70px] rounded-full"
+                              className="w-[72px] h-[72px] rounded-full"
                               src={category.image}
                               alt=""
                             />
                             <div>
-                              <p className="text-lg font-TitleFont text-gray-900">
+                              <p className="font-medium text-gray-800">
                                 {category.name}
                               </p>
                               <div className="flex gap-2 text-gray-600">
@@ -182,46 +202,58 @@ const RicePlattarCostom = ({ ricePlatter, loading, error, onRicePlattarSelected 
                           </div>
                           <input
                             type="checkbox"
-                            className="checkbox checkbox-primary rounded"
-                            checked={selectedRicePlattar.some(
-                              (s) => s.id === category.id
-                            )}
-                            onChange={() => handleSelectRicePlattar(category)}
+                            required
+                            className="form-checkbox h-5 w-5 text-green-600 transition duration-200 ease-in-out transform hover:scale-110"
+                            onChange={(e) =>
+                              handleSelection(category.name, e.target.checked)
+                            }
+                            checked={selectedOptions[category.name] || false}
+                            disabled={
+                              !selectedOptions[category.name] &&
+                              selectedCount >= myRicePlatter.how_many_select
+                            }
                           />
                         </div>
-                        <div className={`${selectedCount === 1 ? "hidden" : ""}`}>
-
-                        {selectedRicePlattar.some((s) => s.id === category.id) && (
+                        {selectedOptions[category.name] && (
                           <div className="mt-3 ml-[90px] mx-auto items-center gap-2 text-gray-700">
-                            <span className="font-medium">Quantity:</span>
+                            <span className="font-medium">
+                              Number of Wings:
+                            </span>
                             <div className="flex items-center border p-2 w-[148px] rounded-md overflow-hidden">
                               <button
                                 className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
                                 onClick={() =>
-                                  handleQuantityChange(category.id, -1)
+                                  handleWingsChange(
+                                    category.name,
+                                    wingsDistribution[category.name] - 1
+                                  )
                                 }
-                                disabled={ricePlattarQuantities[category.id] <= 1}
+                                disabled={wingsDistribution[category.name] <= 0}
                               >
                                 -
                               </button>
                               <input
                                 type="number"
-                                value={ricePlattarQuantities[category.id] || 1}
-                                readOnly
+                                value={wingsDistribution[category.name] || 0}
+                                onChange={(e) =>
+                                  handleWingsChange(
+                                    category.name,
+                                    Number(e.target.value)
+                                  )
+                                }
                                 className="w-16 text-center text-lg border-l border-r outline-none"
                               />
                               <button
                                 className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
                                 onClick={() =>
-                                  handleQuantityChange(category.id, 1)
+                                  handleWingsChange(
+                                    category.name,
+                                    wingsDistribution[category.name] + 1
+                                  )
                                 }
                                 disabled={
-                                  ricePlattarQuantities[category.id] >=
-                                    howManyChoiceRicePlattar ||
-                                  Object.values(ricePlattarQuantities).reduce(
-                                    (sum, qty) => sum + qty,
-                                    0
-                                  ) >= howManyChoiceRicePlattar
+                                  wingsDistribution[category.name] >=
+                                  howManyChoiceRicePlatter
                                 }
                               >
                                 +
@@ -229,25 +261,9 @@ const RicePlattarCostom = ({ ricePlatter, loading, error, onRicePlattarSelected 
                             </div>
                           </div>
                         )}
-                        </div>
                       </label>
                     </div>
                   ))}
-                <div className="w-full">
-                  <label className="block border border-gray-300 px-4 py-[33px] mt-2 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <RxCross2 className="text-4xl text-red-600" />
-                        <h1 className="text-2xl font-semibold">NO RICEPLATTAR</h1>
-                      </div>
-                      <input
-                        type="checkbox"
-                        className="checkbox checkbox-primary rounded"
-                        checked={selectedRicePlattar.length === 0}
-                        onChange={() => setSelectedRicePlattar([])}
-                      />
-                    </div>
-                  </label>
                 </div>
               </div>
             </Disclosure.Panel>

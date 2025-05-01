@@ -74,7 +74,6 @@ const SignInSignOutModal = () => {
       });
       window.location.reload();
     } catch (error) {
-      // Show error message if login fails
       Swal.fire({
         title: "Login Failed",
         text: "Please check your credentials.",
@@ -90,14 +89,14 @@ const SignInSignOutModal = () => {
   return (
     <div>
       <button
-        className="p-3 px-6 rounded-lg font-semibold bg-ButtonColor ml-[30px] lg:ml-0 hover:bg-ButtonHover text-white shadow-lg transition-transform transform hover:scale-105"
+        className="w-full p-2 font-TitleFont px-6 rounded bg-ButtonColor lg:ml-0 hover:bg-ButtonHover text-white shadow-lg transition-transform transform hover:scale-105"
         onClick={() => document.getElementById("my_modal_5").showModal()}
       >
         Please Login or Sign Up
       </button>
 
       <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
-        <div className="modal-box bg-white rounded-xl p-8 shadow-xl relative">
+        <div className="modal-box bg-white !rounded p-8 shadow-xl relative">
           <button
             onClick={() => document.getElementById("my_modal_5").close()}
             className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-gray-600 hover:text-red-500"
@@ -131,27 +130,27 @@ const SignInSignOutModal = () => {
           {activeTab === "login" ? (
             <form className="space-y-5" onSubmit={handleLogin}>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-md font-TitleFont text-black">
                   Email Address
                 </label>
                 <input
                   type="email"
                   name="email"
-                  placeholder="Enter Your Email Address"
+                  placeholder="Enter Your Email..."
                   required
-                  className="input-field w-full mt-1 p-3 border rounded-lg bg-gray-100 focus:ring-2 focus:ring-blue-400"
+                  className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
                 />
               </div>
               <div className="relative">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-md font-TitleFont text-black">
                   Password
                 </label>
                 <input
                   type={showPassword ? "text" : "password"}
                   required
-                  placeholder="Enter Your Password"
+                  placeholder="Enter Your Password..."
                   name="password"
-                  className="input-field w-full mt-1 p-3 border rounded-lg bg-gray-100 focus:ring-2 focus:ring-blue-400"
+                  className="input-field w-full mt-1 p-2 border placeholder:text-sm rounded bg-gray-100 focus:ring-2 focus:ring-blue-400"
                 />
                 <span
                   onClick={() => setShowPassword(!showPassword)}
@@ -166,7 +165,7 @@ const SignInSignOutModal = () => {
                   value="Sign In"
                   htmlFor="my_modal_5"
                   disabled={loginLoading}
-                  className={`w-full cursor-pointer rounded-md bg-ButtonColor hover:bg-ButtonHover px-5 py-3 text-base font-medium text-white transition hover:bg-opacity-90 ${
+                  className={`w-full cursor-pointer font-TitleFont rounded-md bg-ButtonColor hover:bg-ButtonHover px-5 py-2 text-xl text-white transition hover:bg-opacity-90 ${
                     loginLoading ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 />
@@ -174,21 +173,21 @@ const SignInSignOutModal = () => {
             </form>
           ) : (
             <form onSubmit={handleSignUp} className="space-y-5">
-              <div className="grid lg:flex justify-between">
+              <div className="grid lg:flex gap-1 justify-between">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-md font-TitleFont text-black">
                     First Name
                   </label>
                   <input
                     type="text"
                     name="first_name"
-                    placeholder="Enter Fast Name..."
+                    placeholder="Enter First Name..."
                     required
-                    className="input-field w-full mt-1 p-3 border rounded-lg bg-gray-100 focus:ring-2 focus:ring-blue-400"
+                    className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-md  font-TitleFont text-black">
                     Last Name
                   </label>
                   <input
@@ -196,24 +195,24 @@ const SignInSignOutModal = () => {
                     name="last_name"
                     placeholder="Enter Last Name..."
                     required
-                    className="input-field w-full mt-1 p-3 border rounded-lg bg-gray-100 focus:ring-2 focus:ring-blue-400"
+                    className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-md font-TitleFont text-black">
                   Phone Number
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter Your Phone Number..."
+                  placeholder="Enter Your Phone..."
                   name="phone"
                   required
-                  className="input-field w-full mt-1 p-3 border rounded-lg bg-gray-100 focus:ring-2 focus:ring-blue-400"
+                  className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-md font-TitleFont text-black">
                   Email Address
                 </label>
                 <input
@@ -221,11 +220,11 @@ const SignInSignOutModal = () => {
                   name="email"
                   placeholder="Enter Your Email...."
                   required
-                  className="input-field w-full mt-1 p-3 border rounded-lg bg-gray-100 focus:ring-2 focus:ring-blue-400"
+                  className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
                 />
               </div>
               <div className="relative">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-md font-TitleFont text-black">
                   Password
                 </label>
                 <input
@@ -233,29 +232,29 @@ const SignInSignOutModal = () => {
                   required
                   placeholder="Enter Password..."
                   name="password"
-                  className="input-field w-full mt-1 p-3 border rounded-lg bg-gray-100 focus:ring-2 focus:ring-blue-400"
+                  className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
                 />
                 <span
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 mt-[30px] transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                  className="absolute right-3 mt-[24px] transform -translate-y-1/2 text-gray-500 cursor-pointer"
                 >
                   {showPassword ? <IoEyeOff /> : <IoEye />}
                 </span>
               </div>
               <div className="relative">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-md font-TitleFont text-black">
                   Confirm Password
                 </label>
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   required
-                  placeholder="Enter Your Confirm Password..."
+                  placeholder="Retype Password..."
                   name="confirm_password"
-                  className="input-field w-full mt-1 p-3 border rounded-lg bg-gray-100 focus:ring-2 focus:ring-blue-400"
+                  className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
                 />
                 <span
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 mt-[30px] transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                  className="absolute right-3 mt-[24px] transform -translate-y-1/2 text-gray-500 cursor-pointer"
                 >
                   {showConfirmPassword ? <IoEyeOff /> : <IoEye />}
                 </span>

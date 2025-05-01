@@ -697,5 +697,25 @@ export const useAllPromotions = () => {
 
   return { allPromotion, isLoading, isError, error, refetch };
 };
+// get Promotions
+export const useAllBannar = () => {
+  const getAllBannar = async () => {
+    const response = await API.get(`/banner`);
+    return response.data.data;
+  };
+
+  const {
+    data: allBannar = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["allBannar"],
+    queryFn: getAllBannar,
+  });
+
+  return { allBannar, isLoading, isError, error, refetch };
+};
 
 

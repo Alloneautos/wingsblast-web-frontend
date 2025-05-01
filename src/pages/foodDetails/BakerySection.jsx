@@ -54,10 +54,8 @@ const BakerySection = ({
       type: "Bakery",
       type_id: item.id,
       is_paid_type: 1,
-      quantity: bakeryQuantities[item.id],
+      quantity: updatedQuantities[item.id] || 1, // Ensure quantity defaults to 1
     }));
-
-    console.log("formattedData", formattedData);
 
     onBakerySelected(formattedData);
   };
@@ -85,8 +83,6 @@ const BakerySection = ({
         quantity: newQuantities[item.id],
       }));
 
-      console.log("formattedData", formattedData);
-
       onBakerySelected(formattedData);
 
       return newQuantities;
@@ -108,8 +104,8 @@ const BakerySection = ({
       <Disclosure>
         {({ open }) => (
           <>
-            <Disclosure.Button className=" grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-blue-50 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition ease-in-out duration-300">
-              <div>
+            <Disclosure.Button className="w-full rounded-lg bg-blue-50 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition ease-in-out duration-300">
+              <div className="flex justify-between items-center w-full">
                 <span className="font-TitleFont text-2xl flex items-center gap-1">
                   <span
                     className={`text-lg transform transition-transform duration-300 ${
@@ -120,15 +116,26 @@ const BakerySection = ({
                   </span>{" "}
                   CHOOSE REGULAR BAKERY
                 </span>
-                <h2 className="mt-2 text-gray-800 text-sm">
-                  <span>Selected: </span>
+                <span>
+                  {myBakery.is_required === 1 && selectedBakeries.length === 0 ? (
+                    <span className="text-red-700">
+                      <span className="text-sm font-semibold">Required</span>
+                    </span>
+                  ) : (
+                    <span className="text-green-600">
+                      <span className="text-sm font-semibold">
+                        {selectedBakeries.length > 0 ? "Done" : "Optional"}
+                      </span>
+                    </span>
+                  )}
+                </span>
+              </div>
+                <h2 className="font-semibold mt-2 text-xs text-gray-900">
+                  <span>Up To Select: </span>
                   <span className="text-black">
-                    {selectedBakeries.length > 0
-                      ? selectedBakeries.map((item) => item.name).join(", ")
-                      : "(None)"}
+                    {selectedBakeries.length} selected
                   </span>
                 </h2>
-              </div>
             </Disclosure.Button>
             {error && (
               <p className="text-red-500 mt-4">

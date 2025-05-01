@@ -6,6 +6,7 @@ import { API } from "../api/api";
 import Swal from "sweetalert2";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import FoodIMG from "../assets/images/FBannar.jpg";
+import { Helmet } from "react-helmet-async";
 
 const Signup = () => {
   const [signUpLoading, setSignUpLoading] = useState(false);
@@ -72,6 +73,9 @@ const Signup = () => {
         backgroundImage: `url(${FoodIMG})`,
       }}
     >
+      <Helmet>
+        <title>Signup | Wingsblast</title>
+      </Helmet>
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
       <div className="w-full lg:w-8/12 mx-auto flex items-center justify-center relative z-10">

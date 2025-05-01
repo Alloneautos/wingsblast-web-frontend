@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import BannarImage1 from "../../assets/bannarimage/wbannar1.jpeg";
-import BannarImage2 from "../../assets/bannarimage/wbannar2.jpeg";
-import BannarImage3 from "../../assets/bannarimage/wbannar3.jpeg";
+// import BannarImage1 from "../../assets/bannarimage/wbannar1.jpeg";
+import BannarImage1 from "../../assets/bannarimage/bannar.mp4";
+import BannarImage2 from "../../assets/bannarimage/bannarvideo.mp4";
+import BannarImage3 from "../../assets/bannarimage/bannarvideo3.mp4";
+import { useAllBannar } from "../../api/api";
 
 const Banner = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { allBannar } = useAllBannar();
   const slides = [
     {
-      url: BannarImage3,
+      url: BannarImage1,
       content: "Slide 1",
     },
     {
@@ -17,7 +20,7 @@ const Banner = () => {
       content: "Slide 2",
     },
     {
-      url: BannarImage1,
+      url: BannarImage3,
       content: "Slide 3",
     },
   ];
@@ -28,7 +31,7 @@ const Banner = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % totalSlides);
-    }, 3000); // Change slide every 3 seconds
+    }, 10000); // Change slide every 3 seconds
 
     return () => clearInterval(interval); // Clean up the interval on component unmount
   }, [totalSlides]);
@@ -53,11 +56,15 @@ const Banner = () => {
             >
               {slides.map((slide, index) => (
                 <div key={index} className="min-w-full rounded-3xl">
-                  <img
-                    src={slide.url}
-                    alt={slide.content}
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
                     className="w-full object-cover rounded-xl lg:rounded-lg"
-                  />
+                  >
+                    <source src={slide.url} type="video/mp4" />
+                  </video>
                 </div>
               ))}
             </div>

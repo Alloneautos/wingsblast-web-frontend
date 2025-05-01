@@ -7,6 +7,7 @@ import { useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import Loader from "../assets/images/loader.gif";
+import { Helmet } from "react-helmet-async";
 
 const UserProfile = () => {
   const { user, isLoading, isError, error, refetch } = useUserProfile();
@@ -180,6 +181,9 @@ const UserProfile = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen flex justify-center items-center px-4">
+      <Helmet>
+        <title>Profile | Wingsblast</title>
+      </Helmet>
       <div className="bg-white shadow-lg rounded-xl w-full lg:w-8/12 overflow-hidden">
         {/* Header Section */}
         <div className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white p-8 flex flex-col items-center rounded-lg shadow-lg">

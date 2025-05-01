@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { RxCross2 } from "react-icons/rx";
 import { FaChevronRight } from "react-icons/fa";
+import { BiSolidError } from "react-icons/bi";
 
 const ToppingSection = ({
   mySandwich,
@@ -20,13 +21,13 @@ const ToppingSection = ({
       setSelectedSandCust(sandCust.slice(0, 5));
     }
   }, [sandCust]);
-
+ 
   const selectTop = useMemo(() => {
     return selectedSandCust.map((sandwich) => ({
       id: sandwich.id,
       isPaid: sandwich.isPaid,
       is_paid_type: 0,
-      quantity: 1
+      quantity: 1,
     }));
   }, [selectedSandCust]);
 
@@ -103,11 +104,14 @@ const ToppingSection = ({
                               <p className="font-TitleFont text-lg text-gray-800">
                                 {category.name}
                               </p>
-                              <div className="flex gap-2 text-gray-600">
+                              <div className="flex gap-2 text-gray-800">
                                 {category.isPaid === 1 && (
                                   <p>+${category.price}</p>
                                 )}
-                                <p className="flex">💪{category.cal}</p>
+                                <p className="flex items-center gap-1">
+                                  <BiSolidError className="text-black"/>
+                                  {category.cal}
+                                </p>
                               </div>
                             </div>
                           </div>

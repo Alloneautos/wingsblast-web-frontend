@@ -75,33 +75,34 @@ const BestFood = () => {
             className=""
           >
             {allFood?.map((foodMenu, index) => (
-              <div key={index} className="p-2 sm:p-4 cursor-pointer">
+              <div key={index} className="p-1 sm:p-4 cursor-pointer">
                 <div
-                  className="h-full w-full border shadow-xl rounded-lg overflow-hidden bg-white"
+                  className="h-full w-full border shadow-2xl hover:shadow-xl rounded-lg overflow-hidden bg-white"
                   onClick={() => handleLinkClick(foodMenu?.id)}
                 >
+                   <h2 className="p-2 text-lg sm:text-xl font-TitleFont text-black truncate">
+                      {foodMenu.name}
+                    </h2>
                   <div className="relative overflow-hidden">
                     <img
-                      className="h-[180px] w-[180px] mx-auto object-cover object-center transition-all duration-300"
+                      className="h-[130px] lg:h-[180px] w-[130px] lg:w-[180px] mx-auto object-cover object-center transition-all duration-300"
                       src={foodMenu.image}
                       alt={foodMenu.name || 'Food Item'}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-30 hover:opacity-20 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 opacity-30 hover:opacity-20 transition-opacity duration-300"></div>
                   </div>
 
                   <div className="p-2 sm:p-6 space-y-1 sm:space-y-2">
-                    <h2 className="title-font text-lg sm:text-xl font-semibold text-gray-800 truncate">
-                      {foodMenu.name}
-                    </h2>
-                    <p className="leading-relaxed text-gray-600 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3">
+                   
+                    <p className="leading-relaxed text-gray-800 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3">
                       {foodMenu.description}
                     </p>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-black font-paragraphFont text-sm">
+                      <span className="text-gray-600 font-paragraphFont font-semibold text-xs">
                         {foodMenu.cal}
                       </span>
-                      <div className="text-gray-800 font-bold text-base sm:text-lg">
+                      <div className="text-black font-TitleFont text-base sm:text-lg">
                         ${foodMenu.price}
                       </div>
                     </div>

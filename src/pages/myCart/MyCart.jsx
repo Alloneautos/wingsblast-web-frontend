@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BsClock } from "react-icons/bs";
 import NewFoodAddCard from "./NewFoodAddCard";
@@ -9,18 +9,18 @@ import {
   useGuestUser,
   useMyCart,
   useTax,
+  useUserProfile,
 } from "../../api/api";
 import Swal from "sweetalert2";
 import { FaMinus, FaPlus } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import LocationModal from "../../components/LocationModal";
 import { RiEdit2Fill } from "react-icons/ri";
 import { LuBadgeInfo } from "react-icons/lu";
 import OrderTips from "./OrderTips";
-import { MdEditNote } from "react-icons/md";
-import MakeOffer from "./MakeOffer";
-import { FiEdit } from "react-icons/fi";
+import { MdEdit, MdModeEdit } from "react-icons/md";
 import LoadingComponent from "../../components/LoadingComponent";
+import SignInSignOutModal from "../../components/SignInSignOutModal";
+import { Helmet } from "react-helmet-async";
 
 const MyCart = () => {
   const { tax, isTaxLoading } = useTax();
@@ -29,21 +29,15 @@ const MyCart = () => {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [isASAP, setIsASAP] = useState(true);
   const { guestUser } = useGuestUser();
+  const { user } = useUserProfile();
   const { mycard, isLoading, isError, refetch } = useMyCart(guestUser);
   const [quantities, setQuantities] = useState({});
-
-
-  console.log(mycard);
-
-
   const [dates, setDates] = useState([]);
   const [savedAddress, setSavedAddress] = useState("");
   const [time, setTime] = useState(new Date());
-  const taxRate = tax?.tax_rate;
-  const delivaryFee = deleveryFee?.fee;
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
-
+  const [selectedItem, setSelectedItem] = useState(null);
   const [isLater, setIsLater] = useState(true);
   const [orderStatus, setOrderStatus] = useState("");
   const [error, setError] = useState("");
@@ -52,19 +46,23 @@ const MyCart = () => {
   const [couponPrice, setCouponPrice] = useState(0);
   const [selectTipsRate, setSelectTipsRate] = useState(0);
   const [customTips, setCustomTips] = useState(0);
-
   const [openNotes, setOpenNotes] = useState({});
   const [note, setNote] = useState({});
   const [firstLine, setFirstLine] = useState("");
   const [secondLine, setSecondLine] = useState("");
+  const delivaryFee = deleveryFee?.fee;
+  const taxRate = tax?.tax_rate;
+  const navigate = useNavigate();
 
+  // open note funtion
   const handleOpenNote = (id) => {
     setOpenNotes((prev) => ({
       ...prev,
-      [id]: !prev[id], // Toggle the specific item's note open/close state
+      [id]: !prev[id],
     }));
   };
 
+  // note change
   const handleNoteChange = (id, value) => {
     setNote((prev) => ({
       ...prev,
@@ -111,16 +109,29 @@ const MyCart = () => {
     });
     setQuantities(initialQuantities);
   }, [mycard]);
+
   // set quantity
   const incrementQuantity = (id) => {
     setQuantities((prev) => ({ ...prev, [id]: (prev[id] || 1) + 1 }));
   };
+
   // set quantity
   const decrementQuantity = (id) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [id]: Math.max(1, (prev[id] || 1) - 1),
-    }));
+    setQuantities((prev) => {
+      const newQuantity = Math.max(0, (prev[id] || 1) - 1);
+
+      if (newQuantity === 0) {
+        const itemToDelete = mycard.find((item) => item.id === id);
+        setSelectedItem(itemToDelete);
+        const modal = document.getElementById("my_modal_3");
+        if (modal) modal.showModal();
+      }
+
+      return {
+        ...prev,
+        [id]: newQuantity,
+      };
+    });
   };
 
   // set Coupon
@@ -132,20 +143,17 @@ const MyCart = () => {
       quentity: quantities[item.id], // or item.qty jodi field ta different hoy
     }));
 
-    const user_id = guestUser || 1;
+    // const user_id = guestUser || 1;
     const delivery_type = orderStatus === "Delivery" ? "delivery" : "carryout";
 
     const data = {
       code,
-      user_id,
+      user_id: user.id,
       delivery_type,
       food_ids,
     };
-
-
     try {
-      const response = await API.post("/coupons/check-offer", data);
-      console.log(response);
+      const response = await API.post("/offer/check-offer", data);
       const discountData = response.data.data;
       if (response.status === 200) {
         if (discountData.is_discount_amount === 1) {
@@ -162,8 +170,8 @@ const MyCart = () => {
             `,
             showConfirmButton: true,
             confirmButtonText: "Awesome!",
-            confirmButtonColor: "#6366F1", // nice indigo color
-            background: "#f0f9ff", // light blue background
+            confirmButtonColor: "#6366F1",
+            background: "#f0f9ff",
           });
         } else if (discountData.is_discount_percentage === 1) {
           const discountAmount =
@@ -190,9 +198,9 @@ const MyCart = () => {
     } catch (error) {
       console.error(error);
       Swal.fire({
-        icon: "error",
+        icon: "warning",
         title: "Invalid Coupon",
-        text: "Please check your code and try again!",
+        text: `${error.response.data.message}`,
       });
     }
   };
@@ -214,18 +222,14 @@ const MyCart = () => {
     0
   );
   const cartTax = calculateTax(cartSubtotal);
-
   const calculateTipsRate = (cartSubtotal * selectTipsRate) / 100;
-
   const tipsPrice =
     calculateTipsRate > customTips ? calculateTipsRate : customTips;
-
   const totalFees = feesData.reduce(
     (sum, fData) => sum + (parseFloat(fData.fee_amount) || 0),
     0
   );
   const totalFeesAndTax = totalFees + cartTax;
-
   const cartTotalPrice = calculateTotalPrice(
     cartSubtotal,
     totalFeesAndTax,
@@ -234,6 +238,7 @@ const MyCart = () => {
     couponPrice
   );
 
+  // handle dates
   useEffect(() => {
     const generateNext7Days = () => {
       const today = new Date();
@@ -248,11 +253,13 @@ const MyCart = () => {
     generateNext7Days();
   }, []);
 
+  // handle time
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
+  // handle order status
   useEffect(() => {
     const orderStatus = localStorage.getItem("orderStatus");
     const delivery = localStorage.getItem("deliveryAddress");
@@ -260,72 +267,29 @@ const MyCart = () => {
     setOrderStatus(orderStatus);
   }, []);
 
+  // handle delete
   const handleDelete = async (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await API.delete(`/card/delete/${id}`);
-          Swal.fire({
-            title: "Deleted!",
-            text: "Your item has been deleted.",
-            icon: "success",
-            confirmButtonColor: "#3085d6",
-          });
-          refetch(); // Refresh data after deletion
-        } catch (error) {
-          console.error("Error deleting item:", error);
-          Swal.fire({
-            title: "Error!",
-            text: "Failed to delete the item.",
-            icon: "error",
-            confirmButtonColor: "#3085d6",
-          });
-        }
-      }
-    });
+    try {
+      await API.delete(`/card/delete/${id}`);
+      Swal.fire({
+        title: "Deleted!",
+        text: "Your item has been deleted.",
+        icon: "success",
+        confirmButtonColor: "#3085d6",
+      });
+      document.getElementById("my_modal_3").close();
+      refetch(); // Refresh data after deletion
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to delete the item.",
+        icon: "error",
+        confirmButtonColor: "#3085d6",
+      });
+    }
   };
-  const handleDeleteAll = async () => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const response = await API.delete(`/card/all/${guestUser}`);
-          console.log(response);
-          Swal.fire({
-            title: "Deleted!",
-            text: "Your All item has been deleted.",
-            icon: "success",
-            confirmButtonColor: "#3085d6",
-          });
-          refetch(); // Refresh data after deletion
-        } catch (error) {
-          console.error("Error deleting item:", error);
-          Swal.fire({
-            title: "Error!",
-            text: "Failed to delete the item.",
-            icon: "error",
-            confirmButtonColor: "#3085d6",
-          });
-        }
-      }
-    });
-  };
-
+  // handle order
   const myOrder = {
     sub_total: cartSubtotal,
     tax: totalFeesAndTax,
@@ -399,7 +363,6 @@ const MyCart = () => {
     })),
   };
 
-  const navigate = useNavigate();
   const handleToCheckout = () => {
     if (cartSubtotal < 20) {
       Swal.fire({
@@ -408,19 +371,20 @@ const MyCart = () => {
         text: "Your order subtotal must be at least $20 to proceed to checkout.",
         confirmButtonText: "OK",
       });
-      return; // Prevent navigation to checkout
+      return;
     }
     setError("");
     navigate("/checkout", { state: { orderData: myOrder } });
   };
-
+  // handle custom tips
   const sendCustomTips = (data) => {
     setCustomTips(data);
   };
+  // handle select tips
   const sendSelectTipsRate = (data) => {
     setSelectTipsRate(data);
   };
-
+  // handle address
   useEffect(() => {
     if (orderStatus === "Delivery") {
       const splitAddress = (savedAddress) => {
@@ -443,8 +407,35 @@ const MyCart = () => {
     }
   }, [orderStatus, savedAddress]);
 
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const activeId = Object.keys(openNotes).find((id) => openNotes[id]);
+
+      if (
+        activeId &&
+        textareaRef.current &&
+        !textareaRef.current.contains(event.target)
+      ) {
+        setOpenNotes((prev) => ({
+          ...prev,
+          [activeId]: false,
+        }));
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openNotes]);
+
   return (
     <section className="text-gray-600 body-font mx-auto">
+      <Helmet>
+        <title>My Cart | Wingsblast</title>
+      </Helmet>
       <div className="container px-0 lg:px-5 py-2 lg:py-4 mx-auto flex flex-wrap w-full lg:w-10/12">
         <div className="lg:w-4/6 md:w-1/2 w-full  rounded-lg mb-10 lg:mb-0">
           <NewFoodAddCard />
@@ -453,14 +444,6 @@ const MyCart = () => {
               <h1 className="text-4xl font-TitleFont text-black mt-3 ml-3">
                 Review Order
               </h1>
-              {mycard.length > 1 && (
-                <button
-                  onClick={handleDeleteAll}
-                  className="btn rounded bg-ButtonColor hover:bg-ButtonHover text-white text-lg font-normal font-TitleFont"
-                >
-                  <RiDeleteBin6Line /> Delete All
-                </button>
-              )}
             </div>
 
             {isLoading ? (
@@ -473,16 +456,57 @@ const MyCart = () => {
                     <h2 className="text-2xl font-TitleFont">
                       {item.food_name}
                     </h2>
+                    {/* delete model show  */}
+                    <dialog id="my_modal_3" className="modal">
+                      <div className="modal-box w-[350px] lg:w-[400px] !rounded">
+                        <form method="dialog"></form>
+                        <h3 className="font-TitleFont text-5xl text-black text-center">
+                          REMOVE ITEM?
+                        </h3>
+                        <p className="py-4 text-sm">
+                          Are you sure you want to remove{" "}
+                          <strong>{selectedItem?.food_name}</strong> from your
+                          order?
+                        </p>
+                        <button
+                          onClick={() => {
+                            handleDelete(selectedItem?.id);
+                            document.getElementById("my_modal_3").close();
+                          }}
+                          className="font-TitleFont w-full text-white bg-ButtonColor hover:bg-ButtonHover rounded p-1.5"
+                        >
+                          Remove
+                        </button>
+                        <button
+                          onClick={() => {
+                            // Close modal
+                            document.getElementById("my_modal_3").close();
+
+                            // Restore quantity to 1
+                            if (selectedItem) {
+                              setQuantities((prev) => ({
+                                ...prev,
+                                [selectedItem.id]: 1,
+                              }));
+                            }
+                          }}
+                          className="font-TitleFont w-full text-black bg-gray-200 border border-gray-400 mt-3 rounded p-1.5"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </dialog>
+
                     <div className="flex gap-2">
-                      <button className="bg-red-600 rounded-full p-1.5 hover:bg-red-800 transition-all duration-300">
+                      {/* <button className="bg-red-600 rounded-full p-1.5 hover:bg-red-800 transition-all duration-300">
                         <RiDeleteBin6Line
                           onClick={() => handleDelete(item.id)}
                           className="text-2xl text-white "
                         />
-                      </button>
+                      </button> */}
                       <Link to={`/food-details/${item.food_details_id}`}>
-                        <button className="bg-green-600 rounded-full p-1.5 hover:bg-green-800 transition-all duration-300">
-                          <FiEdit className="text-2xl text-white " />
+                        <button className=" rounded-full p-1.5 hover:bg-gray-200 transition-all duration-300">
+                          <MdEdit className="text-2xl text-black " />
                         </button>
                       </Link>
                     </div>
@@ -579,7 +603,7 @@ const MyCart = () => {
                       {item?.ricePlatter?.map((ricePlatter, index) => (
                         <div key={index} className="flavor-item cursor-pointer">
                           <h1 title="ricePlatter" className="flex items-center">
-                            {ricePlatter.name} X1{" "}
+                            {ricePlatter.name} X{ricePlatter.quantity}{" "}
                             <span>
                               {ricePlatter.is_paid_type === 1
                                 ? `($${ricePlatter.price})`
@@ -590,42 +614,67 @@ const MyCart = () => {
                       ))}
                     </div>
 
-                    <button
-                      className="flex gap-2 items-center bg-gray-200 rounded px-2.5 py-1.5 mt-2 transition-all text-sm font-semibold"
-                      onClick={() => handleOpenNote(item.id)}
-                    >
-                      <MdEditNote className="" />
-                      <span>Add Note</span>
-                    </button>
-                    {openNotes[item.id] && (
-                      <div className="mt-2">
-                        <textarea
-                          name="note"
-                          rows="3"
-                          placeholder="Type your message"
-                          className="w-full max-w-md bg-white rounded border border-gray-300 p-3 shadow-md focus:ring-1 focus:ring-primary focus:outline-none"
-                          value={note[item.id] || ""}
-                          onChange={(e) =>
-                            handleNoteChange(item.id, e.target.value)
-                          }
-                        />
-                      </div>
-                    )}
+                    <div>
+                      {!openNotes[item.id] && !note[item.id] && (
+                        <button
+                          className="flex gap-1 items-center border border-gray-300 rounded px-2 py-1 mt-2 transition-all text-sm font-TitleFont"
+                          onClick={() => handleOpenNote(item.id)}
+                        >
+                          <FaPlus className="text-xs" />
+                          <span>Add Note</span>
+                        </button>
+                      )}
+
+                      {!openNotes[item.id] && note[item.id] && (
+                        <button
+                          className="flex gap-1 items-center border border-gray-300 rounded px-2 py-1 mt-2 transition-all text-sm font-TitleFont"
+                          onClick={() => handleOpenNote(item.id)}
+                        >
+                          <MdModeEdit className="text-xs" />
+                          <span>Edit Note</span>
+                        </button>
+                      )}
+
+                      {openNotes[item.id] && ""}
+
+                      {openNotes[item.id] && (
+                        <div className="mt-2" ref={textareaRef}>
+                          <textarea
+                            name="note"
+                            rows="1"
+                            placeholder="Type your message"
+                            className="w-full max-w-md bg-white rounded border border-gray-300 p-3 focus:ring-1 focus:ring-primary focus:outline-none"
+                            value={note[item.id] || ""}
+                            onChange={(e) =>
+                              handleNoteChange(item.id, e.target.value)
+                            }
+                          />
+                        </div>
+                      )}
+
+                      {!openNotes[item.id] && (
+                        <div className="mt-2">
+                          <p className="w-full max-w-md text-sm p-1">
+                            {note[item.id] || ""}
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between mt-4">
                     <div className="flex items-center gap-3">
                       <button
-                        className="p-2 border border-gray-300 rounded-md hover:bg-gray-100"
+                        className="p-1.5 text-sm border rounded border-gray-300 hover:bg-gray-100"
                         onClick={() => decrementQuantity(item.id)}
                       >
                         <FaMinus />
                       </button>
-                      <span className="p-2 border-gray-300 text-xl font-semibold">
+                      <span className="p-2 border-gray-300 text-xl font-TitleFont">
                         {quantities[item.id]}
                       </span>
                       <button
-                        className="p-2 border border-gray-300 rounded-md hover:bg-gray-100"
+                        className="p-1.5 text-sm border rounded border-gray-300 hover:bg-gray-100"
                         onClick={() => incrementQuantity(item.id)}
                       >
                         <FaPlus />
@@ -720,18 +769,20 @@ const MyCart = () => {
           {!isASAP && (
             <div className="flex flex-col sm:flex-row gap-2 bg-gray-50 rounded-lg mb-2">
               <div className="w-full">
-                <label className="block text-sm text-gray-700 mb-1">Date</label>
+                <label className="block font-TitleFont text-lg text-black mb-1">
+                  Date :
+                </label>
                 <select
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="select w-full border border-red-900 focus:border-red-800 rounded-lg px-3 py-2 text-gray-700"
+                  className="select w-full border rounded border-red-900 focus:border-red-800 px-3 py-2 text-black"
                   value={selectedDate || ""}
                 >
-                  <option disabled value="">
+                  <option disabled value="" className="">
                     Select Date
                   </option>
                   {dates.map((date, index) => {
                     return (
-                      <option key={index} value={date}>
+                      <option key={index} value={date} className="text-black">
                         {date}
                       </option>
                     );
@@ -739,10 +790,12 @@ const MyCart = () => {
                 </select>
               </div>
               <div className="w-full">
-                <label className="block text-sm text-gray-700 mb-1">Time</label>
+                <label className="block text-lg font-TitleFont text-black mb-1">
+                  Time :
+                </label>
                 <select
                   onChange={(e) => setSelectedTime(e.target.value)}
-                  className="select w-full border border-red-900 focus:border-red-800 rounded-lg px-3 py-2 text-gray-700"
+                  className="select w-full border text-black border-red-900 focus:border-red-800 rounded px-3 py-2"
                   value={selectedTime || ""}
                 >
                   <option disabled value="">
@@ -766,34 +819,45 @@ const MyCart = () => {
             </div>
           )}
           {/* ASAP Availability Message */}
-          {!checkASAPAvailability() ? (
-            <div className="border border-red-400 px-4 py-1.5 rounded-sm my-1">
-              <h1 className="text-red-700 font-semibold">ASAP Unavailable</h1>
-              <p className="text-red-500">
-                We are not currently accepting ASAP orders. Please select a
-                later time to continue with your order.
-              </p>
-            </div>
-          ) : null}
+          {!isASAP &&
+            (!selectedDate || !selectedTime) &&
+            !checkASAPAvailability() && (
+              <div className="border border-red-400 px-4 py-1.5 rounded-sm my-1">
+                <h1 className="text-red-700 font-semibold">ASAP Unavailable</h1>
+                <p className="text-red-500">
+                  We are not currently accepting ASAP orders. Please select a
+                  later time to continue with your order.
+                </p>
+              </div>
+            )}
 
           <div className="divider mb-3"></div>
 
-          {/* Coupon Code */}
-          <form onSubmit={handleCoupons} className="relative">
-            <input
-              type="text"
-              name="code"
-              className="w-full border border-gray-300 text-sm rounded px-4 py-3 text-gray-700 focus:border-green-600 placeholder-gray-500"
-              placeholder="Coupon Code"
-            />
-            <button
-              type="submit"
-              className="absolute right-1 top-1 bg-ButtonColor text-white rounded px-4 py-[10px] text-xs font-bold uppercase transition hover:bg-ButtonHover"
-            >
-              Submit
-            </button>
-          </form>
-
+          {user.id ? (
+            <div>
+              <h1 className="font-TitleFont text-2xl text-black">OFFER :</h1>
+              <form onSubmit={handleCoupons} className="relative">
+                <input
+                  type="text"
+                  name="code"
+                  className="w-full border border-gray-300 text-sm rounded px-4 py-3 text-gray-700 focus:border-green-600 placeholder-gray-500"
+                  placeholder="Enter Offer Code"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-1 top-1 bg-ButtonColor text-white rounded px-4 py-[10px] text-xs font-bold uppercase transition hover:bg-ButtonHover"
+                >
+                  Submit
+                </button>
+              </form>
+            </div>
+          ) : (
+            // Sign In Sign Out Modal
+            <div className="">
+              <p className="pb-2">Please Login to Get Offer</p>
+              <SignInSignOutModal />
+            </div>
+          )}
           {/* tips */}
           {orderStatus === "Delivery" && (
             <div>
@@ -905,8 +969,8 @@ const MyCart = () => {
           <div className="divider hidden md:block lg:block"></div>
           {/* Checkout Button */}
           {!isASAP && (!selectedDate || !selectedTime) && (
-            <p className="text-red-600 text-base font-semibold mb-4 bg-gray-200 p-3 rounded">
-              <span className="text-xl font-semibold text-black">Note: </span>
+            <p className="text-red-500 text-base mb-4 bg-gray-100 p-3 rounded">
+              <span className="text-2xl font-TitleFont text-black">Note: </span>
               Please select a date and time to proceed with checkout.
             </p>
           )}

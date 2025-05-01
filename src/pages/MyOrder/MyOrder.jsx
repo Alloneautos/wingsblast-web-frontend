@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useMyOrder, useUserProfile } from "../../api/api";
 import Loader from "../../assets/images/loader.gif";
 import { IoMdEye } from "react-icons/io";
+import { Helmet } from "react-helmet-async";
 
 const MyOrder = () => {
   const { user } = useUserProfile();
@@ -9,6 +10,9 @@ const MyOrder = () => {
 
   return (
     <div className="container mx-auto mt-16 px-4 lg:px-0 w-full lg:w-10/12">
+      <Helmet>
+        <title>My Order | Wingsblast</title>
+      </Helmet>
       <div className="flex flex-wrap -mx-3">
         <div className="w-full max-w-full px-3 mb-6">
           <div className="bg-gray-100 rounded-lg shadow-lg">

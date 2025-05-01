@@ -270,45 +270,48 @@ const FoodDetails = () => {
       sn_number: foodDetails?.side?.sn_number,
     },
     {
-      component: foodDetails?.drink?.data ? (
-        <DrinkSection
-          myDrink={foodDetails.drink}
-          loading={loading}
-          error={error}
-          onDrinkSelected={handleDrinkSelected}
-          onDrinkRegulerPrice={handleDrinkRegularPrice}
-          onSelectedDrinksChange={handleSelectedDrinksChange}
-        />
-      ) : null,
+      component:
+        foodDetails?.drink?.data?.length > 0 ? (
+          <DrinkSection
+            myDrink={foodDetails.drink}
+            loading={loading}
+            error={error}
+            onDrinkSelected={handleDrinkSelected}
+            onDrinkRegulerPrice={handleDrinkRegularPrice}
+            onSelectedDrinksChange={handleSelectedDrinksChange}
+          />
+        ) : null,
       sn_number: foodDetails?.drink?.sn_number,
     },
     {
-      component: foodDetails?.topping?.data ? (
-        <ToppingSection
-          myTopping={foodDetails.topping}
-          loading={loading}
-          error={error}
-          onToppingsChange={onToppingsChange}
-          onToppingsPriceChnge={handleToppingsPriceChnge}
-        />
-      ) : null,
+      component:
+        foodDetails?.topping?.data?.length > 0 ? (
+          <ToppingSection
+            myTopping={foodDetails.topping}
+            loading={loading}
+            error={error}
+            onToppingsChange={onToppingsChange}
+            onToppingsPriceChnge={handleToppingsPriceChnge}
+          />
+        ) : null,
       sn_number: foodDetails?.topping?.sn_number,
     },
     {
-      component: foodDetails?.sandwichCustomize?.data ? (
-        <SanwichSection
-          mySandwich={foodDetails.sandwichCustomize}
-          loading={loading}
-          error={error}
-          onSandCustChange={onSandCustChange}
-          onSandCustPriceChnge={onSandCustPriceChnge}
-        />
-      ) : null,
+      component:
+        foodDetails?.sandwichCustomize?.data.length > 0 ? (
+          <SanwichSection
+            mySandwich={foodDetails.sandwichCustomize}
+            loading={loading}
+            error={error}
+            onSandCustChange={onSandCustChange}
+            onSandCustPriceChnge={onSandCustPriceChnge}
+          />
+        ) : null,
       sn_number: foodDetails?.sandwichCustomize?.sn_number,
     },
     {
       component:
-        foodDetails?.ricePlatter?.how_many_select > 0 ? (
+        foodDetails?.ricePlatter?.data?.length > 0 ? (
           <RicePlattarCostom
             ricePlatter={foodDetails.ricePlatter}
             loading={loading}
@@ -320,7 +323,7 @@ const FoodDetails = () => {
     },
     {
       component:
-        foodDetails?.bakery?.how_many_select > 0 ? (
+        foodDetails?.bakery?.data?.length > 0 ? (
           <BakerySection
             myBakery={foodDetails.bakery}
             loading={loading}
@@ -482,9 +485,9 @@ const FoodDetails = () => {
           quantity: side.quantity,
         })) || []),
         ...(ricePlattarSelects?.map((ricePlattar) => ({
-          type: "Rice Platter",
-          type_id: ricePlattar.type_id,
-          is_paid_type: ricePlattar.is_paid_type,
+          type: "ricePlatter",
+          type_id: ricePlattar.id,
+          is_paid_type: 0,
           quantity: ricePlattar.quantity,
         })) || []),
         ...(bakerySelects?.map((bakery) => ({
@@ -508,7 +511,6 @@ const FoodDetails = () => {
         price: myFoodPrice,
         features: formattedFeatures,
       };
-
       setCartLoading(true);
       const response = await API.post("/card/addtocard", data);
       queryClient.invalidateQueries(["wishListVechile", guestUser]);
@@ -577,6 +579,9 @@ const FoodDetails = () => {
                   <span className="text-[20px] text-green-600">
                     (Save ${foodDetails.discount_amount})
                   </span>
+                  <span className="text-xs ml-1 text-gray-600">
+                    {foodDetails.cal}
+                  </span>
                 </p>
               ) : foodDetails.is_discount_percentage === 1 ? (
                 <p className="text-black text-4xl font-TitleFont">
@@ -588,14 +593,19 @@ const FoodDetails = () => {
                   <span className="text-2xl text-green-600">
                     (Save ${(foodDetails.price - mainPrice).toFixed(2)})
                   </span>
+                  <span className="text-xs ml-1 text-gray-600">
+                    {foodDetails.cal}
+                  </span>
                 </p>
               ) : (
                 <span className="text-4xl font-TitleFont">
                   ${foodDetails.price}
+                  <span className="text-xs text-gray-600">
+                    {foodDetails.cal}
+                  </span>
                 </span>
               )}
 
-              <span className="text-xs text-gray-600">{foodDetails.cal}</span>
               <p className="text-black mb-0.5 font-paragraphFont leading-relaxed text-sm md:text-base lg:text-base">
                 {foodDetails.description}
               </p>
@@ -680,7 +690,7 @@ const FoodDetails = () => {
           onExtraDrinkSelected={handleDrinkSelected}
         />
       )}
-
+      
       <AddMoreFood categoryID={foodDetails.category_id} />
 
       {/* scroll section */}

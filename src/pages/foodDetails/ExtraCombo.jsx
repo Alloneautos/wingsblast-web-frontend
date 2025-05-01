@@ -3,7 +3,6 @@ import Combo from "../../assets/images/combopack-r.png";
 import { Link } from "react-router-dom";
 
 const ExtraCombo = ({ extraPackege }) => {
-  console.log(extraPackege);
   return (
     <div className="w-full lg:w-10/12 mx-auto">
       <div className="px-3 py-1">

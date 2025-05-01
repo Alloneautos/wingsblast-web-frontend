@@ -11,6 +11,7 @@ import Logo from "../assets/images/Web Logo.png";
 import Swal from "sweetalert2";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 const Signin = () => {
   // const { handleGoogle } = useContext(AuthContext);
@@ -82,6 +83,9 @@ const Signin = () => {
 
   return (
     <section className="bg-gray-400 py-0 lg:py-[5px]">
+      <Helmet>
+        <title>Signin | Wingsblast</title>
+      </Helmet>
       <div className="container mx-auto">
         <div className="flex flex-wrap">
           <div className="w-full px-0 lgpx-4">

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useFlavor } from "../../api/api";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
@@ -8,7 +8,6 @@ import { BsFire } from "react-icons/bs";
 const FlavorSelector = () => {
   const [heatLevel, setHeatLevel] = useState(100);
   const { flavor, loading, error } = useFlavor();
-  const sliderRef = useRef(null);
 
   // Adjust heat level by slider range
   const handleSliderChange = (e) => {
@@ -170,7 +169,7 @@ const FlavorSelector = () => {
 
       {/* Explore Menu Button */}
       <Link to="/foodmenu" className="relative z-10">
-        <button className="mt-8 px-6 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition">
+        <button className="mt-8 px-6 py-3 text-2xl bg-red-600 text-white rounded font-TitleFont hover:bg-red-700 transition">
           Explore Menu
         </button>
       </Link>

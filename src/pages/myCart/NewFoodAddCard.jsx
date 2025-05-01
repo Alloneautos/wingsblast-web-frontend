@@ -127,7 +127,7 @@ const NewFoodAddCard = () => {
                             </div>
                           </span>
                         )}
-                        <span className="absolute left-3 top-3 mt-1 bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded">
+                        <span className="absolute left-3 top-3 mt-1 font-TitleFont bg-indigo-600 text-white text-sm px-2 rounded">
                           POPULAR
                         </span>
                       </div>

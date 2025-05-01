@@ -1,66 +1,65 @@
 import { useState } from "react";
 import { Disclosure } from "@headlessui/react";
 import { RxCross2 } from "react-icons/rx";
-import { BsHeartPulseFill } from "react-icons/bs";
-import { FaChevronRight } from "react-icons/fa";
 import LoadingComponent from "./components/LoadingComponent";
+import { BiSolidError } from "react-icons/bi";
+import { FaChevronRight } from "react-icons/fa";
 
-const DipSection = ({ dips, loading, error, onDipSelected }) => {
-  const [selectedDips, setSelectedDips] = useState([]);
-  const [dipQuantities, setDipQuantities] = useState({});
-  const howManyDips = dips.how_many_select;
-  const howManyChoiceDips = dips.how_many_choice;
-  const allDips = dips.data;
-  const selectedCount = selectedDips.length; // Number of selected dips
-  const choiceItem = Object.values(dipQuantities).reduce(
+const RicePlattarCostom = ({ ricePlatter, loading, error, onRicePlattarSelected }) => {
+  const [selectedRicePlattar, setSelectedRicePlattar] = useState([]);
+  const [ricePlattarQuantities, setRicePlattarQuantities] = useState({});
+  const howManyRicePlattar = ricePlatter.how_many_select;
+  const howManyChoiceRicePlattar = ricePlatter.how_many_choice;
+  const allRicePlattar = ricePlatter.data;
+  const selectedCount = selectedRicePlattar.length;
+  const choiceItem = Object.values(ricePlattarQuantities).reduce(
     (sum, qty) => sum + qty,
     0
-  ); // Total quantity of dips selected
+  );
 
-  const handleSelectDip = (dip) => {
-    const isSelected = selectedDips.some((d) => d.id === dip.id);
-    let updatedDips;
+  const handleSelectRicePlattar = (rice) => {
+    const isSelected = selectedRicePlattar.some((s) => s.id === rice.id);
+    let updatedRicePlattar;
 
     if (isSelected) {
-      updatedDips = selectedDips.filter((d) => d.id !== dip.id);
-    } else if (selectedDips.length < howManyDips) {
-      updatedDips = [...selectedDips, dip];
+      updatedRicePlattar = selectedRicePlattar.filter((s) => s.id !== rice.id);
+    } else if (selectedRicePlattar.length < howManyRicePlattar) {
+      updatedRicePlattar = [...selectedRicePlattar, rice];
     } else {
       return;
     }
 
-    setSelectedDips(updatedDips);
-    distributeQuantities(updatedDips);
+    setSelectedRicePlattar(updatedRicePlattar);
+    distributeQuantities(updatedRicePlattar);
   };
 
-  const distributeQuantities = (dips) => {
-    const totalDips = dips.length;
-    const baseQuantity = Math.floor(howManyChoiceDips / totalDips);
-    const remainder = howManyChoiceDips % totalDips;
+  const distributeQuantities = (riceplattar) => {
+    const totalRicePlattar = riceplattar.length;
+    const baseQuantity = Math.floor(howManyChoiceRicePlattar / totalRicePlattar);
+    const remainder = howManyChoiceRicePlattar % totalRicePlattar;
 
     const newQuantities = {};
-    dips.forEach((d, index) => {
-      newQuantities[d.id] = baseQuantity + (index < remainder ? 1 : 0);
+    riceplattar.forEach((s, index) => {
+      newQuantities[s.id] = baseQuantity + (index < remainder ? 1 : 0);
     });
 
-    setDipQuantities(newQuantities);
+    setRicePlattarQuantities(newQuantities);
 
-    // Prepare data in the required format
-    const formattedData = dips.map((d) => ({
-      type: "Dip",
-      type_id: d.id,
+    const formattedData = riceplattar.map((s) => ({
+      type: "Rice Platter",
+      type_id: s.id,
       is_paid_type: 0,
-      quantity: newQuantities[d.id],
+      quantity: newQuantities[s.id],
     }));
-    onDipSelected(formattedData); // Pass formatted data
+    onRicePlattarSelected(formattedData);
   };
 
-  const handleQuantityChange = (dipId, change) => {
-    setDipQuantities((prevQuantities) => {
+  const handleQuantityChange = (riceplattarId, change) => {
+    setRicePlattarQuantities((prevQuantities) => {
       const newQuantities = { ...prevQuantities };
-      newQuantities[dipId] = Math.max(
+      newQuantities[riceplattarId] = Math.max(
         0,
-        Math.min((newQuantities[dipId] || 0) + change, howManyChoiceDips)
+        Math.min((newQuantities[riceplattarId] || 0) + change, howManyChoiceRicePlattar)
       );
 
       const totalSelected = Object.values(newQuantities).reduce(
@@ -68,29 +67,29 @@ const DipSection = ({ dips, loading, error, onDipSelected }) => {
         0
       );
 
-      let excess = totalSelected - howManyChoiceDips;
+      let excess = totalSelected - howManyChoiceRicePlattar;
       if (excess > 0) {
-        const otherDips = selectedDips.filter((d) => d.id !== dipId);
-        for (const dip of otherDips) {
+        const otherRicePlattar = selectedRicePlattar.filter((s) => s.id !== riceplattarId);
+        for (const ricePlattar of otherRicePlattar) {
           if (excess <= 0) break;
-          const reduceBy = Math.min(newQuantities[dip.id], excess);
-          newQuantities[dip.id] -= reduceBy;
+          const reduceBy = Math.min(newQuantities[ricePlattar.id], excess);
+          newQuantities[ricePlattar.id] -= reduceBy;
           excess -= reduceBy;
         }
       }
 
       let deficit =
-        howManyChoiceDips -
+        howManyChoiceRicePlattar -
         Object.values(newQuantities).reduce((sum, qty) => sum + qty, 0);
       if (deficit > 0) {
-        const otherDips = selectedDips.filter((d) => d.id !== dipId);
-        for (const dip of otherDips) {
+        const otherRicePlattar = selectedRicePlattar.filter((s) => s.id !== riceplattarId);
+        for (const ricePlattar of otherRicePlattar) {
           if (deficit <= 0) break;
           const increaseBy = Math.min(
-            howManyChoiceDips - newQuantities[dip.id],
+            howManyChoiceRicePlattar - newQuantities[ricePlattar.id],
             deficit
           );
-          newQuantities[dip.id] += increaseBy;
+          newQuantities[ricePlattar.id] += increaseBy;
           deficit -= increaseBy;
         }
       }
@@ -102,7 +101,7 @@ const DipSection = ({ dips, loading, error, onDipSelected }) => {
   return (
     <div className="w-full lg:w-10/12 mx-auto my-1 p-2 bg-white">
       <Disclosure>
-        {({open}) => (
+        {({ open }) => (
           <>
             <Disclosure.Button className="grid items-center w-full rounded-lg bg-blue-50 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition ease-in-out duration-300">
               <div className="flex justify-between items-center w-full">
@@ -113,19 +112,17 @@ const DipSection = ({ dips, loading, error, onDipSelected }) => {
                     }`}
                   >
                     <FaChevronRight />
-                  </span>{" "}
-                  CHOOSE REGULAR DIP
+                  </span>
+                  CHOOSE REGULAR RICEPLATTER
                 </span>
                 <span>
-                  {dips.is_required === 1 && selectedCount === 0 ? (
+                  {ricePlatter.is_required === 1 && selectedCount === 0 ? (
                     <span className="text-red-700">
                       <span className="text-sm font-semibold">Required</span>
                     </span>
                   ) : (
                     <span className="text-green-600">
-                      <span className="text-sm font-semibold">
-                        {selectedCount > 0 ? "Done" : "Optional"}
-                      </span>
+                      <span className="text-sm font-semibold">Optional</span>
                     </span>
                   )}
                 </span>
@@ -135,14 +132,14 @@ const DipSection = ({ dips, loading, error, onDipSelected }) => {
                   <span className="text-xs text-gray-900">
                     Up To Choose
                     <span className="text-black ">
-                      ({selectedCount} of {howManyDips} Selected)
+                      ({selectedCount} of {howManyRicePlattar} Selected)
                     </span>
                   </span>
                 </h2>
                 <div className="text-gray-500">
                   <h2 className="grid text-lg font-bold mb-1">
                     <span className="text-xs text-gray-900">
-                      ( {choiceItem} of {howManyChoiceDips} Selected)
+                      ( {choiceItem} of {howManyChoiceRicePlattar} Selected)
                     </span>
                   </h2>
                 </div>
@@ -150,14 +147,14 @@ const DipSection = ({ dips, loading, error, onDipSelected }) => {
             </Disclosure.Button>
             {error && (
               <p className="text-red-500 mt-4">
-                Error loading Dips. Please try again.
+                Error loading RicePlattar. Please try again.
               </p>
             )}
             {loading && <LoadingComponent />}
             <Disclosure.Panel className="px-4 pt-6 pb-4 text-sm text-gray-700">
               <div className="flavor-selection grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                 {!loading &&
-                  allDips.map((category, index) => (
+                  allRicePlattar.map((category, index) => (
                     <div key={index} className="w-full">
                       <h3 className="text-md font-semibold mb-2 text-blue-600">
                         {category.category}
@@ -166,20 +163,18 @@ const DipSection = ({ dips, loading, error, onDipSelected }) => {
                         <div className="flex items-center justify-between">
                           <div className="flex space-x-3">
                             <img
-                              className="w-[75px] h-[70px] rounded-full"
+                              className="w-[70px] h-[70px] rounded-full"
                               src={category.image}
                               alt=""
                             />
                             <div>
-                              <p className="font-medium text-gray-800">
+                              <p className="text-lg font-TitleFont text-gray-900">
                                 {category.name}
                               </p>
                               <div className="flex gap-2 text-gray-600">
-                                <p className="text-green-500 font-semibold">
-                                  Free
-                                </p>
-                                <p className="flex items-center gap-1.5">
-                                  <BsHeartPulseFill className="text-red-500" />
+                                <p className="text-green-600">Free</p>
+                                <p className="flex items-center gap-1.5 text-black">
+                                  <BiSolidError />
                                   {category.cal}
                                 </p>
                               </div>
@@ -188,53 +183,52 @@ const DipSection = ({ dips, loading, error, onDipSelected }) => {
                           <input
                             type="checkbox"
                             className="checkbox checkbox-primary rounded"
-                            checked={selectedDips.some(
-                              (d) => d.id === category.id
+                            checked={selectedRicePlattar.some(
+                              (s) => s.id === category.id
                             )}
-                            onChange={() => handleSelectDip(category)}
+                            onChange={() => handleSelectRicePlattar(category)}
                           />
                         </div>
-                        <div
-                          className={`${selectedCount === 1 ? "hidden" : ""}`}
-                        >
-                          {selectedDips.some((d) => d.id === category.id) && (
-                            <div className="mt-3 ml-[90px] mx-auto items-center gap-2 text-gray-700">
-                              <span className="font-medium">Quantity:</span>
-                              <div className="flex items-center border p-2 w-[148px] rounded-md overflow-hidden">
-                                <button
-                                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
-                                  onClick={() =>
-                                    handleQuantityChange(category.id, -1)
-                                  }
-                                  disabled={dipQuantities[category.id] <= 1}
-                                >
-                                  -
-                                </button>
-                                <input
-                                  type="number"
-                                  value={dipQuantities[category.id] || 1}
-                                  readOnly
-                                  className="w-16 text-center text-lg border-l border-r outline-none"
-                                />
-                                <button
-                                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
-                                  onClick={() =>
-                                    handleQuantityChange(category.id, 1)
-                                  }
-                                  disabled={
-                                    dipQuantities[category.id] >=
-                                      howManyChoiceDips ||
-                                    Object.values(dipQuantities).reduce(
-                                      (sum, qty) => sum + qty,
-                                      0
-                                    ) >= howManyChoiceDips
-                                  }
-                                >
-                                  +
-                                </button>
-                              </div>
+                        <div className={`${selectedCount === 1 ? "hidden" : ""}`}>
+
+                        {selectedRicePlattar.some((s) => s.id === category.id) && (
+                          <div className="mt-3 ml-[90px] mx-auto items-center gap-2 text-gray-700">
+                            <span className="font-medium">Quantity:</span>
+                            <div className="flex items-center border p-2 w-[148px] rounded-md overflow-hidden">
+                              <button
+                                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
+                                onClick={() =>
+                                  handleQuantityChange(category.id, -1)
+                                }
+                                disabled={ricePlattarQuantities[category.id] <= 1}
+                              >
+                                -
+                              </button>
+                              <input
+                                type="number"
+                                value={ricePlattarQuantities[category.id] || 1}
+                                readOnly
+                                className="w-16 text-center text-lg border-l border-r outline-none"
+                              />
+                              <button
+                                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition"
+                                onClick={() =>
+                                  handleQuantityChange(category.id, 1)
+                                }
+                                disabled={
+                                  ricePlattarQuantities[category.id] >=
+                                    howManyChoiceRicePlattar ||
+                                  Object.values(ricePlattarQuantities).reduce(
+                                    (sum, qty) => sum + qty,
+                                    0
+                                  ) >= howManyChoiceRicePlattar
+                                }
+                              >
+                                +
+                              </button>
                             </div>
-                          )}
+                          </div>
+                        )}
                         </div>
                       </label>
                     </div>
@@ -244,13 +238,13 @@ const DipSection = ({ dips, loading, error, onDipSelected }) => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <RxCross2 className="text-4xl text-red-600" />
-                        <h1 className="text-2xl font-semibold">NO SIDE</h1>
+                        <h1 className="text-2xl font-semibold">NO RICEPLATTAR</h1>
                       </div>
                       <input
                         type="checkbox"
                         className="checkbox checkbox-primary rounded"
-                        checked={selectedDips.length === 0}
-                        onChange={() => setSelectedDips([])}
+                        checked={selectedRicePlattar.length === 0}
+                        onChange={() => setSelectedRicePlattar([])}
                       />
                     </div>
                   </label>
@@ -264,4 +258,4 @@ const DipSection = ({ dips, loading, error, onDipSelected }) => {
   );
 };
 
-export default DipSection;
+export default RicePlattarCostom;

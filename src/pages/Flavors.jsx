@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useFlavor } from "../api/api";
 import { BsFire } from "react-icons/bs";
 import Loader from "../assets/images/loader.gif";
+import { Helmet } from "react-helmet-async";
 const Flavors = () => {
   const [heatLevel, setHeatLevel] = useState(100);
   const { flavor, isLoading, error } = useFlavor();
@@ -40,6 +41,11 @@ const Flavors = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Flavors | Wingsblast</title>
+        <meta name="description" content="Explore our delicious flavors!" />
+        <link rel="canonical" href="/flavors" />
+      </Helmet>
       <div
         className="hero h-auto lg:h-96"
         style={{
