@@ -1,97 +1,95 @@
 import { useEffect, useState } from "react";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
-// import BannarImage1 from "../../assets/bannarimage/wbannar1.jpeg";
-import BannarImage1 from "../../assets/bannarimage/bannar.mp4";
-import BannarImage2 from "../../assets/bannarimage/bannarvideo.mp4";
-import BannarImage3 from "../../assets/bannarimage/bannarvideo3.mp4";
 import { useAllBannar } from "../../api/api";
+import LoadingComponent from "../../components/LoadingComponent";
 
 const Banner = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const { allBannar } = useAllBannar();
-  const slides = [
-    {
-      url: BannarImage1,
-      content: "Slide 1",
-    },
-    {
-      url: BannarImage2,
-      content: "Slide 2",
-    },
-    {
-      url: BannarImage3,
-      content: "Slide 3",
-    },
-  ];
+  const { allBannar, isLoading } = useAllBannar();
 
-  const totalSlides = slides.length;
+  const totalSlides = allBannar.length;
 
-  // Automatically change slide every 3 seconds
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % totalSlides);
-    }, 10000); // Change slide every 3 seconds
+    if (totalSlides > 0) {
+      const interval = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % totalSlides);
+      }, 20000);
 
-    return () => clearInterval(interval); // Clean up the interval on component unmount
+      return () => clearInterval(interval);
+    }
   }, [totalSlides]);
 
   const goToNextSlide = () => {
-    setCurrentSlide((currentSlide + 1) % totalSlides);
+    setCurrentSlide((prev) => (prev + 1) % totalSlides);
   };
 
   const goToPrevSlide = () => {
-    setCurrentSlide((currentSlide - 1 + totalSlides) % totalSlides);
+    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
   };
+
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
 
   return (
     <header className="bg-white w-full lg:w-10/12 mt-0 mx-auto">
-      <div className="container grid md:flex lg:flex flex-col lg:flex-row gap-3 lg:gap-6 px-1 lg:px-0 py-3 lg:py-10 mx-auto space-y-6 lg:h-[32rem] lg:items-center">
-        <div className="flex items-center justify-center w-full lg:w-4/6 order-2 lg:order-1">
-          <div className="relative w-full overflow-hidden">
-            {/* Carousel wrapper */}
+      <div className="container grid md:flex lg:flex flex-col lg:flex-row gap-3 lg:gap-6 px-1 lg:px-0 py-3 lg:py-2 mx-auto space-y-6 lg:h-[32rem] lg:items-center">
+        {/* Carousel Section */}
+        <div className="flex items-center justify-center w-full lg:w-4/6">
+          <div className="relative w-full overflow-hidden rounded-xl">
+            {/* Slides */}
             <div
               className="flex transition-transform ease-in-out duration-300"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
-              {slides.map((slide, index) => (
-                <div key={index} className="min-w-full rounded-3xl">
-                  <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full object-cover rounded-xl lg:rounded-lg"
-                  >
-                    <source src={slide.url} type="video/mp4" />
-                  </video>
+              {allBannar.map((slide, index) => (
+                <div key={index} className="min-w-full rounded-xl">
+                  {slide.type === "video" ? (
+                    <video
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
+                    >
+                      <source src={slide.video_image} type="video/mp4" />
+                    </video>
+                  ) : (
+                    <img
+                      src={slide.video_image}
+                      alt={slide.content}
+                      className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
+                    />
+                  )}
                 </div>
               ))}
             </div>
 
-            {/* Left Arrow */}
+            {/* Navigation Arrows */}
             <button
               onClick={goToPrevSlide}
-              className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-300 text-blue-500 p-1 rounded-full"
+              className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-gray-300 text-blue-500 p-2 rounded-full z-10"
             >
-              <FaAngleLeft className="h-6 w-6"/>
+              <FaAngleLeft className="h-5 w-5" />
             </button>
 
-            {/* Right Arrow */}
             <button
               onClick={goToNextSlide}
-              className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-300 text-blue-500 p-1 rounded-full"
+              className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-gray-300 text-blue-500 p-2 rounded-full z-10"
             >
-             <FaAngleRight className="h-6 w-6"/>
+              <FaAngleRight className="h-5 w-5" />
             </button>
           </div>
         </div>
-        <div className="w-full lg:w-2/6 order-1 lg:order-2">
-          <div className="lg:max-w-lg">
-            <h1 className="text-4xl font-base tracking-wide uppercase text-TextColor font-TitleFont text-center lg:text-6xl">
-              Your journey to incredible teste begins here
+
+        {/* Text + CTA Section */}
+        <div className="w-full lg:w-2/6">
+          <div className="lg:max-w-lg text-center lg:text-left">
+            <h1 className="text-3xl lg:text-4xl font-bold tracking-wide uppercase text-TextColor font-italicFont">
+              Blasting your taste with wingsBlast
             </h1>
-            <p className="mt-4 text-black text-center font-paragraphFont ">
+            <p className="mt-4 text-black font-paragraphFont">
               We know one flavor does not fit all, that is why we perfected 30
               of them. Your next flavor obsession starts with just one click.
             </p>

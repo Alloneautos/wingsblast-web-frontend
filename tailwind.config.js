@@ -16,6 +16,7 @@ export default {
         'TitleFont': ['"Bebas Neue"', 'sans-serif'],
         'paragraphFont': ['"Saira Condensed", sans-serif'],
         'paragraphFont2': ['"Josefin Sans", sans-serif'],
+        'italicFont': ['"Dancing Script", cursive'],
       },
     },
   },

@@ -16,9 +16,7 @@ const ExtraDrinkSection = ({
   const [selectedDrinks, setSelectedDrinks] = useState([]);
   const [selectPrice, setSelectPrice] = useState(0);
 
-
   const handleDrinkSelect = (selectedDrinkId, drink, quantity) => {
-     console.log("Selected Drink ID:", selectedDrinkId);
     const existingDrink = selectedDrinks.find(
       (d) => d.child_item_id === selectedDrinkId && d.type_id === drink.id
     );
@@ -32,66 +30,72 @@ const ExtraDrinkSection = ({
       );
       setSelectedDrinks(updatedDrinks);
       onSelectedExtraDrinksChange(updatedDrinks);
-
-      // console.log("Updated Drinks:", updatedDrinks);
     } else {
       // Add new drink
       const newDrink = {
-        type: "Drink",
+        type: "drink",
         type_id: drink.id, // Use the category drink's ID
         is_paid_type: 1,
         quantity,
         child_item_id: selectedDrinkId, // Use the selected drink's brand ID
       };
 
-      console.log("New Drink:", newDrink);
-
       const updatedDrinks = [...selectedDrinks, newDrink];
       setSelectedDrinks(updatedDrinks);
+      console.log(updatedDrinks, "updatedDrinks");
       onSelectedExtraDrinksChange(updatedDrinks);
     }
   };
 
   const handleSelectDrink = (drink) => {
-    const isAlreadySelected = selectedDrinks.some(
+    // Check if any drink from this category is selected (either category or specific drinks)
+    const isCategorySelected = selectedDrinks.some(
       (selected) => selected.type_id === drink.id
     );
-
-    if (isAlreadySelected) {
-      // ❌ Remove drink if already selected
+  
+    if (isCategorySelected) {
+      // Remove all drinks from this category
       const updatedDrinks = selectedDrinks.filter(
         (selected) => selected.type_id !== drink.id
       );
       setSelectedDrinks(updatedDrinks);
       onSelectedExtraDrinksChange(updatedDrinks);
     } else {
-      // ✅ Add new drink
+      // Add the category as a default selection
       const newDrink = {
-        type: "Drink",
+        type: "drink", // Keep consistent lowercase
         type_id: drink.id,
         is_paid_type: 1,
         quantity: 1,
-        child_item_id: null,
+        child_item_id: null, // This indicates it's a category selection
       };
       const updatedDrinks = [...selectedDrinks, newDrink];
       setSelectedDrinks(updatedDrinks);
       onSelectedExtraDrinksChange(updatedDrinks);
+      console.log(updatedDrinks, "updatedDrinks");
     }
-
-    setSelectPrice(drink.price); // Always update price
+  
+    setSelectPrice(drink.price);
   };
 
   useEffect(() => {
-    const totalPrice = selectedDrinks.reduce((sum, drink) => {
-      const category = allDrinks.find((cat) => cat.id === drink.type_id);
-      const drinkData = category?.data?.find((d) => d.id === drink.child_item_id);
-      return sum + (drinkData?.price || 0) * drink.quantity;
-    }, 0);
+    const formattedDrinks = selectedDrinks.map((drink) => ({
+      type: "drink",
+      type_id: drink.type_id,
+      is_paid_type: 1,
+      quantity: drink.quantity,
+      child_item_id: drink.child_item_id,
+    }));
 
-    onExtraDrinkPriceChange(totalPrice);
-    onExtraDrinkSelected(selectedDrinks);
+    onExtraDrinkPriceChange(
+      selectedDrinks.reduce((sum, drink) => {
+        const category = allDrinks.find((cat) => cat.id === drink.type_id);
+        const drinkData = category?.data?.find((d) => d.id === drink.child_item_id);
+        return sum + (drinkData?.price || 0) * drink.quantity;
+      }, 0)
+    );
 
-    // console.log("Selected Drinks:", selectedDrinks);
+    onExtraDrinkSelected(formattedDrinks); // Send formatted data to parent
   }, [selectedDrinks, allDrinks, onExtraDrinkPriceChange, onExtraDrinkSelected]);
 
   return (
@@ -192,6 +196,7 @@ const ExtraDrinkSection = ({
                                     )
                                   }
                                   drinkPrice={selectPrice} // Pass the dynamically selected drink price
+                                  categoryId={category.id} // Pass the category ID
                                 />
                               </div>
                             );

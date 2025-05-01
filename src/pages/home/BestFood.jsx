@@ -44,11 +44,11 @@ const BestFood = () => {
 
   return (
     <section className="text-black body-font w-full lg:w-10/12 mx-auto">
-      <div className="container px-1 py-4 md:py-5 lg:py-24 mx-auto">
+      <div className="container px-1 py-4 md:py-5 lg:py-7 mx-auto">
         {/* Title Section */}
         <div className="text-center mb-8">
-          <h1 className="text-TextColor text-5xl font-TitleFont">FOR YOU</h1>
-          <p className="my-5 text-gray-600">Curated by Your Flavor Experts</p>
+          <h1 className="text-TextColor text-4xl font-bold font-italicFont">FOR YOU</h1>
+          <p className="my-5 text-gray-900 text-xl font-italicFont">Curated by Your Flavor Experts</p>
         </div>
 
         {/* Carousel Section */}
@@ -80,7 +80,7 @@ const BestFood = () => {
                   className="h-full w-full border shadow-2xl hover:shadow-xl rounded-lg overflow-hidden bg-white"
                   onClick={() => handleLinkClick(foodMenu?.id)}
                 >
-                   <h2 className="p-2 text-lg sm:text-xl font-TitleFont text-black truncate">
+                   <h2 className="py-2 text-center text-lg sm:text-xl font-TitleFont text-black truncate">
                       {foodMenu.name}
                     </h2>
                   <div className="relative overflow-hidden">

@@ -8,7 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -16,13 +16,19 @@
 
 .tabs {
   position: sticky;
-  top: 96px;
+  top: 66px; 
   background-color: white;
   z-index: 45;
   box-shadow: 0 4px 2px -2px rgb(247, 242, 242);
   background-color: white;
   padding: 5px 0;
 }
+@media (max-width: 768px) {
+  .tabs {
+    top: 96px; /* For mobile devices */
+  }
+}
+
 .tabs {
   scroll-behavior: smooth;
   display: flex;
@@ -42,6 +48,12 @@ body{
 
 .saira-condensed-regular {
   font-family: "Saira Condensed", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.dancing-script-regular {
+  font-family: "Dancing Script", cursive;
+  font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
 }

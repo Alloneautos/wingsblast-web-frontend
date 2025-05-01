@@ -1,19 +1,18 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAllDrinksName } from "../../../api/api";
 import LoadingComponent from "../../../components/LoadingComponent";
 import { CgClose } from "react-icons/cg";
 import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
 
-const CustomExtraDrinkModal = ({ onDrinkSelect, drinkPrice }) => {
+const CustomExtraDrinkModal = ({ onDrinkSelect, drinkPrice, categoryId }) => {
   const [selectedDrinks, setSelectedDrinks] = useState([]);
   const [drinkQuantities, setDrinkQuantities] = useState({});
   const {allDrinksName, isLoading } = useAllDrinksName();
 
-
   const handleApply = () => {
     selectedDrinks.forEach((drink) => {
       const quantity = drinkQuantities[drink.id] || 1;
-      onDrinkSelect(drink.id, quantity);
+      onDrinkSelect(drink.id, quantity); // Pass drink ID and quantity
     });
     document.getElementById("costomizeDrink").close();
   };

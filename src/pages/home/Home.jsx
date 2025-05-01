@@ -26,9 +26,9 @@ const Home = () => {
         <link rel="canonical" href="/" />
       </Helmet>
       <Banner />
-      <div className="hidden lg:block">
+      {/* <div className="hidden">
         <DelivaryLocation />
-      </div>
+      </div> */}
       <BestFood />
       <FindFlavor />
       <div className="hidden lg:block">
