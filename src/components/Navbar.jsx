@@ -62,7 +62,7 @@ function Navbar() {
 
   return (
     <nav className="bg-white w-full sticky top-0 border-b !z-50">
-      <div className="container flex justify-between items-center py-2 lg:py-[5px] px-4 w-full lg:w-10/12 mx-auto">
+      <div className="container flex justify-between items-center py-2 lg:py-[5px] px-4 lg:px-0 w-full lg:w-10/12 mx-auto">
         {/* Left side: Logo */}
         <div className="flex justify-between items-center space-x-4">
           {/* Mobile Menu Button */}

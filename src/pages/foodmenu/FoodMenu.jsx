@@ -25,24 +25,24 @@ const FoodMenu = () => {
 
   const handleScrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
-  
+
     if (!section) {
       console.warn(`Section with ID '${sectionId}' not found.`);
       return;
     }
-      const header = document.querySelector('.sticky-header'); // Give your header a class
-    const offset = header ? header.offsetHeight + (40) : 80; // fallback offset
-  
-    const sectionTop = section.getBoundingClientRect().top + window.pageYOffset - offset;
-  
+    const header = document.querySelector(".sticky-header"); // Give your header a class
+    const offset = header ? header.offsetHeight + 40 : 80; // fallback offset
+
+    const sectionTop =
+      section.getBoundingClientRect().top + window.pageYOffset - offset;
+
     window.scrollTo({
       top: sectionTop,
-      behavior: 'smooth',
+      behavior: "smooth",
     });
-  
+
     setIsActive(sectionId);
   };
-  
 
   useEffect(() => {
     if (!category.length) return;
@@ -90,8 +90,9 @@ const FoodMenu = () => {
       const isMobile = window.innerWidth <= 768;
       if (isMobile) {
         const header = document.querySelector(".sticky-header");
-        const offset = header ? header.offsetHeight + (40) : 80; // fallback offset
-        const sectionTop = activeTabEl.getBoundingClientRect().top + window.pageYOffset - offset;
+        const offset = header ? header.offsetHeight + 40 : 80; // fallback offset
+        const sectionTop =
+          activeTabEl.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({
           top: sectionTop,
           behavior: "smooth",

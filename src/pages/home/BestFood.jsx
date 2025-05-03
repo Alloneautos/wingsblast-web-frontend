@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "react-multi-carousel/lib/styles.css";
 import Carousel from "react-multi-carousel";
@@ -7,7 +7,6 @@ import { useAllFood } from "../../api/api";
 
 const BestFood = () => {
   const { allFood, loading } = useAllFood();
-  const sliderRef = useRef(null);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [foodId, setFoodId] = useState(0);
   const navigate = useNavigate();
@@ -47,8 +46,8 @@ const BestFood = () => {
       <div className="container px-1 py-4 md:py-5 lg:py-7 mx-auto">
         {/* Title Section */}
         <div className="text-center mb-8">
-          <h1 className="text-TextColor text-4xl font-bold font-italicFont">FOR YOU</h1>
-          <p className="my-5 text-gray-900 text-xl font-italicFont">Curated by Your Flavor Experts</p>
+          <h1 className="text-rose-600 text-4xl font-bold font-italicFont">FOR YOU</h1>
+          <p className="my-5 text-rose-600 text-xl font-italicFont">Curated by Your Flavor Experts</p>
         </div>
 
         {/* Carousel Section */}
@@ -94,7 +93,7 @@ const BestFood = () => {
 
                   <div className="p-2 sm:p-6 space-y-1 sm:space-y-2">
                    
-                    <p className="leading-relaxed text-gray-800 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3">
+                    <p className="leading-relaxed text-gray-800 text-xs sm:text-sm line-clamp-2 lg:line-clamp-2">
                       {foodMenu.description}
                     </p>
 

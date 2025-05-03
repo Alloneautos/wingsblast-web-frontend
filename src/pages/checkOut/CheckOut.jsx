@@ -4,7 +4,6 @@ import { API, useGuestUser, useUserProfile } from "../../api/api";
 import Swal from "sweetalert2";
 import SignInSignOutModal from "../../components/SignInSignOutModal";
 import PayPal from "./PayPal";
-import ApplePay from "./ApplePay";
 
 const CheckOut = () => {
   const { guestUser } = useGuestUser();
@@ -48,7 +47,7 @@ const CheckOut = () => {
     };
 
     try {
-      const response = await API.put("/user/update", newUserInf);
+      await API.put("/user/update", newUserInf);
       Swal.fire({
         icon: "success",
         title: "Information Updated!",
@@ -80,7 +79,7 @@ const CheckOut = () => {
               CHECKOUT
             </h1>
           </div>
-            <div className="divider"></div>
+          <div className="divider"></div>
           <div className="my-3 mx-4 text-black">
             <div className="flex justify-between text-center font-TitleFont text-2xl">
               <h1>CONTACT INFORMATION</h1>
@@ -219,7 +218,7 @@ const CheckOut = () => {
                     <span className="font-TitleFont">Quantity:</span>{" "}
                     {food.quantity}
                   </p>
-                  <p className="font-TitleFont">Price: ${food.price}</p>
+                  <p className="font-TitleFont text-lg">Price: ${food.price}</p>
                 </div>
               </div>
             ))}
@@ -232,13 +231,13 @@ const CheckOut = () => {
             <h2 className="text-black text-2xl font-TitleFont text-center lg:text-start">
               {orderStatus == "Delivery" ? "DELIVERY ADDRESS" : "CARRYOUT"}
             </h2>
-              {orderStatus == "Delivery" ? (
-                <p className="text-gray-900 text-sm mt-2 flex justify-center lg:justify-start">
-                  {saveLocation}
-                </p>
-              ) : (
-                ""
-              )}
+            {orderStatus == "Delivery" ? (
+              <p className="text-gray-900 text-sm mt-2 flex justify-center lg:justify-start">
+                {saveLocation}
+              </p>
+            ) : (
+              ""
+            )}
           </div>
 
           <div className="divider"></div>
@@ -249,25 +248,35 @@ const CheckOut = () => {
             <table className="w-full text-lg text-left text-gray-700">
               <thead className="text-xl text-gray-900 uppercase ">
                 <tr>
-                  <th scope="col" className="py-1 px-6 font-TitleFont font-normal">
+                  <th
+                    scope="col"
+                    className="py-1 px-6 font-TitleFont font-normal"
+                  >
                     Item
                   </th>
-                  <th scope="col" className="py-3 px-6 text-right font-TitleFont font-normal">
+                  <th
+                    scope="col"
+                    className="py-3 px-6 text-right font-TitleFont font-normal"
+                  >
                     Price
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="bg-gray-50 text-gray-800 border-b border-gray-200">
-                  <td className="py-3 px-6 font-TitleFont text-base">Subtotal</td>
+                <tr className="bg-gray-50 text-gray-800 border-b font-TitleFont  border-gray-200">
+                  <td className="py-3 px-6 font-TitleFont text-base text-black">
+                    Subtotal
+                  </td>
                   <td className="py-3 px-6 text-right">
                     ${parseFloat(myOrderData?.sub_total || 0).toFixed(2)}
                   </td>
                 </tr>
 
                 {orderStatus == "Delivery" && (
-                  <tr className="bg-white text-gray-800 border-b border-gray-200">
-                    <td className="py-3 px-6 font-TitleFont text-base">Delivary Fee</td>
+                  <tr className="bg-white text-gray-800 font-TitleFont  border-b border-gray-200">
+                    <td className="py-3 px-6 text-base text-black">
+                      Delivary Fee
+                    </td>
                     <td className="py-3 px-6 text-right">
                       + ${myOrderData?.delivery_fee}
                     </td>
@@ -276,16 +285,16 @@ const CheckOut = () => {
 
                 {/* Service Fee */}
                 {orderStatus == "Delivery" && (
-                  <tr className="bg-white text-gray-800 border-b border-gray-200">
-                    <td className="py-3 px-6 font-TitleFont text-base">Tips</td>
+                  <tr className="bg-white text-gray-800 border-b font-TitleFont border-gray-200">
+                    <td className="py-3 px-6 font-TitleFont text-base text-black">Tips</td>
                     <td className="py-3 px-6 text-right">
                       + ${myOrderData?.tips.toFixed(2)}
                     </td>
                   </tr>
                 )}
 
-                <tr className="bg-gray-50 text-gray-800 border-b border-gray-200">
-                  <td className="py-3 px-6 font-TitleFont text-base">
+                <tr className="bg-gray-50 text-gray-800 font-TitleFont border-b border-gray-200">
+                  <td className="py-3 px-6 font-TitleFont text-base text-black">
                     {orderStatus == "Delivery" ? "Tax & Fees" : "Tax"}{" "}
                   </td>
                   <td className="py-3 px-6 text-right">
@@ -294,8 +303,10 @@ const CheckOut = () => {
                 </tr>
 
                 {myOrderData?.coupon_discount > 0 && (
-                  <tr className="bg-gray-50 text-gray-800 border-b border-gray-200">
-                    <td className="py-3 px-6 font-TitleFont text-base">Coupon Discount</td>
+                  <tr className="bg-gray-50 text-gray-800 font-TitleFont border-b border-gray-200">
+                    <td className="py-3 px-6 font-TitleFont text-base text-black">
+                      Coupon Discount
+                    </td>
                     <td className="py-3 px-6 text-right">
                       -$
                       {parseFloat(myOrderData?.coupon_discount || 0).toFixed(2)}
@@ -303,7 +314,7 @@ const CheckOut = () => {
                   </tr>
                 )}
 
-                <tr className="bg-white text-gray-900 font-TitleFont text-2xl">
+                <tr className="bg-white text-gray-900  font-TitleFont text-2xl">
                   <td className="py-4 px-6 ">Total</td>
                   <td className="py-4 px-6 text-right">
                     ${parseFloat(myOrderData?.total_price || 0).toFixed(2)}

@@ -50,6 +50,7 @@ const MyCart = () => {
   const [note, setNote] = useState({});
   const [firstLine, setFirstLine] = useState("");
   const [secondLine, setSecondLine] = useState("");
+  const [iscountPercentage, setDiscountPercentage] = useState(0);
   const delivaryFee = deleveryFee?.fee;
   const taxRate = tax?.tax_rate;
   const navigate = useNavigate();
@@ -176,6 +177,7 @@ const MyCart = () => {
         } else if (discountData.is_discount_percentage === 1) {
           const discountAmount =
             (cartSubtotal * discountData.discount_percentage) / 100;
+          setDiscountPercentage(discountData.discount_percentage);
           setCouponPrice(discountAmount);
           Swal.fire({
             icon: "success",
@@ -431,6 +433,7 @@ const MyCart = () => {
     };
   }, [openNotes]);
 
+
   return (
     <section className="text-gray-600 body-font mx-auto">
       <Helmet>
@@ -498,12 +501,6 @@ const MyCart = () => {
                     </dialog>
 
                     <div className="flex gap-2">
-                      {/* <button className="bg-red-600 rounded-full p-1.5 hover:bg-red-800 transition-all duration-300">
-                        <RiDeleteBin6Line
-                          onClick={() => handleDelete(item.id)}
-                          className="text-2xl text-white "
-                        />
-                      </button> */}
                       <Link to={`/food-details/${item.food_details_id}`}>
                         <button className=" rounded-full p-1.5 hover:bg-gray-200 transition-all duration-300">
                           <MdEdit className="text-2xl text-black " />
@@ -625,16 +622,6 @@ const MyCart = () => {
                         </button>
                       )}
 
-                      {!openNotes[item.id] && note[item.id] && (
-                        <button
-                          className="flex gap-1 items-center border border-gray-300 rounded px-2 py-1 mt-2 transition-all text-sm font-TitleFont"
-                          onClick={() => handleOpenNote(item.id)}
-                        >
-                          <MdModeEdit className="text-xs" />
-                          <span>Edit Note</span>
-                        </button>
-                      )}
-
                       {openNotes[item.id] && ""}
 
                       {openNotes[item.id] && (
@@ -652,10 +639,13 @@ const MyCart = () => {
                         </div>
                       )}
 
-                      {!openNotes[item.id] && (
-                        <div className="mt-2">
+                      {!openNotes[item.id] && note[item.id] && (
+                        <div
+                          className="mt-2"
+                          onClick={() => handleOpenNote(item.id)}
+                        >
                           <p className="w-full max-w-md text-sm p-1">
-                            {note[item.id] || ""}
+                            Note: {note[item.id]}
                           </p>
                         </div>
                       )}
@@ -734,10 +724,10 @@ const MyCart = () => {
             <BsClock size={20} />
             <span>Rasturent Open 10:00 AM To 11:00 PM</span>
           </div>
-          <div className="divider mb-3"></div>
+          <div className="divider"></div>
 
           {/* Time Selection */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between">
             <span className="text-2xl font-TitleFont text-gray-900">
               Select Time
             </span>
@@ -831,37 +821,10 @@ const MyCart = () => {
               </div>
             )}
 
-          <div className="divider mb-3"></div>
-
-          {user.id ? (
-            <div>
-              <h1 className="font-TitleFont text-2xl text-black">OFFER :</h1>
-              <form onSubmit={handleCoupons} className="relative">
-                <input
-                  type="text"
-                  name="code"
-                  className="w-full border border-gray-300 text-sm rounded px-4 py-3 text-gray-700 focus:border-green-600 placeholder-gray-500"
-                  placeholder="Enter Offer Code"
-                />
-                <button
-                  type="submit"
-                  className="absolute right-1 top-1 bg-ButtonColor text-white rounded px-4 py-[10px] text-xs font-bold uppercase transition hover:bg-ButtonHover"
-                >
-                  Submit
-                </button>
-              </form>
-            </div>
-          ) : (
-            // Sign In Sign Out Modal
-            <div className="">
-              <p className="pb-2">Please Login to Get Offer</p>
-              <SignInSignOutModal />
-            </div>
-          )}
           {/* tips */}
           {orderStatus === "Delivery" && (
             <div>
-              <div className="divider "></div>
+              <div className="divider"></div>
               <OrderTips
                 sendCustomTips={sendCustomTips}
                 sendSelectTipsRate={sendSelectTipsRate}
@@ -950,21 +913,46 @@ const MyCart = () => {
 
               {couponPrice > 0 ? (
                 <tr className="font-TitleFont">
-                  <td className="py-0.5">Coupon Discount</td>
+                  <td className="py-0.5">Coupon Discount ({iscountPercentage}% Off)</td>
                   <td className="text-right">- ${couponPrice.toFixed(2)}</td>
                 </tr>
               ) : (
                 ""
               )}
-
-              <tr className="text-2xl text-gray-800">
-                <td className="font-TitleFont">Total</td>
-                <td className="text-right font-TitleFont font-normal">
-                  ${cartTotalPrice.toFixed(2)}
-                </td>
-              </tr>
             </tbody>
           </table>
+
+          {user.id ? (
+            <div className="w-full my-3">
+              <form onSubmit={handleCoupons} className="relative">
+                <input
+                  type="text"
+                  name="code"
+                  className="w-full border border-gray-300 text-sm rounded px-4 py-3 text-gray-700 focus:border-green-600 placeholder-gray-500"
+                  placeholder="Enter Offer Code"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-1 top-1 bg-ButtonColor text-white rounded px-4 py-[10px] text-xs font-bold uppercase transition hover:bg-ButtonHover"
+                >
+                  Submit
+                </button>
+              </form>
+            </div>
+          ) : (
+            // Sign In Sign Out Modal
+            <div className="">
+              <p className="pb-2">Please Login to Get Offer</p>
+              <SignInSignOutModal />
+            </div>
+          )}
+
+          <div className="flex items-center justify-between text-2xl text-gray-800">
+            <h1 className="font-TitleFont">Total</h1>
+            <p className="text-right font-TitleFont font-normal">
+              ${cartTotalPrice.toFixed(2)}
+            </p>
+          </div>
           {error && <p className="text-red-500">{error}</p>}
           <div className="divider hidden md:block lg:block"></div>
           {/* Checkout Button */}

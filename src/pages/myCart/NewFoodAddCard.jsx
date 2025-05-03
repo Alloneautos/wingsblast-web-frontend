@@ -1,14 +1,15 @@
 import { useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { useAllFood } from "../../api/api";
+import { useAllDiscountFood } from "../../api/api";
 import { useNavigate } from "react-router-dom";
 import LocationModal from "../../components/LocationModal";
 import PercentisImage from "../../assets/images/purcentes.svg";
 import DiscountImage from "../../assets/images/discount.png";
+import GetOneBuyOne from "../../assets/images/buyone.png"
 
 const NewFoodAddCard = () => {
-  const { allFood, loading } = useAllFood();
+  const { allDiscountFood , isLoading} = useAllDiscountFood();
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [foodId, setFoodId] = useState(0);
   const navigate = useNavigate();
@@ -52,6 +53,8 @@ const NewFoodAddCard = () => {
       <div className="slider-container w-full mx-auto px-4">
         <Carousel
           responsive={responsive}
+          autoPlay
+          autoPlaySpeed={3000}
           infinite
           swipeable
           draggable
@@ -59,7 +62,7 @@ const NewFoodAddCard = () => {
           arrows
           className="w-full"
         >
-          {loading
+          {isLoading
             ? Array.from({ length: 3 }).map((_, index) => (
                 <div
                   key={index}
@@ -71,7 +74,7 @@ const NewFoodAddCard = () => {
                   <div className="w-full h-4 bg-gray-300 rounded"></div>
                 </div>
               ))
-            : allFood?.map((foodMenu) => (
+            : allDiscountFood?.map((foodMenu) => (
                 <div key={foodMenu.id} className="p-2 w-full">
                   <div
                     className="cursor-pointer"
@@ -123,6 +126,24 @@ const NewFoodAddCard = () => {
                                 <div className="text-3xl -mt-3 mr-3">
                                   {foodMenu.discount_percentage}
                                 </div>
+                              </div>
+                            </div>
+                          </span>
+                        )}
+                        {foodMenu.is_buy_one_get_one === 1 && (
+                          <span className="absolute top-0 right-0 text-white text-md font-TitleFont p-0.5 rounded-l-3xl">
+                            <div
+                              style={{
+                                backgroundImage: `url(${GetOneBuyOne})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                              }}
+                              className="w-[70px] h-[70px] flex flex-col items-center justify-center relative overflow-hidden"
+                            >
+                              <div className="absolute inset-0 rounded-full"></div>{" "}
+                              {/* Red overlay for readability */}
+                              <div className="relative z-10 text-center leading-tight">
+                                
                               </div>
                             </div>
                           </span>

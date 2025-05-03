@@ -14,7 +14,7 @@ const Banner = () => {
     if (totalSlides > 0) {
       const interval = setInterval(() => {
         setCurrentSlide((prev) => (prev + 1) % totalSlides);
-      }, 20000);
+      }, 5000);
 
       return () => clearInterval(interval);
     }
@@ -86,7 +86,7 @@ const Banner = () => {
         {/* Text + CTA Section */}
         <div className="w-full lg:w-2/6">
           <div className="lg:max-w-lg text-center lg:text-left">
-            <h1 className="text-3xl lg:text-4xl font-bold tracking-wide uppercase text-TextColor font-italicFont">
+            <h1 className="text-3xl lg:text-4xl font-bold tracking-wide uppercase text-rose-600 font-italicFont">
               Blasting your taste with wingsBlast
             </h1>
             <p className="mt-4 text-black font-paragraphFont">

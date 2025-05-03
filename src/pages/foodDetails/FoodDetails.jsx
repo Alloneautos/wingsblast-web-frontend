@@ -24,6 +24,7 @@ import RicePlattarCostom from "./RicePlattarCostom";
 import ExtraSideSection from "./ExtraSideSection";
 import { Helmet } from "react-helmet-async";
 import { FiMinus, FiPlus } from "react-icons/fi";
+import GetOneBuyOne from "./GetOneBuyOne";
 
 const FoodDetails = () => {
   const queryClient = useQueryClient();
@@ -631,9 +632,16 @@ const FoodDetails = () => {
                   </button>
                 </div>
                 <div className="w-[200px] lg:w-[400px]">
-                  <button className="flex justify-between font-TitleFont text-xl font-normal btn w-full py-2 px-2 text-white rounded bg-ButtonColor hover:bg-ButtonHover">
+                  <button
+                    onClick={handleAddToBag}
+                    className="flex justify-between font-TitleFont text-xl font-normal btn w-full py-2 px-2 text-white rounded bg-ButtonColor hover:bg-ButtonHover"
+                  >
                     <span></span>
-                    Add To Cart
+                    {cartLoading ? (
+                      <span className="animate-pulse">Please Wait...</span>
+                    ) : (
+                      "Add To Cart"
+                    )}
                     <span className="flex justify-end">${totalPrice}</span>
                   </button>
                 </div>
@@ -645,6 +653,9 @@ const FoodDetails = () => {
 
       {foodDetails?.upgrade_food_details?.length > 0 && (
         <ExtraCombo extraPackege={foodDetails.upgrade_food_details} />
+      )}
+      {foodDetails?.buy_one_get_one_food?.food_menu_id && (
+        <GetOneBuyOne getonebuyone={foodDetails?.buy_one_get_one_food} loading={loading} />
       )}
 
       {sortedComponents.map((item, index) => (

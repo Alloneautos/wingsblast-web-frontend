@@ -718,4 +718,25 @@ export const useAllBannar = () => {
   return { allBannar, isLoading, isError, error, refetch };
 };
 
+// get Promotions
+export const useAllDiscountFood = () => {
+  const getAllDiscountFood = async () => {
+    const response = await API.get(`/food-details/discount`);
+    return response.data.data;
+  };
+
+  const {
+    data: allDiscountFood = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["allDiscountFood"],
+    queryFn: getAllDiscountFood,
+  });
+
+  return { allDiscountFood, isLoading, isError, error, refetch };
+};
+
 

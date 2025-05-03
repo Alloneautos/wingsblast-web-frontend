@@ -9,7 +9,7 @@ const OtherCompany = () => {
       <div className="container w-full lg:w-10/12 mx-auto px-5">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-3xl lg:text-4xl font-bold italic text-white mb-4">
+          <h1 className="text-3xl lg:text-4xl font-TitleFont text-white mb-4">
             OUR DELIVERY PARTNERS
           </h1>
         </div>
@@ -20,7 +20,7 @@ const OtherCompany = () => {
             href="https://slicelife.com/restaurants/ny/brooklyn/11213/wings-blast-and-pizza/menu?utm_campaign=order_now_button&utm_medium=referral&utm_source=wingsblast.com&utm_content=custom_link"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white w-[130px] lg:w-[150px] h-[130px] lg:h-[150px] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-white w-[130px] lg:w-[150px] h-[130px] lg:h-[150px] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
           >
             <img
               src={Slice}
@@ -31,7 +31,7 @@ const OtherCompany = () => {
           <a
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white w-[130px] lg:w-[150px] h-[130px] lg:h-[150px] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-white w-[130px] lg:w-[150px] h-[130px] lg:h-[150px] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
           >
             <img
               src={Grubhub}
@@ -42,7 +42,7 @@ const OtherCompany = () => {
           <a
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white w-[130px] lg:w-[150px] h-[130px] lg:h-[150px] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-white w-[130px] lg:w-[150px] h-[130px] lg:h-[150px] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
           >
             <img
               src={Uber}
@@ -53,7 +53,7 @@ const OtherCompany = () => {
           <a
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white w-[130px] lg:w-[150px] h-[130px] lg:h-[150px] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-white w-[130px] lg:w-[150px] h-[130px] lg:h-[150px] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
           >
             <img
               src={DoorDash}
