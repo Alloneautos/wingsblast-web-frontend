@@ -1,47 +1,67 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAllDrinksName } from "../../../api/api";
 import LoadingComponent from "../../../components/LoadingComponent";
 import { CgClose } from "react-icons/cg";
 import { CiSquareMinus, CiSquarePlus } from "react-icons/ci";
 
-const CustomExtraDrinkModal = ({ onDrinkSelect, drinkPrice, categoryId }) => {
+const CustomExtraDrinkModal = ({
+  allDrinks,
+  categoryId,
+  drinkPrice,
+  onDrinkSelect,
+  onClose,
+  selectedDrinks: initiallySelectedDrinks,
+}) => {
+  const { allDrinksName, isLoading } = useAllDrinksName();
   const [selectedDrinks, setSelectedDrinks] = useState([]);
-  const [drinkQuantities, setDrinkQuantities] = useState({});
-  const {allDrinksName, isLoading } = useAllDrinksName();
+  const [quantities, setQuantities] = useState({});
+
+  // Initialize selected drinks and quantities
+  useEffect(() => {
+    const initialSelections = {};
+    const initialQuantities = {};
+
+    initiallySelectedDrinks.forEach((drink) => {
+      initialSelections[drink.child_item_id] = true;
+      initialQuantities[drink.child_item_id] = drink.quantity;
+    });
+
+    setSelectedDrinks(initiallySelectedDrinks.map((d) => d.child_item_id));
+    setQuantities(initialQuantities);
+  }, [initiallySelectedDrinks]);
 
   const handleApply = () => {
-    selectedDrinks.forEach((drink) => {
-      const quantity = drinkQuantities[drink.id] || 1;
-      onDrinkSelect(drink.id, quantity); // Pass drink ID and quantity
+    selectedDrinks.forEach((drinkId) => {
+      onDrinkSelect(drinkId, quantities[drinkId] || 1);
     });
-    document.getElementById("costomizeDrink").close();
+    onClose();
   };
 
-  const handleCancel = () => {
-    document.getElementById("costomizeDrink").close();
+  const toggleDrinkSelection = (drinkId) => {
+    setSelectedDrinks((prev) =>
+      prev.includes(drinkId)
+        ? prev.filter((id) => id !== drinkId)
+        : [...prev, drinkId]
+    );
+
+    // Initialize quantity if not set
+    if (!quantities[drinkId]) {
+      setQuantities((prev) => ({ ...prev, [drinkId]: 1 }));
+    }
   };
 
-  const incrementQuantity = (id) => {
-    setDrinkQuantities((prev) => ({
+  const incrementQuantity = (drinkId) => {
+    setQuantities((prev) => ({
       ...prev,
-      [id]: (prev[id] || 1) + 1,
+      [drinkId]: (prev[drinkId] || 1) + 1,
     }));
   };
 
-  const decrementQuantity = (id) => {
-    setDrinkQuantities((prev) => ({
+  const decrementQuantity = (drinkId) => {
+    setQuantities((prev) => ({
       ...prev,
-      [id]: Math.max(1, (prev[id] || 1) - 1),
+      [drinkId]: Math.max(1, (prev[drinkId] || 1) - 1),
     }));
-  };
-
-  const toggleDrinkSelection = (drink) => {
-    setSelectedDrinks((prev) => {
-      if (prev.some((d) => d.id === drink.id)) {
-        return prev.filter((d) => d.id !== drink.id);
-      }
-      return [...prev, drink];
-    });
   };
 
   if (isLoading) {
@@ -49,119 +69,92 @@ const CustomExtraDrinkModal = ({ onDrinkSelect, drinkPrice, categoryId }) => {
   }
 
   return (
-    <div>
-      <div className="ml-[74px] -mt-[20px]">
-        <button
-          className="text-green-600"
-          onClick={(e) => {
-            e.stopPropagation();
-            document.getElementById("costomizeDrink").showModal();
-          }}
-        >
-          Customize
-        </button>
-        <p className="text-xs">
-          {selectedDrinks.map((drink) => drink.name).join(", ")}
-        </p>
-      </div>
-
-      <dialog id="costomizeDrink" className="modal rounded">
-        <div className="modal-box rounded h-[500px]">
-          <div className="sticky -top-[27px] bg-white z-30 py-5">
-            <h3 className="font-bold text-lg text-center">CUSTOMIZE</h3>
-            <p className="text-center text-gray-600 mt-0.5 pb-4">
-              Selected: {selectedDrinks.map((drink) => drink.name).join(", ")}
-            </p>
-            <div className="flex justify-end -mt-[50px]">
-              <button className="text-xl" onClick={handleCancel}>
-                <CgClose />
-              </button>
-            </div>
+    <dialog open className="modal modal-bottom sm:modal-middle">
+      <div className="modal-box max-w-2xl max-h-[80vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white z-10 pb-4">
+          <div className="flex justify-between items-center">
+            <h3 className="font-bold text-lg">
+              Customize Drinks -{" "}
+              {allDrinks.find((c) => c.id === categoryId)?.name}
+            </h3>
+            <button className="btn btn-sm btn-circle" onClick={onClose}>
+              <CgClose />
+            </button>
           </div>
+          <p className="py-2">Selected: {selectedDrinks.length} items</p>
+        </div>
 
-          <div className="mt-4">
-            {allDrinksName.map((drink, index) => {
-              const quantity = drinkQuantities[drink.id] || 1;
+        <div className="space-y-4">
+          {allDrinksName
+            .filter(
+              (drink) => !drink.categoryId || drink.categoryId === categoryId
+            )
+            .map((drink) => {
+              const isSelected = selectedDrinks.includes(drink.id);
+              const quantity = quantities[drink.id] || 1;
               const totalPrice = (quantity * drinkPrice).toFixed(2);
-              const isSelected = selectedDrinks.some((d) => d.id === drink.id);
 
               return (
                 <div
-                  key={index}
-                  className={`flex items-center justify-between ${
-                    index !== allDrinksName.length - 1 ? "border-b" : ""
-                  } py-3`}
+                  key={drink.id}
+                  className="flex items-center justify-between p-2 border-b"
                 >
-                  <label className="flex items-center justify-between w-full cursor-pointer">
-                    <div className="flex items-center space-x-3">
-                      <img
-                        src={drink.image}
-                        alt={drink.name}
-                        className="w-14 h-14 rounded-full"
-                      />
-                      <span className="font-medium">{drink.name}</span>
+                  <div className="flex items-center space-x-4">
+                    <img
+                      src={drink.image}
+                      alt={drink.name}
+                      className="w-12 h-12 rounded-full"
+                    />
+                    <div>
+                      <p className="font-medium">{drink.name}</p>
+                      <p className="text-sm text-gray-500">
+                        ${drinkPrice} each
+                      </p>
                     </div>
-                    <div className="flex items-center">
-                      {isSelected && (
-                        <div className="flex items-center justify-center space-x-2 bg-white px-4 py-2 rounded-xl w-fit">
-                          <button
-                            className="text-2xl text-black"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              decrementQuantity(drink.id);
-                            }}
-                          >
-                            <CiSquareMinus />
-                          </button>
-                          <span className="text-lg font-TitleFont text-black">
-                            {quantity}
-                          </span>
-                          <button
-                            className="text-2xl text-black"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              incrementQuantity(drink.id);
-                            }}
-                          >
-                            <CiSquarePlus />
-                          </button>
-                          <p className="ml-4 text-md font-light font-TitleFont text-black">
-                            ${totalPrice}
-                          </p>
-                        </div>
-                      )}
+                  </div>
 
-                      <input
-                        type="checkbox"
-                        name="drink"
-                        className="checkbox checkbox-primary rounded text-white ml-3"
-                        checked={isSelected}
-                        onChange={() => toggleDrinkSelection(drink)}
-                      />
-                    </div>
-                  </label>
+                  <div className="flex items-center space-x-4">
+                    {isSelected && (
+                      <div className="flex items-center space-x-2">
+                        <button
+                          className="text-xl text-gray-600"
+                          onClick={() => decrementQuantity(drink.id)}
+                        >
+                          <CiSquareMinus />
+                        </button>
+                        <span className="w-8 text-center">{quantity}</span>
+                        <button
+                          className="text-xl text-gray-600"
+                          onClick={() => incrementQuantity(drink.id)}
+                        >
+                          <CiSquarePlus />
+                        </button>
+                        <span className="w-16 text-right">${totalPrice}</span>
+                      </div>
+                    )}
+
+                    <input
+                      type="checkbox"
+                      className="checkbox checkbox-primary"
+                      checked={isSelected}
+                      onChange={() => toggleDrinkSelection(drink.id)}
+                    />
+                  </div>
                 </div>
               );
             })}
-          </div>
-
-          <div className="flex space-x-2 bg-white z-30 sticky -bottom-[22px]">
-            <button
-              className="btn rounded btn-primary w-[50%] text-white"
-              onClick={handleCancel}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleApply}
-              className="btn rounded btn-primary w-[50%] text-white"
-            >
-              Apply
-            </button>
-          </div>
         </div>
-      </dialog>
-    </div>
+
+        <div className="modal-action sticky bottom-0 bg-white pt-4">
+          <button className="btn btn-ghost" onClick={onClose}>
+            Cancel
+          </button>
+          <button className="btn btn-primary" onClick={handleApply}>
+            Apply Selections
+          </button>
+        </div>
+      </div>
+    </dialog>
   );
 };
 
