@@ -74,9 +74,9 @@ const BestFood = () => {
             className=""
           >
             {allFood?.map((foodMenu, index) => (
-              <div key={index} className="p-1 sm:p-4 cursor-pointer">
+              <div key={index} className="p-1 sm:p-3  cursor-pointer">
                 <div
-                  className="h-full w-full border shadow-2xl hover:shadow-xl rounded-lg overflow-hidden bg-white"
+                  className="h-full w-full shadow-lg hover:shadow-xl rounded-lg overflow-hidden bg-white"
                   onClick={() => handleLinkClick(foodMenu?.id)}
                 >
                    <h2 className="py-2 text-center text-lg sm:text-xl font-TitleFont text-black truncate">

@@ -3,7 +3,8 @@ import { useFlavor } from "../../api/api";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { Link } from "react-router-dom";
-import { BsFire } from "react-icons/bs";
+import { FaFire } from "react-icons/fa6";
+import { FaFireAlt } from "react-icons/fa";
 
 const FlavorSelector = () => {
   const [heatLevel, setHeatLevel] = useState(100);
@@ -30,7 +31,7 @@ const FlavorSelector = () => {
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
-      items: 3,
+      items: 4,
       partialVisibilityGutter: 30,
     },
     tablet: {
@@ -114,7 +115,7 @@ const FlavorSelector = () => {
               ))
             : filteredFlavors?.map((item, index) => (
                 <div className="px-2" key={index}>
-                  <div className="bg-gray-100 text-black py-6 px-2 rounded text-center shadow-lg">
+                  <div className="bg-[#CCCCCC] text-black py-6 px-2 rounded text-center shadow-lg">
                     {/* Image */}
                     <div className="w-20 h-20 inline-flex items-center justify-center border rounded-full mb-2 flex-shrink-0 mx-auto overflow-hidden">
                       <img
@@ -131,27 +132,27 @@ const FlavorSelector = () => {
                     <div className="rating flex justify-center my-3">
                       {/* Filled Flames */}
                       {[...Array(item.flavor_rating)].map((_, i) => (
-                        <BsFire
+                        <FaFireAlt 
                           key={i}
                           className={`${
                             item.flavor_rating <= 1
                               ? "text-green-700"
                               : item.flavor_rating <= 3
-                              ? "text-yellow-600"
-                              : "text-red-500"
+                              ? "text-yellow-700"
+                              : "text-red-700"
                           }`}
                         />
                       ))}
                       {/* Empty Flames */}
                       {[...Array(5 - item.flavor_rating)].map((_, i) => (
-                        <BsFire
+                        <FaFireAlt 
                           key={i}
                           className={`opacity-30 ${
                             item.flavor_rating <= 1
                               ? "text-green-500"
                               : item.flavor_rating <= 3
-                              ? "text-yellow-500"
-                              : "text-red-500"
+                              ? "text-yellow-700"
+                              : "text-red-700"
                           }`}
                         />
                       ))}
@@ -169,7 +170,7 @@ const FlavorSelector = () => {
 
       {/* Explore Menu Button */}
       <Link to="/foodmenu" className="relative z-10">
-        <button className="mt-8 px-6 py-3 text-2xl bg-red-600 text-white rounded font-TitleFont hover:bg-red-700 transition">
+        <button className="mt-8 px-6 py-2 text-2xl bg-red-600 text-white rounded font-TitleFont hover:bg-red-700 transition">
           Explore Menu
         </button>
       </Link>

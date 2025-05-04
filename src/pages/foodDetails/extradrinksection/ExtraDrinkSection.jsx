@@ -18,6 +18,8 @@ const ExtraDrinkSection = ({
   const [openModals, setOpenModals] = useState({});
   const { allDrinksName } = useAllDrinksName();
 
+  console.log(openModals, "openModals");
+
   const handleDrinkSelect = (categoryId, selectedDrinkId, quantity) => {
     setSelectedDrinks((prev) => {
       // Remove any existing drinks with the same category and child item
@@ -125,10 +127,10 @@ const ExtraDrinkSection = ({
                 {!loading &&
                   allDrinks.map((category) => (
                     <div key={category.id} className="w-full">
-                      <h3 className="text-md font-semibold mb-2 text-blue-600">
-                        {category.name}
-                      </h3>
-                      <label className="block border border-gray-300 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
+                      <label
+                        className="block border border-gray-300 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer"
+                        onClick={(e) => e.stopPropagation()} // Prevent checkbox selection on outside click
+                      >
                         <div className="flex items-center justify-between">
                           <div className="flex space-x-3">
                             <div className="w-16">
@@ -155,16 +157,16 @@ const ExtraDrinkSection = ({
                               </div>
                             </div>
                           </div>
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-primary"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleModal(category.id);
+                          <input
+                            type="checkbox"
+                            className="checkbox checkbox-primary rounded"
+                            onClick={(e) => e.stopPropagation()} // Prevent propagation to avoid unintended selection
+                            onChange={(e) => {
+                              if (!e.target.checked) {
+                                toggleModal(category.id);
+                              }
                             }}
-                          >
-                            Select
-                          </button>
+                          />
                         </div>
 
                         {openModals[category.id] && (
@@ -181,12 +183,44 @@ const ExtraDrinkSection = ({
                             )}
                           />
                         )}
+
+                        {!openModals[category.id] && (
+                          <div>
+                            <h1
+                              className="cursor-pointer"
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent triggering other click events
+                                toggleModal(category.id); // Open modal only on "Costomize" click
+                              }}
+                            >
+                              Costomize
+                            </h1>
+                          </div>
+                        )}
+                        
+                        <div className="flex flex-wrap gap-1.5">
+                          {selectedDrinks.map((drink) => {
+                            if (drink.type_id === category.id) {
+                              const drinkItem = allDrinksName.find(
+                                (d) => d.id === drink.child_item_id
+                              );
+                              return (
+                                <p
+                                  key={drink.id}
+                                  className="text-sm text-gray-600 flex"
+                                >
+                                  {drinkItem?.name} X{drink.quantity},
+                                </p>
+                              );
+                            }
+                          })}
+                        </div>
                       </label>
                     </div>
                   ))}
 
                 <div className="w-full">
-                  <label className="block border border-gray-300 px-4 py-[30px] mt-2 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
+                  <label className="block border border-gray-300 px-4 py-[30px] rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <RxCross2 className="text-4xl text-red-600" />

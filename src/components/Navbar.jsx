@@ -307,21 +307,21 @@ function Navbar() {
         {orderStatus ? (
           orderStatus === "Delivery" ? (
             <div className="border-t p-1">
-              <h1 className="text-gray-800 text-center flex justify-center items-center">
+              <h1 className="text-black text-sm font-TitleFont text-center flex justify-center items-center">
                 DELIVERY:
-                <span className="ml-1 text-black">{shortAddress}</span>
+                <span className="ml-1 text-gray-800">{shortAddress}</span>
               </h1>
             </div>
           ) : (
             <div className="border-t p-1">
-              <h1 className="text-black text-center flex justify-center items-center">
+              <h1 className="text-black  font-TitleFont text-sm text-center flex justify-center items-center">
                 CARRYOUT
               </h1>
             </div>
           )
         ) : (
           <div className="border-t p-1">
-            <h1 className="text-black text-center flex justify-center items-center">
+            <h1 className="text-black text-center  font-TitleFont text-sm flex justify-center items-center">
               PLEASE SELECT ORDER TYPE
             </h1>
           </div>

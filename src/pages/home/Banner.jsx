@@ -14,7 +14,7 @@ const Banner = () => {
     if (totalSlides > 0) {
       const interval = setInterval(() => {
         setCurrentSlide((prev) => (prev + 1) % totalSlides);
-      }, 5000);
+      }, 10000);
 
       return () => clearInterval(interval);
     }
@@ -45,23 +45,25 @@ const Banner = () => {
             >
               {allBannar.map((slide, index) => (
                 <div key={index} className="min-w-full rounded-xl">
-                  {slide.type === "video" ? (
-                    <video
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
-                    >
-                      <source src={slide.video_image} type="video/mp4" />
-                    </video>
-                  ) : (
-                    <img
-                      src={slide.video_image}
-                      alt={slide.content}
-                      className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
-                    />
-                  )}
+                  <Link to={`/food-details/${slide.link_url}`}>
+                    {slide.type === "video" ? (
+                      <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
+                      >
+                        <source src={slide.video_image} type="video/mp4" />
+                      </video>
+                    ) : (
+                      <img
+                        src={slide.video_image}
+                        alt={slide.content}
+                        className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
+                      />
+                    )}
+                  </Link>
                 </div>
               ))}
             </div>

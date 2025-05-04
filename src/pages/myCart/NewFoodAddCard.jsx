@@ -6,10 +6,10 @@ import { useNavigate } from "react-router-dom";
 import LocationModal from "../../components/LocationModal";
 import PercentisImage from "../../assets/images/purcentes.svg";
 import DiscountImage from "../../assets/images/discount.png";
-import GetOneBuyOne from "../../assets/images/buyone.png"
+import GetOneBuyOne from "../../assets/images/buyone.png";
 
 const NewFoodAddCard = () => {
-  const { allDiscountFood , isLoading} = useAllDiscountFood();
+  const { allDiscountFood, isLoading } = useAllDiscountFood();
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [foodId, setFoodId] = useState(0);
   const navigate = useNavigate();
@@ -81,9 +81,9 @@ const NewFoodAddCard = () => {
                     onClick={() => handleLinkClick(foodMenu?.id)}
                   >
                     <div className="bg-white border shadow-xl rounded-lg  overflow-hidden hover:shadow-xl transition duration-900 transform">
-                      <div className="relative ">
+                      <div className="relative w-full ">
                         <img
-                          className="rounded-t-lg w-[180px] h-[180px] mx-auto object-cover"
+                          className="rounded-t-lg w-[165px] h-[165px] mx-auto object-cover"
                           src={foodMenu.image}
                           alt={foodMenu.name}
                         />
@@ -142,13 +142,11 @@ const NewFoodAddCard = () => {
                             >
                               <div className="absolute inset-0 rounded-full"></div>{" "}
                               {/* Red overlay for readability */}
-                              <div className="relative z-10 text-center leading-tight">
-                                
-                              </div>
+                              <div className="relative z-10 text-center leading-tight"></div>
                             </div>
                           </span>
                         )}
-                        <span className="absolute left-3 top-3 mt-1 font-TitleFont bg-indigo-600 text-white text-sm px-2 rounded">
+                        <span className="absolute left-3 top-3 mt-1 font-TitleFont bg-indigo-700 text-white text-sm px-2 rounded">
                           POPULAR
                         </span>
                       </div>
@@ -156,7 +154,7 @@ const NewFoodAddCard = () => {
                         <h2 className="text-gray-900 text-xl h-[33px] font-TitleFont leading-tight line-clamp-2">
                           {foodMenu.name}
                         </h2>
-                        <p className="leading-relaxed text-black text-xs line-clamp-2 h-[42px]">
+                        <p className="text-black text-xs line-clamp-2 h-[48px]">
                           {foodMenu.description}
                         </p>
                       </div>

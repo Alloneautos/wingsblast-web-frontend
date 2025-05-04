@@ -37,6 +37,16 @@ const CustomExtraDrinkModal = ({
     onClose();
   };
 
+  const handleClose = () => {
+    dialogRef.current?.close();
+    onClose(); // callback to parent
+  };
+
+  const handleCancel = () => {
+    dialogRef.current?.close();
+    onClose(); // callback to parent
+  };
+
   const toggleDrinkSelection = (drinkId) => {
     setSelectedDrinks((prev) =>
       prev.includes(drinkId)
@@ -71,7 +81,7 @@ const CustomExtraDrinkModal = ({
   return (
     <dialog open className="modal modal-bottom sm:modal-middle">
       <div className="modal-box max-w-2xl max-h-[80vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white z-10 pb-4">
+        <div className="sticky -top-[27px] bg-white z-30 py-5">
           <div className="flex justify-between items-center">
             <h3 className="font-bold text-lg">
               Customize Drinks -{" "}
@@ -135,7 +145,7 @@ const CustomExtraDrinkModal = ({
 
                     <input
                       type="checkbox"
-                      className="checkbox checkbox-primary"
+                      className="checkbox checkbox-primary rounded"
                       checked={isSelected}
                       onChange={() => toggleDrinkSelection(drink.id)}
                     />
@@ -145,12 +155,18 @@ const CustomExtraDrinkModal = ({
             })}
         </div>
 
-        <div className="modal-action sticky bottom-0 bg-white pt-4">
-          <button className="btn btn-ghost" onClick={onClose}>
+        <div className="flex space-x-2 bg-white z-30 sticky -bottom-[22px]">
+          <button
+            className="btn rounded btn-primary w-[50%] text-white"
+            onClick={onClose}
+          >
             Cancel
           </button>
-          <button className="btn btn-primary" onClick={handleApply}>
-            Apply Selections
+          <button
+            onClick={handleApply}
+            className="btn rounded btn-primary w-[50%] text-white"
+          >
+            Apply
           </button>
         </div>
       </div>
