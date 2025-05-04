@@ -217,7 +217,7 @@ const SideSection = ({ sides: mySides, loading, onSideSelected }) => {
                           />
                         </div>
                         {selectedOptions[category.name] && (
-                          <div className="mt-3 ml-[90px] mx-auto items-center gap-2 text-gray-700">
+                          <div className="mt-3 ml-[90px] mx-auto items-center gap-2 text-gray-700 hidden">
                             <span className="font-medium">
                               Number of Wings:
                             </span>

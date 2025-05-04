@@ -18,8 +18,6 @@ const ExtraDrinkSection = ({
   const [openModals, setOpenModals] = useState({});
   const { allDrinksName } = useAllDrinksName();
 
-  console.log(openModals, "openModals");
-
   const handleDrinkSelect = (categoryId, selectedDrinkId, quantity) => {
     setSelectedDrinks((prev) => {
       // Remove any existing drinks with the same category and child item
@@ -68,10 +66,11 @@ const ExtraDrinkSection = ({
       quantity: drink.quantity,
     }));
 
-    console.log("formattedDrinks", formattedDrinks);
     onExtraDrinkSelected(formattedDrinks);
     onSelectedExtraDrinksChange(formattedDrinks);
   }, [selectedDrinks]);
+
+  
 
   return (
     <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white">
@@ -129,7 +128,7 @@ const ExtraDrinkSection = ({
                     <div key={category.id} className="w-full">
                       <label
                         className="block border border-gray-300 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer"
-                        onClick={(e) => e.stopPropagation()} // Prevent checkbox selection on outside click
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex space-x-3">
@@ -160,12 +159,8 @@ const ExtraDrinkSection = ({
                           <input
                             type="checkbox"
                             className="checkbox checkbox-primary rounded"
-                            onClick={(e) => e.stopPropagation()} // Prevent propagation to avoid unintended selection
-                            onChange={(e) => {
-                              if (!e.target.checked) {
-                                toggleModal(category.id);
-                              }
-                            }}
+                            onClick={(e) => e.stopPropagation()}
+
                           />
                         </div>
 
@@ -189,8 +184,8 @@ const ExtraDrinkSection = ({
                             <h1
                               className="cursor-pointer"
                               onClick={(e) => {
-                                e.stopPropagation(); // Prevent triggering other click events
-                                toggleModal(category.id); // Open modal only on "Costomize" click
+                                e.stopPropagation();
+                                toggleModal(category.id);
                               }}
                             >
                               Costomize

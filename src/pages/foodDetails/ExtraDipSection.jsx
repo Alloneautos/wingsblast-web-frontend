@@ -9,7 +9,7 @@ const ExtraDipSection = ({
   loading,
   error,
   onDipPriceChange,
-  onDipSelected,
+  onExtraDipSelected,
 }) => {
   const [selectedDips, setSelectedDips] = useState([]); // Track selected dips
   const [dipQuantities, setDipQuantities] = useState({}); // Track quantities for dips
@@ -71,7 +71,7 @@ const ExtraDipSection = ({
       0
     );
     onDipPriceChange(price);
-    onDipSelected(formattedData); // Pass formatted data
+    onExtraDipSelected(formattedData); // Pass formatted data
   };
 
   useEffect(() => {

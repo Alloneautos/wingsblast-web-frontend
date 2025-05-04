@@ -35,6 +35,7 @@ const FoodDetails = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { foodDetails, loading, error } = useFoodDetails(foodDetailsID);
   const [dipSelects, setDipSelects] = useState([]); // Initialize as an empty array
+  const [extraDipSelects, setExtraDipSelects] = useState([]);
   const [sideSelects, setSideSelects] = useState([]);
   const [extraSideSelects, setExtraSideSelects] = useState([]);
   const [ricePlattarSelects, setRicePlattarSelects] = useState([]);
@@ -220,6 +221,9 @@ const FoodDetails = () => {
   };
   const handleDipSelected = (selectedDips) => {
     setDipSelects(selectedDips); // Store the formatted data
+  };
+  const handleExtraDipSelected = (selectedExtraDips) => {
+    setExtraDipSelects(selectedExtraDips); // Store the formatted data
   };
   const handleBakerySelected = (selectedBakery) => {
     setBakerySelects(selectedBakery); // Store the formatted data
@@ -448,6 +452,12 @@ const FoodDetails = () => {
           is_paid_type: 0,
           quantity: dip.quantity,
         })) || []),
+        ...(extraDipSelects?.map((dip) => ({
+          type: "Dip",
+          type_id: dip.id,
+          is_paid_type: 1,
+          quantity: dip.quantity,
+        })) || []),
         ...(selectedDrinks?.map((drink) => ({
           type: "Drink",
           type_id: drink.type_id,
@@ -478,7 +488,8 @@ const FoodDetails = () => {
           type: "Side",
           type_id: side.id,
           is_paid_type: 0,
-          quantity: side.quantity,
+          // quantity: side.quantity,
+          quantity: 1 ,
         })) || []),
         ...(extraSideSelects?.map((side) => ({
           type: "Side",
@@ -513,6 +524,7 @@ const FoodDetails = () => {
         price: myFoodPrice,
         features: formattedFeatures,
       };
+
       setCartLoading(true);
       const response = await API.post("/card/addtocard", data);
       queryClient.invalidateQueries(["wishListVechile", guestUser]);
@@ -655,7 +667,10 @@ const FoodDetails = () => {
         <ExtraCombo extraPackege={foodDetails.upgrade_food_details} />
       )}
       {foodDetails?.buy_one_get_one_food?.food_menu_id && (
-        <GetOneBuyOne getonebuyone={foodDetails?.buy_one_get_one_food} loading={loading} />
+        <GetOneBuyOne
+          getonebuyone={foodDetails?.buy_one_get_one_food}
+          loading={loading}
+        />
       )}
 
       {sortedComponents.map((item, index) => (
@@ -669,7 +684,7 @@ const FoodDetails = () => {
           loading={loading}
           error={error}
           onDipPriceChange={handleDipPriceChange}
-          onDipSelected={handleDipSelected}
+          onExtraDipSelected={handleExtraDipSelected}
         />
       )}
       {/* // Extra Combo Side Section */}
@@ -704,26 +719,26 @@ const FoodDetails = () => {
             : "relative"
         } border-t border-gray-200 px-3 py-2 shadow-lg rounded-md flex gap-3 justify-center items-center`}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center border border-gray-300 rounded">
           <button
-            className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 border border-gray-300 rounded text-lg md:text-xl font-semibold transition duration-200 ease-in-out hover:bg-gray-100"
+            className="flex items-center justify-center w-7 h-7 md:w-9 md:h-9  text-lg md:text-xl font-semibold transition duration-200 ease-in-out hover:bg-gray-100"
             onClick={decrementQuantity}
           >
-            -
+            <FiMinus />
           </button>
-          <div className="flex items-center justify-center w-12 h-10 md:w-14 md:h-12 border border-gray-300 text-lg md:text-xl font-semibold rounded-">
+          <div className="flex items-center justify-center w-7 h-7 md:w-9 md:h-9  text-lg md:text-xl font-semibold ">
             {quantity}
           </div>
           <button
-            className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 border border-gray-300 rounded text-lg md:text-xl font-semibold transition duration-200 ease-in-out hover:bg-gray-100"
+            className="flex items-center justify-center w-10 h-10 md:w-9 md:h-11  text-lg md:text-xl font-semibold transition duration-200 ease-in-out hover:bg-gray-100"
             onClick={incrementQuantity}
           >
-            +
+            <FiPlus />
           </button>
         </div>
         <button
           onClick={handleAddToBag}
-          className={`px-5 py-2 text-white font-TitleFont text-xl rounded transform transition-transform duration-300 ${
+          className={`px-5 py-2 w-[25%] text-white font-TitleFont text-xl rounded transform transition-transform duration-300 ${
             cartLoading
               ? "bg-gradient-to-r from-gray-400 to-gray-500 cursor-not-allowed"
               : "bg-ButtonColor hover:from-indigo-600 hover:to-purple-600 hover:scale-105"

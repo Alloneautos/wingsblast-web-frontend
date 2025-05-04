@@ -433,7 +433,6 @@ const MyCart = () => {
     };
   }, [openNotes]);
 
-
   return (
     <section className="text-gray-600 body-font mx-auto">
       <Helmet>
@@ -525,88 +524,105 @@ const MyCart = () => {
                         <p> </p>
                       )}
                       {item.dips.map((dip, index) => (
-                        <div key={index} className="flavor-item cursor-pointer">
+                        <div
+                          key={index}
+                          className="flavor-item cursor-pointer flex items-center justify-between"
+                        >
                           <h1 title="Dip" className="flex items-center">
                             {dip.name} X{dip.quantity}{" "}
-                            <span>
-                              {dip.is_paid_type === 1 ? `($${dip.price})` : ""}
-                            </span>
                           </h1>
+                          <span>
+                            {dip.is_paid_type === 1 ? `$${dip.price}` : ""}
+                          </span>
                         </div>
                       ))}
                       {item.sides.map((side, index) => (
-                        <div key={index} className="flavor-item cursor-pointer">
+                        <div
+                          key={index}
+                          className="flavor-item cursor-pointer flex items-center justify-between"
+                        >
                           <h1 title="side" className="flex items-center">
                             {side.name} X {side.quantity}
-                            <span>
-                              {side.is_paid_type === 1
-                                ? `($${side.price})`
-                                : ""}
-                            </span>
                           </h1>
+                          <span>
+                            {side.is_paid_type === 1 ? `$${side.price}` : ""}
+                          </span>
                         </div>
                       ))}
                       {item.drinks.map((drink, index) => (
-                        <div key={index} className="flavor-item cursor-pointer">
+                        <div
+                          key={index}
+                          className="flavor-item flex items-center justify-between cursor-pointer"
+                        >
                           <h1 title="drink" className="flex items-center">
                             {drink?.size_name}({drink?.brand_name}) X
                             {drink.quantity}{" "}
-                            <span>
-                              {drink.is_paid_type === 1
-                                ? `($${drink.price})`
-                                : ""}
-                            </span>
                           </h1>
+                          <span>
+                            {drink.is_paid_type === 1 ? `$${drink.price}` : ""}
+                          </span>
                         </div>
                       ))}
                       {item?.bakery?.map((bakery, index) => (
-                        <div key={index} className="flavor-item cursor-pointer">
+                        <div
+                          key={index}
+                          className="flavor-item cursor-pointer flex items-center justify-between"
+                        >
                           <h1 title="bakery" className="flex items-center">
                             {bakery.name} X{bakery.quantity}{" "}
-                            <span>
-                              {bakery.is_paid_type === 1
-                                ? `($${(bakery.quantity * bakery.price).toFixed(
-                                    2
-                                  )})`
-                                : ""}
-                            </span>
                           </h1>
+                          <span>
+                            {bakery.is_paid_type === 1
+                              ? `$${(bakery.quantity * bakery.price).toFixed(
+                                  2
+                                )}`
+                              : ""}
+                          </span>
                         </div>
                       ))}
                       {item?.topping?.map((topping, index) => (
-                        <div key={index} className="flavor-item cursor-pointer">
+                        <div
+                          key={index}
+                          className="flavor-item cursor-pointer flex items-center justify-between"
+                        >
                           <h1 title="topping" className="flex items-center">
                             {topping.name}{" "}
-                            <span>
-                              {topping.is_paid_type === 1
-                                ? `($${topping.price})`
-                                : ""}
-                            </span>
                           </h1>
+                          <span>
+                            {topping.is_paid_type === 1
+                              ? `$${topping.price}`
+                              : ""}
+                          </span>
                         </div>
                       ))}
                       {item?.sandwich?.map((sandCust, index) => (
-                        <div key={index} className="flavor-item cursor-pointer">
+                        <div
+                          key={index}
+                          className="flavor-item cursor-pointer flex items-center justify-between"
+                        >
                           <h1 title="sandCust" className="flex items-center">
                             {sandCust.name} X1{" "}
-                            <span>
-                              {sandCust.is_paid_type === 1
-                                ? `($${sandCust.price})`
-                                : ""}
-                            </span>
                           </h1>
+                          <span>
+                            {sandCust.is_paid_type === 1
+                              ? `$${sandCust.price}`
+                              : ""}
+                          </span>
                         </div>
                       ))}
                       {item?.ricePlatter?.map((ricePlatter, index) => (
-                        <div key={index} className="flavor-item cursor-pointer">
+                        <div
+                          key={index}
+                          className="flavor-item cursor-pointer flex items-center justify-between"
+                        >
                           <h1 title="ricePlatter" className="flex items-center">
                             {ricePlatter.name} X{ricePlatter.quantity}{" "}
-                            <span>
-                              {ricePlatter.is_paid_type === 1
-                                ? `($${ricePlatter.price})`
-                                : ""}
-                            </span>
                           </h1>
+                          <span>
+                            {ricePlatter.is_paid_type === 1
+                              ? `$${ricePlatter.price}`
+                              : ""}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -644,8 +660,8 @@ const MyCart = () => {
                           className="mt-2"
                           onClick={() => handleOpenNote(item.id)}
                         >
-                          <p className="w-full max-w-md text-sm p-1">
-                            Note: {note[item.id]}
+                          <p className="w-full max-w-md text-sm">
+                            <span className="font-TitleFont text-md">Note :</span> {note[item.id]}
                           </p>
                         </div>
                       )}
@@ -913,7 +929,9 @@ const MyCart = () => {
 
               {couponPrice > 0 ? (
                 <tr className="font-TitleFont">
-                  <td className="py-0.5">Coupon Discount ({iscountPercentage}% Off)</td>
+                  <td className="py-0.5">
+                    Coupon Discount ({iscountPercentage}% Off)
+                  </td>
                   <td className="text-right">- ${couponPrice.toFixed(2)}</td>
                 </tr>
               ) : (
