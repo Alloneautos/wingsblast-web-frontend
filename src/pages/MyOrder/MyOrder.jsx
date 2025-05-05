@@ -9,7 +9,7 @@ const MyOrder = () => {
   const { myorder, isLoading } = useMyOrder(user.id);
 
   return (
-    <div className="container mx-auto mt-16 px-4 lg:px-0 w-full lg:w-10/12">
+    <div className="container min-h-96 mx-auto mt-16 px-4 lg:px-0 w-full lg:w-10/12">
       <Helmet>
         <title>My Order | Wingsblast</title>
       </Helmet>
@@ -59,7 +59,8 @@ const MyOrder = () => {
                           >
                             <td className="px-4 py-2">{orderMenu.order_id}</td>
                             <td className="px-4 py-2">
-                              {orderMenu.delevery_address}
+                              {orderMenu.delivery_type == "Delivery" &&  
+                                orderMenu.delevery_address}
                             </td>
                             <td className="px-4 py-2">
                               {orderMenu.delivery_type}

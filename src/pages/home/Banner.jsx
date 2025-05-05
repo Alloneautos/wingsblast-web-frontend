@@ -45,25 +45,73 @@ const Banner = () => {
             >
               {allBannar.map((slide, index) => (
                 <div key={index} className="min-w-full rounded-xl">
-                  <Link to={`/food-details/${slide.link_url}`}>
-                    {slide.type === "video" ? (
-                      <video
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
-                      >
-                        <source src={slide.video_image} type="video/mp4" />
-                      </video>
-                    ) : (
-                      <img
-                        src={slide.video_image}
-                        alt={slide.content}
-                        className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
-                      />
-                    )}
-                  </Link>
+                  {slide.link_type == "category" && (
+                    <Link to={`/foodmenu#${slide.link_url}`}>
+                      {" "}
+                      {slide.type === "video" ? (
+                        <video
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
+                        >
+                          <source src={slide.video_image} type="video/mp4" />
+                        </video>
+                      ) : (
+                        <img
+                          src={slide.video_image}
+                          alt={slide.content}
+                          className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
+                        />
+                      )}
+                    </Link>
+                  )}
+
+                  {slide.link_type == "foodDetails" && (
+                    <Link to={`/food-details/${slide.link_url}`}>
+                      {" "}
+                      {slide.type === "video" ? (
+                        <video
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
+                        >
+                          <source src={slide.video_image} type="video/mp4" />
+                        </video>
+                      ) : (
+                        <img
+                          src={slide.video_image}
+                          alt={slide.content}
+                          className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
+                        />
+                      )}
+                    </Link>
+                  )}
+                  {slide.link_type == "others" && (
+                    <a href={slide.link_url} target="_blank">
+                      {" "}
+                      {slide.type === "video" ? (
+                        <video
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
+                        >
+                          <source src={slide.video_image} type="video/mp4" />
+                        </video>
+                      ) : (
+                        <img
+                          src={slide.video_image}
+                          alt={slide.content}
+                          className="w-full h-[250px] md:h-[350px] lg:h-[500px] object-cover rounded-xl"
+                        />
+                      )}
+                    </a>
+                  )}
                 </div>
               ))}
             </div>

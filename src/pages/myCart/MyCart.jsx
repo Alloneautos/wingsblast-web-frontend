@@ -44,6 +44,7 @@ const MyCart = () => {
   const [delivaryIsFee, setDeliveryFee] = useState(0);
   const [feesData, setFeesData] = useState([]);
   const [couponPrice, setCouponPrice] = useState(0);
+  const [couponCode, setCouponCode] = useState("");
   const [selectTipsRate, setSelectTipsRate] = useState(0);
   const [customTips, setCustomTips] = useState(0);
   const [openNotes, setOpenNotes] = useState({});
@@ -157,6 +158,7 @@ const MyCart = () => {
       const response = await API.post("/offer/check-offer", data);
       const discountData = response.data.data;
       if (response.status === 200) {
+        setCouponCode(discountData.code);
         if (discountData.is_discount_amount === 1) {
           setCouponPrice(discountData.discount_amount);
           Swal.fire({
@@ -291,28 +293,34 @@ const MyCart = () => {
       });
     }
   };
+
+
   // handle order
   const myOrder = {
-    sub_total: cartSubtotal,
-    tax: totalFeesAndTax,
-    fees: totalFeesAndTax,
-    delivery_fee: delivaryIsFee,
-    coupon_discount: couponPrice,
-    tips: tipsPrice,
-    total_price: cartTotalPrice,
-    isLater: isLater,
     delivery_type: orderStatus,
     delevery_address: savedAddress,
     building_suite_apt: "building_suite_apt",
+    tips: tipsPrice,
+    fees: totalFeesAndTax,
+    delivery_fee: delivaryIsFee,
+    coupon_discount: couponPrice,
+    tax: totalFeesAndTax,
+    sub_total: cartSubtotal,
+    total_price: cartTotalPrice,
+    isLater: isLater,
     later_date: selectedDate,
     later_slot: selectedTime,
+    offer_code: couponCode,
     foods: mycard?.map((item) => ({
+      food_details_id: item.food_details_id,
       name: item.food_name,
       image: item.food_image,
       price: (item.price * quantities[item.id]).toFixed(2),
       quantity: quantities[item.id],
       description: "Hand-breaded boneless wings",
-      note: note[item.id] || "note nai",
+      buy_one_get_one_id: item.buy_one_get_one.id || "",
+      buy_one_get_one_name: item.buy_one_get_one.name || "",
+      note: note[item.id] || "No Requerments",
       addons: {
         flavor: item?.flavors?.map((flavor) => ({
           name: flavor.flavor_name,
@@ -507,6 +515,14 @@ const MyCart = () => {
                       </Link>
                     </div>
                   </div>
+                  {item.buy_one_get_one.name && (
+                    <div className="flex items-center justify-between">
+                      <h1 className="text-lg font-medium font-TitleFont text-gray-800">
+                        {item.buy_one_get_one.name}
+                      </h1>
+                      <span className="font-TitleFont text-red-600">Free</span>
+                    </div>
+                  )}
                   <div>
                     <div className="text-sm font-medium">
                       {item.flavors && item.flavors.length > 0 ? (
@@ -661,7 +677,10 @@ const MyCart = () => {
                           onClick={() => handleOpenNote(item.id)}
                         >
                           <p className="w-full max-w-md text-sm">
-                            <span className="font-TitleFont text-md">Note :</span> {note[item.id]}
+                            <span className="font-TitleFont text-md">
+                              Note :
+                            </span>{" "}
+                            {note[item.id]}
                           </p>
                         </div>
                       )}

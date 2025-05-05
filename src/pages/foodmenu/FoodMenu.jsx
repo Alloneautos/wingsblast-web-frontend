@@ -1,6 +1,6 @@
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { BiSolidError } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useCategory, useCategoryWithFood } from "../../api/api";
 import LocationModal from "../../components/LocationModal";
@@ -123,6 +123,18 @@ const FoodMenu = () => {
     }
   };
 
+  const location = useLocation();
+
+useEffect(() => {
+  const hash = location.hash;
+  if (hash) {
+    const id = hash.replace("#", "");
+    setTimeout(() => {
+      handleScrollToSection(id);
+    }, 500);
+  }
+}, [location, allwithfood]);
+
   return (
     <div className="">
       <Helmet>
@@ -169,14 +181,15 @@ const FoodMenu = () => {
           <section
             key={foodMenu.id}
             id={foodMenu.id}
-            ref={(el) => (sectionsRef.current[foodMenu.id] = el)}
+            ref={(el) => (sectionsRef.current[foodMenu.category_name.toUpperCase()] = el)}
           >
-            <div className="container px-3 lg:px-5 py-2 w-full lg:w-10/12 mx-auto">
+            <div id={foodMenu.category_name} className="container px-3 lg:px-5 py-2 w-full lg:w-10/12 mx-auto">
               <h1 className="text-3xl lg:text-4xl font-TitleFont mb-5 text-black">
                 {foodMenu.food_menus.length > 0 &&
                   foodMenu.category_name.toUpperCase()}
               </h1>
-              <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div id={foodMenu.category_name}></div>
+              <div id={foodMenu.category_name} className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {foodMenu.food_menus.map((food) => (
                   <div
                     key={food.id}

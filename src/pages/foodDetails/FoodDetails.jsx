@@ -36,6 +36,7 @@ const FoodDetails = () => {
   const { foodDetails, loading, error } = useFoodDetails(foodDetailsID);
   const [dipSelects, setDipSelects] = useState([]); // Initialize as an empty array
   const [extraDipSelects, setExtraDipSelects] = useState([]);
+  console.log(extraDipSelects)
   const [sideSelects, setSideSelects] = useState([]);
   const [extraSideSelects, setExtraSideSelects] = useState([]);
   const [ricePlattarSelects, setRicePlattarSelects] = useState([]);
@@ -454,7 +455,7 @@ const FoodDetails = () => {
         })) || []),
         ...(extraDipSelects?.map((dip) => ({
           type: "Dip",
-          type_id: dip.id,
+          type_id: dip.type_id,
           is_paid_type: 1,
           quantity: dip.quantity,
         })) || []),
@@ -538,7 +539,7 @@ const FoodDetails = () => {
           showConfirmButton: false,
           timer: 1500,
         });
-        // navigate("/foodmenu");
+        navigate("/foodmenu");
       }
     } catch (error) {
       console.log(error);
@@ -663,14 +664,15 @@ const FoodDetails = () => {
         </div>
       </div>
 
-      {foodDetails?.upgrade_food_details?.length > 0 && (
-        <ExtraCombo extraPackege={foodDetails.upgrade_food_details} />
-      )}
       {foodDetails?.buy_one_get_one_food?.food_menu_id && (
         <GetOneBuyOne
           getonebuyone={foodDetails?.buy_one_get_one_food}
           loading={loading}
         />
+      )}
+
+      {foodDetails?.upgrade_food_details?.length > 0 && (
+        <ExtraCombo extraPackege={foodDetails.upgrade_food_details} />
       )}
 
       {sortedComponents.map((item, index) => (
@@ -738,7 +740,7 @@ const FoodDetails = () => {
         </div>
         <button
           onClick={handleAddToBag}
-          className={`px-5 py-2 w-[25%] text-white font-TitleFont text-xl rounded transform transition-transform duration-300 ${
+          className={`px-5 py-2 w-full lg:w-[25%] text-white font-TitleFont text-xl rounded transform transition-transform duration-300 ${
             cartLoading
               ? "bg-gradient-to-r from-gray-400 to-gray-500 cursor-not-allowed"
               : "bg-ButtonColor hover:from-indigo-600 hover:to-purple-600 hover:scale-105"

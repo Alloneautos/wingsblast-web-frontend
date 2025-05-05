@@ -1,20 +1,19 @@
 import { useContext, useState } from "react";
-// import { BsApple } from "react-icons/bs";
-// import { FaGoogle } from "react-icons/fa";
-// import { BiMobile } from "react-icons/bi";
+import { BsApple } from "react-icons/bs";
+
 // import { AuthContext } from "../authprovider/AuthProvider";
 import OtpInput from "react-otp-input";
 import { CgSpinner } from "react-icons/cg";
-import { API } from "../api/api";
-import Logo from "../assets/images/Web Logo.png";
-// import { useNavigate } from "react-router-dom";
+import { API } from "../../../api/api";
+import Logo from "../../../assets/images/Web Logo.png";
 import Swal from "sweetalert2";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { ImMobile } from "react-icons/im";
+import { FcGoogle } from "react-icons/fc";
 
 const Signin = () => {
-  // const { handleGoogle } = useContext(AuthContext);
   const [showMobileLogin, setShowMobileLogin] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
@@ -22,7 +21,6 @@ const Signin = () => {
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  // const navigate = useNavigate(); // Initialize useNavigate
 
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -49,11 +47,10 @@ const Signin = () => {
         text: "Welcome back!",
         icon: "success",
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
       }).then(() => {
         navigate(from, { replace: true });
         window.location.reload();
-        
       });
     } catch (error) {
       // Show error message if login fails
@@ -82,14 +79,14 @@ const Signin = () => {
   };
 
   return (
-    <section className="bg-gray-400 py-0 lg:py-[5px]">
+    <section className="bg-[#EDEDED] h-screen place-content-center place-items-center">
       <Helmet>
         <title>Signin | Wingsblast</title>
       </Helmet>
       <div className="container mx-auto">
         <div className="flex flex-wrap">
-          <div className="w-full px-0 lgpx-4">
-            <div className="relative mx-auto max-w-[525px] overflow-hidden rounded bg-white px-10 py-3 text-center dark:bg-dark-2 sm:px-12 md:px-[60px]">
+          <div className="w-full">
+            <div className="relative mx-auto max-w-[470px] shadow-md  overflow-hidden rounded bg-white px-10 py-3 text-center sm:px-12 md:px-[60px]">
               <div className="text-center md:mb">
                 <a className="mx-auto inline-block max-w-[200px]">
                   <img src={Logo} alt="logo" />
@@ -97,7 +94,7 @@ const Signin = () => {
               </div>
               <form onSubmit={handleLogin}>
                 <input
-                  className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none"
+                  className="w-full rounded border  border-TextColor  placeholder:text-gray-800 px-5 py-2.5 text-base text-body-color outline-none"
                   type="email"
                   name="email"
                   placeholder="Email"
@@ -105,7 +102,7 @@ const Signin = () => {
                 />
                 <div className="relative w-full my-3">
                   <input
-                    className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none"
+                    className="w-full rounded border  border-TextColor placeholder:text-gray-800 px-5 py-2.5  text-base text-body-color outline-none"
                     type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="Password"
@@ -120,46 +117,40 @@ const Signin = () => {
                     {showPassword ? <IoEyeOff /> : <IoEye />}
                   </span>
                 </div>
-                <Link to='/forgetPassword'><h3 className="text-left mb-2 hover:underline text-red-400">Forget Password?</h3></Link>
-                <div className="mb-10">
+                <Link to="/forgetPassword">
+                  <h3 className="text-left text-sm -mt-[10px] hover:underline text-red-400">
+                    Forget Password?
+                  </h3>
+                </Link>
+                <div className="my-3">
                   <input
                     type="submit"
                     value="Sign In"
                     disabled={loginLoading}
-                    className={`w-full cursor-pointer rounded-md bg-ButtonColor px-5 py-3 text-base font-medium text-white transition hover:bg-opacity-90 ${
+                    className={`w-full cursor-pointer font-TitleFont text-lg rounded bg-ButtonColor px-5 py-3 font-medium text-white transition hover:bg-opacity-90 ${
                       loginLoading ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                   />
                 </div>
               </form>
-              {/* <div className="divider divider-info">OR</div> */}
-              {/* <ul className="-mx-2 mb-12 flex justify-between">
-                <li className="w-full px-2">
-                  <button
-                    onClick={() => setShowMobileLogin(true)}
-                    className="flex h-11 w-full items-center justify-center rounded-md bg-[#4064AC] hover:bg-opacity-90"
-                  >
-                    <BiMobile className="text-white" />
-                  </button>
-                </li>
-                <li className="w-full px-2">
-                  <a
-                    href="/#"
-                    className="flex h-11 items-center justify-center rounded-md bg-[#1C9CEA] hover:bg-opacity-90"
-                  >
-                    <BsApple className="text-white" />
-                  </a>
-                </li>
-                <li className="w-full px-2">
-                  <a
-                    onClick={handleGoogle}
-                    className="flex h-11 items-center justify-center rounded-md bg-[#D64937] hover:bg-opacity-90"
-                  >
-                    <FaGoogle className="text-white" />
-                  </a>
-                </li>
-              </ul> */}
-              <p className="text-base text-body-color dark:text-dark-6">
+              <ul className="grid font-TitleFont !text-2xl">
+                {/* phone */}
+                <button className="btn rounded bg-[#03C755] hover:bg-[#00b544] text-lg font-normal text-white border-[#00b544]">
+                  <ImMobile />
+                  Login with Phone{" "}
+                </button>
+                {/* Google */}
+                <button className="btn my-3 rounded bg-gray-200 font-normal text-lg text-black border-[#e5e5e5]">
+                  <FcGoogle />
+                  Login with Google
+                </button>
+                {/* Apple */}
+                <button className="btn bg-black hover:bg-gray-950 rounded font-normal text-lg text-white border-black">
+                  <BsApple className="text-xl" />
+                  Login with Apple
+                </button>
+              </ul>
+              <p className="text-sm mt-1 text-body-color dark:text-dark-6">
                 <span className="pr-0.5">Not a member yet?</span>
                 <Link to="/signup" className="text-primary hover:underline">
                   Sign Up
@@ -177,7 +168,7 @@ const Signin = () => {
             <h2 className="text-2xl mb-4 text-white">Mobile Login</h2>
             <form onSubmit={handleSendOtp}>
               <input
-                className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 mb-4 text-base text-white outline-none focus:border-primary focus-visible:shadow-none"
+                className="w-full rounded-md border border-stroke placeholder:text-gray-800 px-5 py-3 mb-4 text-base text-white outline-none focus:border-primary focus-visible:shadow-none"
                 type="tel"
                 name="mobile"
                 placeholder="Enter your mobile number"

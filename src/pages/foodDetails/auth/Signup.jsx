@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 // import { BsApple } from "react-icons/bs";
 // import { FaFacebookF, FaGoogle } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { API } from "../api/api";
+import { API } from "../../../api/api";
 import Swal from "sweetalert2";
 import { IoEye, IoEyeOff } from "react-icons/io5";
-import FoodIMG from "../assets/images/FBannar.jpg";
+import FoodIMG from "../../../assets/images/FBannar.jpg";
 import { Helmet } from "react-helmet-async";
 
 const Signup = () => {
@@ -68,7 +68,7 @@ const Signup = () => {
 
   return (
     <div
-      className="bg-cover bg-center min-h-screen -mt-[10px] flex items-center justify-center relative"
+      className="bg-cover bg-center min-h-screen place-items-center place-content-center flex items-center justify-center relative"
       style={{
         backgroundImage: `url(${FoodIMG})`,
       }}
@@ -76,74 +76,74 @@ const Signup = () => {
       <Helmet>
         <title>Signup | Wingsblast</title>
       </Helmet>
-      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+      <div className="absolute inset-0 bg-black bg-opacity-70"></div>
 
       <div className="w-full lg:w-8/12 mx-auto flex items-center justify-center relative z-10">
         <div className="w-full lg:w-4/6 p-8 bg-white bg-opacity-90 shadow-lg rounded-lg">
-          <h1 className="text-3xl font-semibold mb-6 text-black text-center">
+          <h1 className="text-4xl font-TitleFont mb-2 text-black text-center">
             Sign Up
           </h1>
-          <h2 className="text-sm font-medium mb-6 text-gray-500 text-center">
+          <h2 className="text-md font-medium mb-6 text-gray-500 text-center">
             Join our community for all-time access, absolutely free!
           </h2>
 
           <form onSubmit={handleSignUp} className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-md font-TitleFont text-gray-900">
                   First Name
                 </label>
                 <input
                   type="text"
                   required
                   name="firstname"
-                  placeholder="Enter First Name..."
-                  className="mt-1 p-3 w-full border rounded-md focus:border-gray-300 focus:outline-none transition"
+                  placeholder="First Name..."
+                  className="mt-1 p-3 w-full border rounded focus:border-gray-300 focus:outline-none transition"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-md font-TitleFont text-gray-900">
                   Last Name
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Enter Last Name..."
+                  placeholder="Last Name..."
                   name="lastname"
-                  className="mt-1 p-3 w-full border rounded-md focus:border-gray-300 focus:outline-none transition"
+                  className="mt-1 p-3 w-full border rounded focus:border-gray-300 focus:outline-none transition"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-md font-TitleFont text-gray-900">
                   Email Address
                 </label>
                 <input
                   type="email"
                   required
                   name="email"
-                  placeholder="Enter Your Email..."
-                  className="mt-1 p-3 w-full border rounded-md focus:border-gray-300 focus:outline-none transition"
+                  placeholder="Your Email..."
+                  className="mt-1 p-3 w-full border rounded focus:border-gray-300 focus:outline-none transition"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-md font-TitleFont text-gray-900">
                   Phone Number
                 </label>
                 <input
                   type="tel"
                   name="number"
-                  placeholder="Enter Your Phone..."
-                  className="mt-1 p-3 w-full border rounded-md focus:border-gray-300 focus:outline-none transition"
+                  placeholder="Your Phone..."
+                  className="mt-1 p-3 w-full border rounded focus:border-gray-300 focus:outline-none transition"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               <div className="relative">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-md font-TitleFont text-gray-900">
                   Password
                 </label>
                 <input
@@ -153,7 +153,7 @@ const Signup = () => {
                   required
                   placeholder="Enter Password..."
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 p-3 w-full border rounded-md focus:border-gray-300 focus:outline-none transition"
+                  className="mt-1 p-3 w-full border rounded focus:border-gray-300 focus:outline-none transition"
                 />
                 <span
                   onClick={() => setShowPassword(!showPassword)}
@@ -163,7 +163,7 @@ const Signup = () => {
                 </span>
               </div>
               <div className="relative">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-md font-TitleFont text-gray-900">
                   Confirm Password
                 </label>
                 <input
@@ -171,9 +171,9 @@ const Signup = () => {
                   name="confirmPassword"
                   value={confirmPassword}
                   required
-                  placeholder="Enter Confirm Password..."
+                  placeholder="Confirm Password..."
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="mt-1 p-3 w-full border rounded-md focus:border-gray-300 focus:outline-none transition"
+                  className="mt-1 p-3 w-full border rounded focus:border-gray-300 focus:outline-none transition"
                 />
                 <span
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -184,13 +184,13 @@ const Signup = () => {
               </div>
             </div>
 
-            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {error && <p className="text-red-500 text-md">{error}</p>}
 
             <div>
               <button
                 type="submit"
                 disabled={!!error || signUpLoading}
-                className={`w-full p-3 rounded-md text-white transition ${
+                className={`w-full p-2 rounded font-TitleFont text-xl text-white transition ${
                   !!error || signUpLoading
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-ButtonColor hover:bg-ButtonHover"
@@ -201,7 +201,7 @@ const Signup = () => {
             </div>
           </form>
 
-          <div className="text-sm text-gray-600 text-center mt-5">
+          <div className="text-md text-gray-600 text-center mt-5">
             <p>
               Already have an account?{" "}
               <Link to="/signin" className="text-blue-600 hover:underline">
@@ -215,7 +215,7 @@ const Signup = () => {
             <li className="w-full px-2">
               <a
                 href="#"
-                className="flex h-11 items-center justify-center rounded-md bg-[#4064AC] hover:bg-opacity-90"
+                className="flex h-11 items-center justify-center rounded bg-[#4064AC] hover:bg-opacity-90"
               >
                 <FaFacebookF className="text-white" />
               </a>
@@ -223,7 +223,7 @@ const Signup = () => {
             <li className="w-full px-2">
               <a
                 href="#"
-                className="flex h-11 items-center justify-center rounded-md bg-black hover:bg-opacity-90"
+                className="flex h-11 items-center justify-center rounded bg-black hover:bg-opacity-90"
               >
                 <BsApple className="text-white" />
               </a>
@@ -231,7 +231,7 @@ const Signup = () => {
             <li className="w-full px-2">
               <a
                 href="#"
-                className="flex h-11 items-center justify-center rounded-md bg-[#D64937] hover:bg-opacity-90"
+                className="flex h-11 items-center justify-center rounded bg-[#D64937] hover:bg-opacity-90"
               >
                 <FaGoogle className="text-white" />
               </a>

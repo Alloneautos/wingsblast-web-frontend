@@ -158,7 +158,7 @@ const ExtraDrinkSection = ({
                           </div>
                           <input
                             type="checkbox"
-                            className="checkbox checkbox-primary rounded"
+                            className="checkbox checkbox-primary rounded hidden"
                             onClick={(e) => e.stopPropagation()}
 
                           />
@@ -180,15 +180,15 @@ const ExtraDrinkSection = ({
                         )}
 
                         {!openModals[category.id] && (
-                          <div>
+                          <div className="flex justify-end -mt-[45px] mb-5">
                             <h1
-                              className="cursor-pointer"
+                              className="cursor-pointer font-TitleFont text-lg text-green-600 mt-[2px]"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 toggleModal(category.id);
                               }}
                             >
-                              Costomize
+                             Select Drink
                             </h1>
                           </div>
                         )}
@@ -202,7 +202,7 @@ const ExtraDrinkSection = ({
                               return (
                                 <p
                                   key={drink.id}
-                                  className="text-sm text-gray-600 flex"
+                                  className="text-sm text-gray-800 flex"
                                 >
                                   {drinkItem?.name} X{drink.quantity},
                                 </p>
@@ -214,7 +214,7 @@ const ExtraDrinkSection = ({
                     </div>
                   ))}
 
-                <div className="w-full">
+                <div className="w-full hidden">
                   <label className="block border border-gray-300 px-4 py-[30px] rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">

@@ -238,14 +238,28 @@ const InvoiceOrder = () => {
                     key={food.id}
                     className="grid grid-cols-3 justify-around py-3 px-4 border-b border-gray-200"
                   >
-                    <span className="font-medium text-gray-800">
-                      {index + 1}. {food.name}
-                    </span>
+                    <div>
+                      <span className="text-xl font-TitleFont text-black">
+                        {index + 1}. {food.name}
+                      </span>
+                      {food.buy_one_get_one_id > 0 && (
+                        <p className="text-sm text-green-700">
+                          <span className=" text-black">
+                            {food.buy_one_get_one_name}
+                          </span>{" "}
+                          (Free)
+                        </p>
+                      )}
+                      <p className="text-sm">
+                        <span className="font-TitleFont text-black">Note:</span>{" "}
+                        {food.note}
+                      </p>
+                    </div>
 
-                    <span className="text-gray-700 text-center">
+                    <span className="text-black font-TitleFont text-xl text-center">
                       {food?.quantity || 0}
                     </span>
-                    <span className="text-gray-700 text-center">
+                    <span className="text-black text-xl text-center font-TitleFont">
                       ${food?.quantity * food.price.toFixed(2)}
                     </span>
 
@@ -372,7 +386,7 @@ const InvoiceOrder = () => {
                             <div key={idx} className="ml-4">
                               {addon.name ? (
                                 <p>
-                                  {addon.name}{" "}
+                                  {addon.name} ({addon.child_item_name})
                                   {addon.quantity ? ` X ${addon.quantity}` : ""}
                                   {addon.isPaid === 1 && (
                                     <span>(${addon.price})</span>
@@ -446,7 +460,7 @@ const InvoiceOrder = () => {
                 <p className="text-gray-900">Delivery Fee: ${delivery_fee}</p>
               )}
               {coupon_discount > 0 && (
-                <p>Coupon Discount: (-${coupon_discount})</p>
+                <p>Coupon Discount: (-${coupon_discount.toFixed(2)})</p>
               )}
               <p className="text-xl text-gray-800">
                 Total: ${total_price.toFixed(2)}

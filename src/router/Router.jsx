@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../layout/Main";
 import Home from "../pages/home/Home";
-import Signin from "../pages/Signin";
-import Signup from "../pages/Signup";
+import Signin from "../pages/foodDetails/auth/Signin";
+import Signup from "../pages/foodDetails/auth/Signup";
 import FoodDetails from "../pages/foodDetails/FoodDetails";
 import Flavors from "../pages/Flavors";
 import MyCart from "../pages/myCart/MyCart";
@@ -34,14 +34,6 @@ const Router = createBrowserRouter([
       {
         path: "/",
         element: <Home></Home>,
-      },
-      {
-        path: "/signin",
-        element: <Signin></Signin>,
-      },
-      {
-        path: "/signup",
-        element: <Signup></Signup>,
       },
       {
         path: "/foodmenu",
@@ -105,7 +97,7 @@ const Router = createBrowserRouter([
       },
       {
         path: "/promotions",
-        element: <PromotionandOffers />
+        element: <PromotionandOffers />,
       },
       {
         path: "/mobile",
@@ -137,6 +129,14 @@ const Router = createBrowserRouter([
         element: <FoodDetailsError />,
       },
     ],
+  },
+  {
+    path: "/signin",
+    element: <Signin></Signin>,
+  },
+  {
+    path: "/signup",
+    element: <Signup></Signup>,
   },
 ]);
 export default Router;
