@@ -441,6 +441,8 @@ const MyCart = () => {
     };
   }, [openNotes]);
 
+  console.log(mycard);
+
   return (
     <section className="text-gray-600 body-font mx-auto">
       <Helmet>
@@ -705,12 +707,9 @@ const MyCart = () => {
                         <FaPlus />
                       </button>
                     </div>
-                    <span className="text-3xl font-TitleFont">
-                      $
-                      {calculateSubtotal(
-                        item.price,
-                        quantities[item.id]
-                      ).toFixed(2)}
+                    <span className="text-3xl font-TitleFont flex items-baseline gap-1">
+                      <p className="line-through text-2xl text-gray-800"> {item.price === item.food_price ? "" : `$${calculateSubtotal(item.food_price,quantities[item.id]).toFixed(2)}`} </p>
+                      ${calculateSubtotal(item.price,quantities[item.id]).toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -884,7 +883,7 @@ const MyCart = () => {
                     <span
                       className="cursor-pointer"
                       onClick={() =>
-                        document.getElementById("my_modal_3").showModal()
+                        document.getElementById("tax_fee").showModal()
                       }
                     >
                       <LuBadgeInfo />
@@ -908,8 +907,8 @@ const MyCart = () => {
                 </tr>
               )}
 
-              <dialog id="my_modal_3" className="modal">
-                <div className="modal-box">
+              <dialog id="tax_fee" className="modal">
+                <div className="modal-box rounded">
                   <form method="dialog">
                     <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                       ✕

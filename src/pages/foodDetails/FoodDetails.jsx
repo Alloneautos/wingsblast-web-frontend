@@ -36,7 +36,7 @@ const FoodDetails = () => {
   const { foodDetails, loading, error } = useFoodDetails(foodDetailsID);
   const [dipSelects, setDipSelects] = useState([]); // Initialize as an empty array
   const [extraDipSelects, setExtraDipSelects] = useState([]);
-  console.log(extraDipSelects)
+  console.log(extraDipSelects);
   const [sideSelects, setSideSelects] = useState([]);
   const [extraSideSelects, setExtraSideSelects] = useState([]);
   const [ricePlattarSelects, setRicePlattarSelects] = useState([]);
@@ -490,7 +490,7 @@ const FoodDetails = () => {
           type_id: side.id,
           is_paid_type: 0,
           // quantity: side.quantity,
-          quantity: 1 ,
+          quantity: 1,
         })) || []),
         ...(extraSideSelects?.map((side) => ({
           type: "Side",
@@ -582,7 +582,11 @@ const FoodDetails = () => {
 
             <div className="w-auto py-1 px-5 ">
               <h1 className="font-TitleFont text-4xl md:text-4xl lg:text-5xl font-s mb-2 text-black">
-                {foodDetails.name}
+                {foodDetails.name}{" "}
+                <span className="font-sans text-3xl">
+                  {foodDetails?.buy_one_get_one_food?.food_menu_id > 0 &&
+                    "(Buy One Get One Free)"}
+                </span>
               </h1>
               {foodDetails.is_discount_amount === 1 ? (
                 <p className="text-black text-4xl font-TitleFont">
@@ -664,12 +668,12 @@ const FoodDetails = () => {
         </div>
       </div>
 
-      {foodDetails?.buy_one_get_one_food?.food_menu_id && (
+      {/* {foodDetails?.buy_one_get_one_food?.food_menu_id && (
         <GetOneBuyOne
           getonebuyone={foodDetails?.buy_one_get_one_food}
           loading={loading}
         />
-      )}
+      )} */}
 
       {foodDetails?.upgrade_food_details?.length > 0 && (
         <ExtraCombo extraPackege={foodDetails.upgrade_food_details} />

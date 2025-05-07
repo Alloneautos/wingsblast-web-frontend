@@ -1,8 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../layout/Main";
 import Home from "../pages/home/Home";
-import Signin from "../pages/foodDetails/auth/Signin";
-import Signup from "../pages/foodDetails/auth/Signup";
 import FoodDetails from "../pages/foodDetails/FoodDetails";
 import Flavors from "../pages/Flavors";
 import MyCart from "../pages/myCart/MyCart";
@@ -25,6 +23,9 @@ import Privacy from "../pages/settings/Privacy";
 import ContactUs from "../pages/settings/ContactUs";
 import WingsBlastFAQ from "../pages/settings/WingsBlastFAQ";
 import PromotionandOffers from "../pages/settings/PromotionandOffers";
+import Signin from "../pages/auth/Signin";
+import Signup from "../pages/auth/Signup";
+import App from "../App";
 
 const Router = createBrowserRouter([
   {
@@ -138,5 +139,9 @@ const Router = createBrowserRouter([
     path: "/signup",
     element: <Signup></Signup>,
   },
+  {
+    path: "/app",
+    element: <App />
+  }
 ]);
 export default Router;

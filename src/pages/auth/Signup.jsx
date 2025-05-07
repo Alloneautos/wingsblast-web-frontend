@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-// import { BsApple } from "react-icons/bs";
-// import { FaFacebookF, FaGoogle } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { API } from "../../../api/api";
+import { API } from "../../api/api";
 import Swal from "sweetalert2";
-import { IoEye, IoEyeOff } from "react-icons/io5";
-import FoodIMG from "../../../assets/images/FBannar.jpg";
+import FoodIMG from "../../assets/images/FBannar.jpg";
 import { Helmet } from "react-helmet-async";
+import { FaFacebookF, FaGoogle } from "react-icons/fa";
+import { BsApple } from "react-icons/bs";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 
 const Signup = () => {
   const [signUpLoading, setSignUpLoading] = useState(false);
@@ -196,7 +196,7 @@ const Signup = () => {
                     : "bg-ButtonColor hover:bg-ButtonHover"
                 }`}
               >
-                {signUpLoading ? "Signing Up..." : "Sign Up"}
+                {signUpLoading ? "Signing Up..." : "Send OTP"}
               </button>
             </div>
           </form>
@@ -211,7 +211,7 @@ const Signup = () => {
           </div>
 
           {/* Social Media Links */}
-          {/* <ul className="flex justify-between mt-6">
+          <ul className="flex justify-between mt-6">
             <li className="w-full px-2">
               <a
                 href="#"
@@ -236,7 +236,7 @@ const Signup = () => {
                 <FaGoogle className="text-white" />
               </a>
             </li>
-          </ul> */}
+          </ul>
         </div>
       </div>
     </div>
