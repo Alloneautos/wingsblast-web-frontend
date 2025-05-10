@@ -19,19 +19,19 @@ const queryClient = new QueryClient();
 
 // Live paypal clint key
 
-const initialOptions = {
-  "client-id":
-    "AcQGl5C89ZPtDoBAzEC1a4UkGEWOfwzVIW_5NizK4ORPpcehYpBQ0e2UyATG6U5U2tAqFZNZObSS2a0l",
-  currency: "USD",
-};
+// const initialOptions = {
+//   "client-id":
+//     "AcQGl5C89ZPtDoBAzEC1a4UkGEWOfwzVIW_5NizK4ORPpcehYpBQ0e2UyATG6U5U2tAqFZNZObSS2a0l",
+//   currency: "USD",
+// };
 
 // demo Paypal clinet id
 
-// const initialOptions = {
-//   "client-id":
-//     "AZGzhx4aUNGe5vtuNfpky0TWTYPwR6KJmGz5XPkoSDCWkYQCKkxHj0pIWg4BmqVAwz8ur30Zfzm8TmUN",
-//   currency: "USD",
-// };
+const initialOptions = {
+  "client-id":
+    "AZGzhx4aUNGe5vtuNfpky0TWTYPwR6KJmGz5XPkoSDCWkYQCKkxHj0pIWg4BmqVAwz8ur30Zfzm8TmUN",
+  currency: "USD",
+};
 
 // Replace with your Stripe publishable key
 const stripePromise = loadStripe("your-publishable-key-here");

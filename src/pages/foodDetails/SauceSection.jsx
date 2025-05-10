@@ -5,43 +5,43 @@ import LoadingComponent from "../../components/LoadingComponent";
 import { BiSolidError } from "react-icons/bi";
 import { FaChevronRight } from "react-icons/fa";
 
-const ToppingSection = ({
-  myTopping,
+const SauceSection = ({
+  mySauce,
   loading,
   error,
-  onToppingsChange,
-  onToppingsPriceChnge,
+  onSauceSelected,
+  onSaucePriceChange,
 }) => {
-  const [selectedToppings, setSelectedToppings] = useState([]);
-  const toppings = myTopping.data;
+  const [selectedSauce, setSelectedSauce] = useState([]);
+  const sauces = mySauce.data;
   const selectTop = useMemo(() => {
-    return selectedToppings.map((topping) => ({
-      type: "Topping",
-      id: topping.id,
-      is_paid_type: 1,
+    return selectedSauce.map((sauce) => ({
+      type: "sauce",
+      id: sauce.id,
+      is_paid_type: 0,
       quantity : 1
     }));
-  }, [selectedToppings]);
+  }, [selectedSauce]);
 
   useEffect(() => {
-    onToppingsChange(selectTop);
-  }, [selectTop, onToppingsChange]);
+    onSauceSelected(selectTop);
+  }, [selectTop, onSauceSelected]);
 
-  // Function to handle topping selection
-  const handleSelectTopping = (topping) => {
-    setSelectedToppings((prev) => {
-      const updatedToppings = prev.includes(topping)
-        ? prev.filter((item) => item !== topping) // যদি সিলেক্ট থাকে, তাহলে রিমুভ করুন
-        : [...prev, topping]; // যদি না থাকে, তাহলে অ্যাড করুন
-      return updatedToppings;
+  // Function to handle sauce selection
+  const handleSelectSauce = (sauce) => {
+    setSelectedSauce((prev) => {
+      const updatedSauce = prev.includes(sauce)
+        ? prev.filter((item) => item !== sauce) // যদি সিলেক্ট থাকে, তাহলে রিমুভ করুন
+        : [...prev, sauce]; // যদি না থাকে, তাহলে অ্যাড করুন
+      return updatedSauce;
     });
   };
   useEffect(() => {
-    const totalPrice = selectedToppings.reduce((acc, topping) => {
-      return acc + topping.price;
+    const totalPrice = selectedSauce.reduce((acc, sauce) => {
+      return acc + sauce.price;
     }, 0);
-    onToppingsPriceChnge(totalPrice);
-  }, [selectedToppings, onToppingsPriceChnge]);
+    onSaucePriceChange(totalPrice);
+  }, [selectedSauce, onSaucePriceChange]);
 
   return (
     <div className="w-full lg:w-10/12 mx-auto my-3 p-2 bg-white rounded-lg">
@@ -58,26 +58,26 @@ const ToppingSection = ({
                   >
                     <FaChevronRight />
                   </span>{" "}
-                  CHOOSE REGULER TOPPINGS
+                  CHOOSE REGULER SAUCE
                 </span>
                 <h2 className="font-bold mt-2 text-gray-600">
                   <span>Up To Select: </span>
                   <span className="text-black">
-                    {selectedToppings.length} selected
+                    {selectedSauce.length} selected
                   </span>
                 </h2>
               </div>
             </Disclosure.Button>
             {error && (
               <p className="text-red-500 mt-4">
-                Error loading toppings. Please try again.
+                Error loading Sauce. Please try again.
               </p>
             )}
             {loading && <LoadingComponent />}
             <Disclosure.Panel className="px-4 pt-6 pb-4 text-sm text-gray-700">
               <div className="flavor-selection grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                 {!loading &&
-                  toppings.map((category, index) => (
+                  sauces.map((category, index) => (
                     <div key={index} className="w-full">
                       <h3 className="text-md font-semibold mb-2 text-blue-600">
                         {category.category}
@@ -104,10 +104,10 @@ const ToppingSection = ({
                           </div>
                           <input
                             type="checkbox"
-                            name="topping"
-                            className="checkbox checkbox-primary"
-                            checked={selectedToppings.includes(category)}
-                            onChange={() => handleSelectTopping(category)}
+                            name="sauce"
+                            className="checkbox checkbox-primary rounded"
+                            checked={selectedSauce.includes(category)}
+                            onChange={() => handleSelectSauce(category)}
                           />
                         </div>
                       </label>
@@ -118,16 +118,16 @@ const ToppingSection = ({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <RxCross2 className="text-4xl text-red-600" />
-                        <h1 className="text-2xl font-TitleFont text-black">No Topping</h1>
+                        <h1 className="text-2xl font-TitleFont text-black">No Sauce</h1>
                       </div>
                       <input
                         type="checkbox"
-                        name="noTopping"
-                        className="checkbox checkbox-primary"
-                        checked={selectedToppings.length === 0}
+                        name="noSauce"
+                        className="checkbox checkbox-primary rounded"
+                        checked={selectedSauce.length === 0}
                         onChange={() => {
-                          setSelectedToppings([]);
-                          onToppingsChange([]); // Clear all selections
+                          setSelectedSauce([]);
+                          onSauceSelected([]); // Clear all selections
                         }}
                       />
                     </div>
@@ -142,4 +142,4 @@ const ToppingSection = ({
   );
 };
 
-export default ToppingSection;
+export default SauceSection;

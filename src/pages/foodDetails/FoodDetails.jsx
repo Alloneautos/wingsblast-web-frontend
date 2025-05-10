@@ -24,7 +24,7 @@ import RicePlattarCostom from "./RicePlattarCostom";
 import ExtraSideSection from "./ExtraSideSection";
 import { Helmet } from "react-helmet-async";
 import { FiMinus, FiPlus } from "react-icons/fi";
-import GetOneBuyOne from "./GetOneBuyOne";
+import SauceSection from "./SauceSection";
 
 const FoodDetails = () => {
   const queryClient = useQueryClient();
@@ -36,13 +36,13 @@ const FoodDetails = () => {
   const { foodDetails, loading, error } = useFoodDetails(foodDetailsID);
   const [dipSelects, setDipSelects] = useState([]); // Initialize as an empty array
   const [extraDipSelects, setExtraDipSelects] = useState([]);
-  console.log(extraDipSelects);
   const [sideSelects, setSideSelects] = useState([]);
   const [extraSideSelects, setExtraSideSelects] = useState([]);
   const [ricePlattarSelects, setRicePlattarSelects] = useState([]);
   const [drinkId, setDrinkId] = useState(null);
   const [bakerySelects, setBakerySelects] = useState([]);
   const [toppingsData, setToppingsData] = useState([]);
+  const [sauceData, setSauceData] = useState([]);
   const [sandCustData, setSandCustData] = useState([]);
   const [flavorData, setFlavorData] = useState([]); // Initialize as an empty array
   const [cartLoading, setCartLoading] = useState(false);
@@ -57,6 +57,7 @@ const FoodDetails = () => {
   const [drinkRegulerPrice, setDrinkRegulerPrice] = useState(0);
   const [dipPrice, setDipPrice] = useState(0);
   const [toppingPrice, setToppingsPrice] = useState(0);
+  const [saucePrice, setSaucePrice] = useState(0);
   const [sandwichPrice, setSandWichPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [myFoodPrice, setMyFoodPrice] = useState(0);
@@ -110,6 +111,7 @@ const FoodDetails = () => {
         dipPrice * quantity +
         bakeryPrice * quantity +
         toppingPrice * quantity +
+        saucePrice * quantity +
         sandwichPrice * quantity
       ).toFixed(2)
     );
@@ -121,6 +123,7 @@ const FoodDetails = () => {
     dipPrice,
     bakeryPrice,
     toppingPrice,
+    saucePrice,
     sandwichPrice,
     drinkRegulerPrice,
   ]);
@@ -134,6 +137,7 @@ const FoodDetails = () => {
         dipPrice +
         bakeryPrice +
         toppingPrice +
+        saucePrice +
         sandwichPrice
       ).toFixed(2)
     );
@@ -144,6 +148,7 @@ const FoodDetails = () => {
     dipPrice,
     bakeryPrice,
     toppingPrice,
+    saucePrice,
     sandwichPrice,
   ]);
 
@@ -195,6 +200,9 @@ const FoodDetails = () => {
   const handleToppingsPriceChnge = (price) => {
     setToppingsPrice(price);
   };
+  const handleSaucePriceChange = (price) => {
+    setSaucePrice(price);
+  };
   const onSandCustPriceChnge = (price) => {
     setSandWichPrice(price);
   };
@@ -216,6 +224,9 @@ const FoodDetails = () => {
 
   const onToppingsChange = (selectedToppingId) => {
     setToppingsData(selectedToppingId);
+  };
+  const handleSauceSelected = (selectedSauce) => {
+    setSauceData(selectedSauce);
   };
   const onSandCustChange = (selectSandCustId) => {
     setSandCustData(selectSandCustId);
@@ -341,6 +352,19 @@ const FoodDetails = () => {
         ) : null,
       sn_number: foodDetails?.ricePlatter?.sn_number,
     },
+    {
+      component:
+        foodDetails?.sauce?.data?.length > 0 ? (
+          <SauceSection
+            mySauce={foodDetails.sauce}
+            loading={loading}
+            error={error}
+            onSauceSelected={handleSauceSelected}
+            onSaucePriceChange={handleSaucePriceChange}
+          />
+        ) : null,
+      sn_number: foodDetails?.sauce?.sn_number,
+    }
   ];
 
   const sortedComponents = components
@@ -421,6 +445,18 @@ const FoodDetails = () => {
       return;
     }
     if (
+      foodDetails?.sauce?.is_required === 1 &&
+      (!sauceData || sauceData.length === 0)
+    ) {
+      Swal.fire({
+        title: "Sauce is Required",
+        text: "Please select at least one Sauce.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+    if (
       foodDetails?.bakery?.is_required === 1 &&
       (!bakerySelects || bakerySelects.length === 0)
     ) {
@@ -485,11 +521,16 @@ const FoodDetails = () => {
           is_paid_type: topping.is_paid_type,
           quantity: topping.quantity,
         })) || []),
+        ...(sauceData?.map((sauce) => ({
+          type: "sauce",
+          type_id: sauce.id,
+          is_paid_type: sauce.is_paid_type,
+          quantity: sauce.quantity,
+        })) || []),
         ...(sideSelects?.map((side) => ({
           type: "Side",
           type_id: side.id,
           is_paid_type: 0,
-          // quantity: side.quantity,
           quantity: 1,
         })) || []),
         ...(extraSideSelects?.map((side) => ({
@@ -513,6 +554,7 @@ const FoodDetails = () => {
         ...(flavorData?.map((flavor) => ({
           type: "flavor",
           type_id: flavor.id,
+          is_paid_type: 0,
           quantity: flavor.quantity,
         })) || []),
       ];

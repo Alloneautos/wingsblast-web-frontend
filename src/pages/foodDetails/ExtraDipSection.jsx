@@ -199,7 +199,7 @@ const ExtraDipSection = ({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <RxCross2 className="text-4xl text-red-600" />
-                        <h1 className="text-2xl font-semibold">NO SIDE</h1>
+                        <h1 className="text-2xl font-TitleFont text-black">NO DIP</h1>
                       </div>
                       <input
                         type="checkbox"

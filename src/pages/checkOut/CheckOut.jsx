@@ -15,6 +15,8 @@ const CheckOut = () => {
   const orderStatus = localStorage.getItem("orderStatus");
   const [isEditing, setIsEditing] = useState(false);
 
+  console.log(myOrderData);
+
   // Load saved address
   useEffect(() => {
     const carryout = localStorage.getItem("carryoutAddress");
@@ -67,7 +69,8 @@ const CheckOut = () => {
     }
   };
 
-  const isOrderButtonDisabled = !user.first_name || !user.phone;
+  // const isOrderButtonDisabled = !user.first_name || !user.phone;
+  const isOrderButtonDisabled = "";
 
   return (
     <section className="text-gray-600 bg-gray-50 body-font  mx-auto">
@@ -162,54 +165,151 @@ const CheckOut = () => {
               <div key={foodIndex} className="p-4 text-black">
                 <div className="divider"></div>
                 <h3 className="text-2xl font-TitleFont">{food.name}</h3>
-
+                <p>
+                  <strong className="font-TitleFont text-lg font-normal">
+                    NOTE:
+                  </strong>
+                 {""} {food.note}
+                </p>
+                {/* Flavor Addons */}
                 {food?.addons?.flavor?.map((flavor, flavorIndex) => (
-                  <div key={flavorIndex} className="flex gap-2">
-                    <p>{flavor.name}</p>
-                    {flavor.quantity !== undefined && (
-                      <p> X {flavor.quantity}</p>
-                    )}
+                  <div
+                    key={flavorIndex}
+                    title="Flavor"
+                    className="flex justify-between"
+                  >
+                    <div className="flex gap-2">
+                      <p className="text-sm">{flavor.name}</p>
+                      <span className="text-sm">X{flavor.quantity}</span>
+                    </div>
                   </div>
                 ))}
-
+                {/* Topping Addons */}
                 {food?.addons?.toppings?.map((topping, toppingIndex) => (
-                  <div key={toppingIndex} className="flex gap-2">
-                    <p>{topping.name}</p>
-                    {topping.quantity !== undefined && (
-                      <p> X (${topping.quantity})</p>
+                  <div
+                    key={toppingIndex}
+                    title="Topping"
+                    className="flex justify-between"
+                  >
+                    <div className="flex gap-2">
+                      <p className="text-sm">{topping.name}</p>
+                      <span className="text-sm">X{topping.quantity}</span>
+                    </div>
+                    {topping.isPaid == 1 && (
+                      <span className="text-sm">${topping.price}</span>
                     )}
                   </div>
                 ))}
+                {/* Sandwich Addons */}
                 {food?.addons?.sandCust?.map((sandwich, sandwichIndex) => (
-                  <div key={sandwichIndex} className="flex gap-2">
-                    <p>{sandwich.name}</p>
-                    {sandwich.quantity !== undefined && (
-                      <p> X (${sandwich.quantity})</p>
+                  <div
+                    key={sandwichIndex}
+                    title="Sandwich"
+                    className="flex items-center justify-between gap-2"
+                  >
+                    <div className="flex gap-2">
+                      <p className="text-sm">{sandwich.name}</p>
+                      <span className="text-sm">X{sandwich.quantity}</span>
+                    </div>
+                    {sandwich.isPaid == 1 && (
+                      <span className="text-sm">${sandwich.price}</span>
                     )}
                   </div>
                 ))}
-
+                {/* Side Addons */}
                 {food.addons?.side?.map((side, sideIndex) => (
-                  <div key={sideIndex}>
-                    <p>{side.name}</p>
+                  <div
+                    key={sideIndex}
+                    title="Side"
+                    className="flex items-center justify-between gap-2"
+                  >
+                    <div className="flex gap-2">
+                      <p className="text-sm">{side.name}</p>
+                      <span className="text-sm">X{side.quantity}</span>
+                    </div>
+                    {side.isPaid == 1 && (
+                      <span className="text-sm">${side.price}</span>
+                    )}
                   </div>
                 ))}
-
+                {/* Dip Addons */}
                 {food.addons?.dip?.map((dip, dipIndex) => (
-                  <div key={dipIndex}>
-                    <p>{dip.name}</p>
+                  <div
+                    key={dipIndex}
+                    title="Dip"
+                    className="flex items-center justify-between gap-2"
+                  >
+                    <div className="flex gap-2">
+                      <p className="text-sm">{dip.name}</p>
+                      <span className="text-sm">X{dip.quantity}</span>
+                    </div>
+                    {dip.isPaid == 1 && <span>${dip.price}</span>}
                   </div>
                 ))}
-
+                {/* Bakery Addons */}
+                {food.addons?.beverage?.map((bakery, bakeryIndex) => (
+                  <div
+                    key={bakeryIndex}
+                    title="Bakery"
+                    className="flex items-center justify-between gap-2"
+                  >
+                    <div className="flex gap-2">
+                      <p className="text-sm">{bakery.name}</p>
+                      <span className="text-sm">X{bakery.quantity}</span>
+                    </div>
+                    {bakery.isPaid == 1 && (
+                      <span className="text-sm">${bakery.price}</span>
+                    )}
+                  </div>
+                ))}
+                {/* Rice Platter Addons */}
+                {food.addons?.ricePlatter?.map((rice, riceIndex) => (
+                  <div
+                    key={riceIndex}
+                    title="Rice Platter"
+                    className="flex items-center justify-between gap-2"
+                  >
+                    <div className="flex gap-2">
+                      <p className="text-sm">{rice.name}</p>
+                      <span className="text-sm">X{rice.quantity}</span>
+                    </div>
+                    {rice.isPaid == 1 && (
+                      <span className="text-sm">${rice.price}</span>
+                    )}
+                  </div>
+                ))}
+                {/* Sauce Addons */}
+                {food.addons?.sauce?.map((sauce, sauceIndex) => (
+                  <div
+                    key={sauceIndex}
+                    title="Sauce"
+                    className="flex items-center justify-between gap-2"
+                  >
+                    <div className="flex gap-2">
+                      <p className="text-sm">{sauce.name}</p>
+                      <span className="text-sm">X{sauce.quantity}</span>
+                    </div>
+                    {sauce.isPaid == 1 && (
+                      <span className="text-sm">${sauce.price}</span>
+                    )}
+                  </div>
+                ))}
+                {/* Drink Addons */}
                 {food.addons?.drink?.map((drink, drinkIndex) => (
-                  <div key={drinkIndex}>
-                    <p>{drink.name}</p>
-                  </div>
-                ))}
-
-                {food.addons?.bakery?.map((bakery, bakeryIndex) => (
-                  <div key={bakeryIndex}>
-                    <p>{bakery.name}</p>
+                  <div
+                    key={drinkIndex}
+                    title="Drink"
+                    className="flex items-center justify-between gap-2"
+                  >
+                    <div className="flex gap-2">
+                      <p className="text-sm">
+                        {drink.name}({drink.child_item_name})
+                      </p>
+                      <span className="text-sm">X{drink.quantity}</span>
+                    </div>
+                    {drink.isPaid == 1 && (
+                      <span className="text-sm">${drink.price}</span>
+                    )}
                   </div>
                 ))}
 
@@ -286,7 +386,9 @@ const CheckOut = () => {
                 {/* Service Fee */}
                 {orderStatus == "Delivery" && (
                   <tr className="bg-white text-gray-800 border-b font-TitleFont border-gray-200">
-                    <td className="py-3 px-6 font-TitleFont text-base text-black">Tips</td>
+                    <td className="py-3 px-6 font-TitleFont text-base text-black">
+                      Tips
+                    </td>
                     <td className="py-3 px-6 text-right">
                       + ${myOrderData?.tips.toFixed(2)}
                     </td>

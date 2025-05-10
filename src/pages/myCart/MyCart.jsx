@@ -17,7 +17,7 @@ import LocationModal from "../../components/LocationModal";
 import { RiEdit2Fill } from "react-icons/ri";
 import { LuBadgeInfo } from "react-icons/lu";
 import OrderTips from "./OrderTips";
-import { MdEdit, MdModeEdit } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
 import LoadingComponent from "../../components/LoadingComponent";
 import SignInSignOutModal from "../../components/SignInSignOutModal";
 import { Helmet } from "react-helmet-async";
@@ -369,6 +369,18 @@ const MyCart = () => {
           isPaid: bk.is_paid_type,
           quantity: bk.quantity,
         })),
+        sauce: item?.sauce?.map((sc) => ({
+          name: sc.name,
+          price: sc.price,
+          isPaid: sc.is_paid_type,
+          quantity: sc.quantity,
+        })),
+        ricePlatter: item?.ricePlatter?.map((rp) => ({
+          name: rp.name,
+          price: rp.price,
+          isPaid: rp.is_paid_type,
+          quantity: rp.quantity,
+        })),
       },
     })),
   };
@@ -440,8 +452,6 @@ const MyCart = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openNotes]);
-
-  console.log(mycard);
 
   return (
     <section className="text-gray-600 body-font mx-auto">
@@ -643,8 +653,17 @@ const MyCart = () => {
                           </span>
                         </div>
                       ))}
+                      {item?.sauce?.map((sauce, index) => (
+                        <div
+                          key={index}
+                          className="flavor-item cursor-pointer flex items-center justify-between"
+                        >
+                          <h1 title="sauce" className="flex items-center">
+                            {sauce.name} X{sauce.quantity}{" "}
+                          </h1>
+                        </div>
+                      ))}
                     </div>
-
                     <div>
                       {!openNotes[item.id] && !note[item.id] && (
                         <button
@@ -708,7 +727,7 @@ const MyCart = () => {
                       </button>
                     </div>
                     <span className="text-3xl font-TitleFont flex items-baseline gap-1">
-                      <p className="line-through text-2xl text-gray-800"> {item.price === item.food_price ? "" : `$${calculateSubtotal(item.food_price,quantities[item.id]).toFixed(2)}`} </p>
+                      {/* <p className="line-through text-2xl text-gray-800"> {item.price === item.food_price ? "" : `$${calculateSubtotal(item.food_price,quantities[item.id]).toFixed(2)}`} </p> */}
                       ${calculateSubtotal(item.price,quantities[item.id]).toFixed(2)}
                     </span>
                   </div>

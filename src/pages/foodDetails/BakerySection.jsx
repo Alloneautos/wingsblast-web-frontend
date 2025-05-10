@@ -218,7 +218,7 @@ const BakerySection = ({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <RxCross2 className="text-4xl text-red-600" />
-                        <h1 className="text-2xl font-semibold">No Bakery</h1>
+                        <h1 className="text-2xl font-TitleFont text-black">No Bakery</h1>
                       </div>
                       <input
                         type="checkbox"

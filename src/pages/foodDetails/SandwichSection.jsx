@@ -35,7 +35,7 @@ const ToppingSection = ({
     onSandCustChange(selectTop);
   }, [selectTop, onSandCustChange]);
 
-  const handleSelectTopping = (sandCust) => {
+  const handleSelectSandCust = (sandCust) => {
     setSelectedSandCust((prev) => {
       const updatedSandCust = prev.includes(sandCust)
         ? prev.filter((item) => item !== sandCust)
@@ -117,10 +117,10 @@ const ToppingSection = ({
                           </div>
                           <input
                             type="checkbox"
-                            name="topping"
+                            name="sandwich"
                             className="checkbox checkbox-primary rounded"
                             checked={selectedSandCust.includes(category)}
-                            onChange={() => handleSelectTopping(category)}
+                            onChange={() => handleSelectSandCust(category)}
                           />
                         </div>
                       </label>
@@ -131,11 +131,11 @@ const ToppingSection = ({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <RxCross2 className="text-4xl text-red-600" />
-                        <h1 className="text-2xl font-semibold">No Topping</h1>
+                        <h1 className="text-2xl font-TitleFont text-black">No Sandwich</h1>
                       </div>
                       <input
                         type="checkbox"
-                        name="noTopping"
+                        name="noSandwich"
                         className="checkbox checkbox-primary rounded"
                         checked={selectedSandCust.length === 0}
                         onChange={() => {

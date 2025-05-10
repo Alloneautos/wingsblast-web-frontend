@@ -446,6 +446,30 @@ const InvoiceOrder = () => {
                           ))}
                         </div>
                       )}
+                      {/* sauce Addon */}
+                      {food.addons?.sauce && (
+                        <div>
+                          <h1 className="font-semibold text-black">
+                            {food.addons.sauce.length > 0 &&
+                              "Sauce:"}
+                          </h1>
+                          {food.addons.sauce.map((addon, idx) => (
+                            <div key={idx} className="ml-4">
+                              {addon.name ? (
+                                <p>
+                                  {addon.name}{" "}
+                                  {addon.quantity ? ` X ${addon.quantity}` : ""}
+                                  {addon.isPaid === 1 && (
+                                    <span>(${addon.price})</span>
+                                  )}
+                                </p>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

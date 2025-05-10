@@ -59,7 +59,7 @@ const AddMoreFood = ({ categoryID }) => {
                 <div className="p-3 cursor-pointer hover:scale-105 transition-transform duration-300">
                   <div className="h-full border shadow-xl rounded-lg bg-white overflow-hidden">
                     <img
-                      className="w-[250px] lg:w-[140px] h-[220px] lg:h-[140px] mx-auto object-cover"
+                      className="w-[250px] lg:w-[160px] h-[220px] lg:h-[130px] p-2 mx-auto object-cover"
                       src={foodMenu.image}
                       alt={foodMenu.category_name}
                     />
