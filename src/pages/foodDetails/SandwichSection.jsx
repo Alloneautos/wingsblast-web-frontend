@@ -21,7 +21,7 @@ const ToppingSection = ({
       setSelectedSandCust(sandCust.slice(0, 5));
     }
   }, [sandCust]);
- 
+
   const selectTop = useMemo(() => {
     return selectedSandCust.map((sandwich) => ({
       id: sandwich.id,
@@ -86,6 +86,28 @@ const ToppingSection = ({
             )}
             <Disclosure.Panel className="px-4 pt-6 pb-4 text-sm text-gray-700">
               <div className="flavor-selection grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                <div className="w-full">
+                  <label className="block border border-gray-300 px-4 py-[30px] mt-2 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <RxCross2 className="text-4xl text-red-600" />
+                        <h1 className="text-2xl font-TitleFont text-black">
+                          No Sandwich
+                        </h1>
+                      </div>
+                      <input
+                        type="checkbox"
+                        name="noSandwich"
+                        className="checkbox checkbox-primary rounded"
+                        checked={selectedSandCust.length === 0}
+                        onChange={() => {
+                          setSelectedSandCust([]);
+                          onSandCustChange([]); // Clear all selections
+                        }}
+                      />
+                    </div>
+                  </label>
+                </div>
                 {!loading &&
                   sandCust.map((category, index) => (
                     <div key={index} className="w-full">
@@ -109,7 +131,7 @@ const ToppingSection = ({
                                   <p>+${category.price}</p>
                                 )}
                                 <p className="flex items-center gap-1">
-                                  <BiSolidError className="text-black"/>
+                                  <BiSolidError className="text-black" />
                                   {category.cal}
                                 </p>
                               </div>
@@ -126,26 +148,6 @@ const ToppingSection = ({
                       </label>
                     </div>
                   ))}
-                <div className="w-full">
-                  <label className="block border border-gray-300 px-4 py-[30px] mt-2 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <RxCross2 className="text-4xl text-red-600" />
-                        <h1 className="text-2xl font-TitleFont text-black">No Sandwich</h1>
-                      </div>
-                      <input
-                        type="checkbox"
-                        name="noSandwich"
-                        className="checkbox checkbox-primary rounded"
-                        checked={selectedSandCust.length === 0}
-                        onChange={() => {
-                          setSelectedSandCust([]);
-                          onSandCustChange([]); // Clear all selections
-                        }}
-                      />
-                    </div>
-                  </label>
-                </div>
               </div>
             </Disclosure.Panel>
           </>

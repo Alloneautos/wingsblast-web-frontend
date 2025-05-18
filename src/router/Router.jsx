@@ -25,7 +25,7 @@ import WingsBlastFAQ from "../pages/settings/WingsBlastFAQ";
 import PromotionandOffers from "../pages/settings/PromotionandOffers";
 import Signin from "../pages/auth/Signin";
 import Signup from "../pages/auth/Signup";
-import App from "../App";
+import SignInTest from "../pages/auth/SignInText";
 
 const Router = createBrowserRouter([
   {
@@ -140,8 +140,8 @@ const Router = createBrowserRouter([
     element: <Signup></Signup>,
   },
   {
-    path: "/app",
-    element: <App />
+    path: "/signintest",
+    element: <SignInTest />
   }
 ]);
 export default Router;

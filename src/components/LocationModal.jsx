@@ -186,7 +186,7 @@ const LocationModel = ({ onClose, isOpen, foodId, activeTabHome }) => {
                 onSubmit={saveDeliveryAddress}
                 className="bg-white shadow-lg rounded-lg p-1 lg:p-6 space-y-4 relative"
               >
-                <label className="block text-sm font-semibold text-gray-700">
+                <label className="block text-lg font-TitleFont text-gray-900">
                   Enter Your Delivery Address
                 </label>
                 <div className="relative">
@@ -198,9 +198,9 @@ const LocationModel = ({ onClose, isOpen, foodId, activeTabHome }) => {
                     style={{
                       width: "100%",
                       padding: "10px",
-                      border: "1px solid #ccc",
+                      border: "1px solid cc",
                       borderRadius: "5px",
-                      color: "black",
+                      color: "#4b5563",
                     }}
                   />
                   {suggestions.length > 0 && (

@@ -17,10 +17,11 @@ import LocationModal from "../../components/LocationModal";
 import { RiEdit2Fill } from "react-icons/ri";
 import { LuBadgeInfo } from "react-icons/lu";
 import OrderTips from "./OrderTips";
-import { MdEdit } from "react-icons/md";
+import { MdEdit, MdOutlineClose } from "react-icons/md";
 import LoadingComponent from "../../components/LoadingComponent";
 import SignInSignOutModal from "../../components/SignInSignOutModal";
 import { Helmet } from "react-helmet-async";
+import { IoIosClose } from "react-icons/io";
 
 const MyCart = () => {
   const { tax, isTaxLoading } = useTax();
@@ -294,7 +295,6 @@ const MyCart = () => {
     }
   };
 
-
   // handle order
   const myOrder = {
     delivery_type: orderStatus,
@@ -381,6 +381,12 @@ const MyCart = () => {
           isPaid: rp.is_paid_type,
           quantity: rp.quantity,
         })),
+        fishChoice: item?.fishChoice?.map((fish) => ({
+          name: fish.name,
+          price: fish.price,
+          isPaid: fish.is_paid_type,
+          quantity: fish.quantity,
+        })),
       },
     })),
   };
@@ -453,6 +459,8 @@ const MyCart = () => {
     };
   }, [openNotes]);
 
+  console.log(mycard)
+
   return (
     <section className="text-gray-600 body-font mx-auto">
       <Helmet>
@@ -475,9 +483,18 @@ const MyCart = () => {
                 <div key={item.id} className="my-3 mx-4 text-black">
                   <div className="divider"></div>
                   <div className="flex justify-between text-xl sm:text-2xl">
-                    <h2 className="text-2xl font-TitleFont">
-                      {item.food_name}
-                    </h2>
+                    <div className="flex items-center gap-3">
+                      <h2 className="text-2xl font-TitleFont">
+                        {item.food_name}
+                      </h2>
+                      <div className="flex gap-2">
+                        <Link to={`/food-details/${item.food_details_id}`}>
+                          <button className=" rounded-full p-1.5 bg-gray-100 hover:bg-gray-200 transition-all duration-300">
+                            <MdEdit className="text-2xl text-black " />
+                          </button>
+                        </Link>
+                      </div>
+                    </div>
                     {/* delete model show  */}
                     <dialog id="my_modal_3" className="modal">
                       <div className="modal-box w-[350px] lg:w-[400px] !rounded">
@@ -518,14 +535,7 @@ const MyCart = () => {
                         </button>
                       </div>
                     </dialog>
-
-                    <div className="flex gap-2">
-                      <Link to={`/food-details/${item.food_details_id}`}>
-                        <button className=" rounded-full p-1.5 hover:bg-gray-200 transition-all duration-300">
-                          <MdEdit className="text-2xl text-black " />
-                        </button>
-                      </Link>
-                    </div>
+                    <h1 className="font-TitleFont">${item.food_price}</h1>
                   </div>
                   {item.buy_one_get_one.name && (
                     <div className="flex items-center justify-between">
@@ -537,118 +547,169 @@ const MyCart = () => {
                   )}
                   <div>
                     <div className="text-sm font-medium">
-                      {item.flavors && item.flavors.length > 0 ? (
-                        item.flavors.map((flavor, index) => (
-                          <div
-                            key={index}
-                            className="flavor-item cursor-pointer"
-                          >
-                            <h1 title="Flavor">
-                              {flavor.flavor_name} X{flavor.quantity}
-                            </h1>
-                          </div>
-                        ))
-                      ) : (
-                        <p> </p>
+                      {/* toppings */}
+                      {item.topping.length > 0 && (
+                        <h4 className="font-TitleFont text-lg">Toppings: </h4>
                       )}
-                      {item.dips.map((dip, index) => (
+                      {item?.topping?.map((topping, index) => (
                         <div
                           key={index}
-                          className="flavor-item cursor-pointer flex items-center justify-between"
+                          className="flavor-item ml-3 cursor-pointer flex items-center justify-between"
                         >
-                          <h1 title="Dip" className="flex items-center">
-                            {dip.name} X{dip.quantity}{" "}
+                          <h1 title="topping" className="flex items-center">
+                            {topping.name}{" "}
                           </h1>
-                          <span>
-                            {dip.is_paid_type === 1 ? `$${dip.price}` : ""}
-                          </span>
-                        </div>
-                      ))}
-                      {item.sides.map((side, index) => (
-                        <div
-                          key={index}
-                          className="flavor-item cursor-pointer flex items-center justify-between"
-                        >
-                          <h1 title="side" className="flex items-center">
-                            {side.name} X {side.quantity}
-                          </h1>
-                          <span>
-                            {side.is_paid_type === 1 ? `$${side.price}` : ""}
-                          </span>
-                        </div>
-                      ))}
-                      {item.drinks.map((drink, index) => (
-                        <div
-                          key={index}
-                          className="flavor-item flex items-center justify-between cursor-pointer"
-                        >
-                          <h1 title="drink" className="flex items-center">
-                            {drink?.size_name}({drink?.brand_name}) X
-                            {drink.quantity}{" "}
-                          </h1>
-                          <span>
-                            {drink.is_paid_type === 1 ? `$${drink.price}` : ""}
-                          </span>
-                        </div>
-                      ))}
-                      {item?.bakery?.map((bakery, index) => (
-                        <div
-                          key={index}
-                          className="flavor-item cursor-pointer flex items-center justify-between"
-                        >
-                          <h1 title="bakery" className="flex items-center">
-                            {bakery.name} X{bakery.quantity}{" "}
-                          </h1>
-                          <span>
-                            {bakery.is_paid_type === 1
-                              ? `$${(bakery.quantity * bakery.price).toFixed(
+                          <span className="font-TitleFont">
+                            {topping.is_paid_type === 1
+                              ? `$${(topping.price * topping.quantity).toFixed(
                                   2
                                 )}`
                               : ""}
                           </span>
                         </div>
                       ))}
-                      {item?.topping?.map((topping, index) => (
+                      {/* flavors */}
+                      {item.flavors.length > 0 && (
+                        <h4 className="font-TitleFont text-lg">Flavors: </h4>
+                      )}
+                      {item?.flavors?.length > 0 &&
+                        item.flavors.map((flavor, index) => (
+                          <div
+                            key={index}
+                            className="flavor-item cursor-pointer ml-3"
+                          >
+                            <h1 title="Flavor">
+                              {flavor.flavor_name} X{flavor.quantity}
+                            </h1>
+                          </div>
+                        ))}
+                      {/* dips */}
+                      {item.dips.length > 0 && (
+                        <h4 className="font-TitleFont text-lg">Dip: </h4>
+                      )}
+                      {item.dips.map((dip, index) => (
                         <div
                           key={index}
-                          className="flavor-item cursor-pointer flex items-center justify-between"
+                          className="flavor-item ml-3 cursor-pointer flex items-center justify-between"
                         >
-                          <h1 title="topping" className="flex items-center">
-                            {topping.name}{" "}
+                          <h1 title="Dip" className="flex items-center">
+                            {dip.name} X{dip.quantity}{" "}
                           </h1>
-                          <span>
-                            {topping.is_paid_type === 1
-                              ? `$${topping.price}`
+                          <span className="font-TitleFont">
+                            {dip.is_paid_type === 1
+                              ? `$${(dip.price * dip.quantity).toFixed(2)}`
                               : ""}
                           </span>
                         </div>
                       ))}
+                      {/* sides */}
+                      {item.sides.length > 0 && (
+                        <h4 className="font-TitleFont text-lg">Sides: </h4>
+                      )}
+                      {item.sides.map((side, index) => (
+                        <div
+                          key={index}
+                          className="flavor-item ml-3 cursor-pointer flex justify-between"
+                        >
+                          <h1 title="side" className="flex items-center">
+                            {side.name} X {side.quantity}
+                          </h1>
+                          <span className="font-TitleFont">
+                            {side.is_paid_type === 1
+                              ? `$${(side.price * side.quantity).toFixed(2)}`
+                              : ""}
+                          </span>
+                        </div>
+                      ))}
+                      {/* bakery */}
+                      {item.bakery.length > 0 && (
+                        <h4 className="font-TitleFont text-lg">Bakery: </h4>
+                      )}
+                      {item?.bakery?.map((bakery, index) => (
+                        <div
+                          key={index}
+                          className="flavor-item ml-3 cursor-pointer flex items-center justify-between"
+                        >
+                          <h1 title="bakery" className="flex items-center">
+                            {bakery.name} (<MdOutlineClose />
+                            {bakery.quantity}){" "}
+                          </h1>
+                          <span className="font-TitleFont">
+                            {bakery.is_paid_type === 1
+                              ? `$${(bakery.price * bakery.quantity).toFixed(
+                                  2
+                                )}`
+                              : ""}
+                          </span>
+                        </div>
+                      ))}
+                      {/* sandwich */}
+                      {item.sandwich.length > 0 && (
+                        <h4 className="font-TitleFont text-lg">Sandwich: </h4>
+                      )}
                       {item?.sandwich?.map((sandCust, index) => (
                         <div
                           key={index}
-                          className="flavor-item cursor-pointer flex items-center justify-between"
+                          className="flavor-item ml-3 cursor-pointer flex items-center justify-between"
                         >
                           <h1 title="sandCust" className="flex items-center">
                             {sandCust.name} X1{" "}
                           </h1>
-                          <span>
+                          <span className="font-TitleFont">
                             {sandCust.is_paid_type === 1
-                              ? `$${sandCust.price}`
+                              ? `$${(
+                                  sandCust.price * sandCust.quantity
+                                ).toFixed(2)}`
                               : ""}
                           </span>
                         </div>
                       ))}
+                      {/* ricePlatter */}
+                      {item.ricePlatter.length > 0 && (
+                        <h4 className="font-TitleFont text-lg">
+                          Rice Platter:{" "}
+                        </h4>
+                      )}
                       {item?.ricePlatter?.map((ricePlatter, index) => (
                         <div
                           key={index}
-                          className="flavor-item cursor-pointer flex items-center justify-between"
+                          className="flavor-item ml-3 cursor-pointer flex items-center justify-between"
                         >
                           <h1 title="ricePlatter" className="flex items-center">
                             {ricePlatter.name} X{ricePlatter.quantity}{" "}
                           </h1>
-                          <span>
+                          <span className="font-TitleFont">
                             {ricePlatter.is_paid_type === 1
-                              ? `$${ricePlatter.price}`
+                              ? `$${(
+                                  ricePlatter.price * ricePlatter.quantity
+                                ).toFixed(2)}`
+                              : ""}
+                          </span>
+                        </div>
+                      ))}
+                      {/* sauce */}
+                      {item.sauce.length > 0 && (
+                        <h4 className="font-TitleFont text-lg">Sauce: </h4>
+                      )}
+                      {/* fish choiche */}
+                      {item.fishChoice.length > 0 && (
+                        <h4 className="font-TitleFont text-lg">
+                          Fish Choice:{" "}
+                        </h4>
+                      )}
+                      {item?.fishChoice?.map((fishChoice, index) => (
+                        <div
+                          key={index}
+                          className="flavor-item ml-3 cursor-pointer flex items-center justify-between"
+                        >
+                          <h1 title="fishChoice" className="flex items-center">
+                            {fishChoice.name} X{fishChoice.quantity}{" "}
+                          </h1>
+                          <span className="font-TitleFont">
+                            {fishChoice.is_paid_type === 1
+                              ? `$${(
+                                  fishChoice.price * fishChoice.quantity
+                                ).toFixed(2)}`
                               : ""}
                           </span>
                         </div>
@@ -656,11 +717,31 @@ const MyCart = () => {
                       {item?.sauce?.map((sauce, index) => (
                         <div
                           key={index}
-                          className="flavor-item cursor-pointer flex items-center justify-between"
+                          className="flavor-item ml-3 cursor-pointer flex items-center justify-between"
                         >
                           <h1 title="sauce" className="flex items-center">
                             {sauce.name} X{sauce.quantity}{" "}
                           </h1>
+                        </div>
+                      ))}
+                      {/* drinks */}
+                      {item.drinks.length > 0 && (
+                        <h4 className="font-TitleFont text-lg">Drinks: </h4>
+                      )}
+                      {item.drinks.map((drink, index) => (
+                        <div
+                          key={index}
+                          className="flavor-item ml-3 flex items-center justify-between cursor-pointer"
+                        >
+                          <h1 title="drink" className="flex items-center">
+                            {drink?.size_name}({drink?.brand_name}) (
+                            <MdOutlineClose /> {drink.quantity}){" "}
+                          </h1>
+                          <span className="font-TitleFont">
+                            {drink.is_paid_type === 1
+                              ? `$${(drink.price * drink.quantity).toFixed(2)}`
+                              : ""}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -728,7 +809,11 @@ const MyCart = () => {
                     </div>
                     <span className="text-3xl font-TitleFont flex items-baseline gap-1">
                       {/* <p className="line-through text-2xl text-gray-800"> {item.price === item.food_price ? "" : `$${calculateSubtotal(item.food_price,quantities[item.id]).toFixed(2)}`} </p> */}
-                      ${calculateSubtotal(item.price,quantities[item.id]).toFixed(2)}
+                      $
+                      {calculateSubtotal(
+                        item.price,
+                        quantities[item.id]
+                      ).toFixed(2)}
                     </span>
                   </div>
                 </div>

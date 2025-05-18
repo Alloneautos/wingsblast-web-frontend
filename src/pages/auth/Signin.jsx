@@ -1,36 +1,174 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { BsApple } from "react-icons/bs";
 import USA from "../../assets/images/usa.png";
 import OtpInput from "react-otp-input";
 import { CgSpinner } from "react-icons/cg";
 import Logo from "../../assets/images/Web Logo.png";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { FcGoogle } from "react-icons/fc";
+import {
+  signInWithPhoneNumber,
+  RecaptchaVerifier,
+  signInWithPopup,
+} from "firebase/auth";
+import { API } from "../../api/api";
+import Swal from "sweetalert2";
+import { auth } from "../../firebase/firebase.config";
+import { GoogleAuthProvider } from "firebase/auth";
+const provider = new GoogleAuthProvider();
+
 const Signin = () => {
   const [showOtpSection, setShowOtpSection] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
+  const [confirmationResult, setConfirmationResult] = useState(null);
+  const [recaptchaReady, setRecaptchaReady] = useState(false);
+  const recaptchaVerifierRef = useRef(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // const location = useLocation();
-  // const from = location.state?.from?.pathname || "/";
-  // const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
 
-  const handleSendOtp = (e) => {
+  useEffect(() => {
+    let mounted = true;
+
+    const initializeRecaptcha = async () => {
+      try {
+        if (recaptchaVerifierRef.current) {
+          recaptchaVerifierRef.current.destroy(); // Fixed
+        }
+
+        recaptchaVerifierRef.current = new RecaptchaVerifier(
+          "recaptcha-container",
+          {
+            size: "invisible",
+            callback: () => {
+              if (mounted) setRecaptchaReady(true);
+            },
+            "expired-callback": () => {
+              if (mounted) setRecaptchaReady(false);
+              initializeRecaptcha(); // Re-initialize
+            },
+          },
+          auth
+        );
+
+        await recaptchaVerifierRef.current.render();
+
+        // Ensure it fully loads before enabling button
+        setTimeout(() => {
+          if (mounted) setRecaptchaReady(true);
+        }, 300);
+      } catch (error) {
+        console.error("Recaptcha initialization error:", error);
+        if (mounted) setRecaptchaReady(false);
+      }
+    };
+
+    initializeRecaptcha();
+
+    return () => {
+      mounted = false;
+      if (recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current.destroy();
+      }
+    };
+  }, []);
+
+  const handleSendOtp = async (e) => {
     e.preventDefault();
-    setShowOtpSection(true);
-    // Simulate OTP send logic here
+
+    if (!recaptchaReady || !recaptchaVerifierRef.current) {
+      alert(
+        "Security verification is still initializing. Please try again shortly."
+      );
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const confirmation = await signInWithPhoneNumber(
+        auth,
+        `+1${phoneNumber}`,
+        recaptchaVerifierRef.current
+      );
+      setConfirmationResult(confirmation);
+      setShowOtpSection(true);
+    } catch (error) {
+      console.error("OTP send error:", error);
+      alert(`Error: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleVerifyOtp = (e) => {
+  const handleVerifyOtp = async (e) => {
     e.preventDefault();
+    if (!confirmationResult || otp.length !== 6) return;
+
     setLoading(true);
-    setTimeout(() => {
+    try {
+      const result = await confirmationResult.confirm(otp);
+      console.log(result, "result");
+      const token = result.user.accessToken;
+      const first_name = "Guest";
+      const last_name = "User";
+      const response = await API.post("/user/firebase-login", {
+        first_name,
+        last_name,
+        token,
+      });
+      console.log(response);
+      localStorage.setItem("token", response.data.token);
+      // Show success message and navigate home
+      Swal.fire({
+        title: "Login Successful!",
+        text: "Welcome back!",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      }).then(() => {
+        navigate(from, { replace: true });
+        // window.location.reload();
+      });
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+    } finally {
       setLoading(false);
-      alert("OTP Verified: " + otp);
-      setShowOtpSection(false);
-    }, 2000);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log(result, "result");
+      const user = result.user;
+      const token = await user.getIdToken();
+      console.log(token, "token");
+      const displayName = user.displayName || "";
+      const [first_name, last_name] = displayName.split(" ");
+      const response = await API.post("/user/firebase-login", {
+        first_name,
+        last_name,
+        token,
+      });
+      console.log(response, "response");
+      localStorage.setItem("token", response.data.token);
+      Swal.fire({
+        title: "Login Successful!",
+        text: "Welcome back!",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      }).then(() => {
+        navigate(from, { replace: true });
+        // window.location.reload();
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -48,6 +186,9 @@ const Signin = () => {
                 </a>
               </div>
 
+              {/* reCAPTCHA container - invisible */}
+              <div id="recaptcha-container"></div>
+
               {!showOtpSection ? (
                 <form onSubmit={handleSendOtp}>
                   <div className="mb-5 relative">
@@ -61,9 +202,7 @@ const Signin = () => {
                       </div>
                       <input
                         type="tel"
-                        placeholder="(123)-456-7890"
-                        pattern="[0-9]{10}"
-                        title="Must be 10 digits"
+                        placeholder="1234567890"
                         required
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
@@ -73,11 +212,27 @@ const Signin = () => {
                   </div>
 
                   <div className="my-3">
-                    <input
+                    {!recaptchaReady && (
+                      <div className="text-sm text-yellow-600 mb-4">
+                        Initializing security verification...
+                      </div>
+                    )}
+
+                    <button
                       type="submit"
-                      value="Send OTP"
-                      className="w-full cursor-pointer font-TitleFont text-lg rounded bg-ButtonColor px-5 py-3 font-medium text-white transition hover:bg-opacity-90"
-                    />
+                      className={`w-full cursor-pointer font-TitleFont text-lg rounded px-5 py-3 font-medium transition ${
+                        recaptchaReady
+                          ? "bg-ButtonColor text-white hover:bg-opacity-90"
+                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      }`}
+                      disabled={!recaptchaReady || loading}
+                    >
+                      {loading ? (
+                        <CgSpinner className="animate-spin mx-auto text-xl" />
+                      ) : (
+                        "Send OTP"
+                      )}
+                    </button>
                   </div>
                 </form>
               ) : (
@@ -92,8 +247,10 @@ const Signin = () => {
                         onChange={setOtp}
                         numInputs={6}
                         isInputNum={true}
+                        renderSeparator={
+                          <span style={{ width: "20px" }}></span>
+                        }
                         shouldAutoFocus={true}
-                        renderSeparator={<span style={{ width: "20px" }}></span>}
                         inputStyle={{
                           border: "1px solid transparent",
                           borderRadius: "3px",
@@ -131,27 +288,33 @@ const Signin = () => {
                       <span>Verify OTP</span>
                     </button>
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowOtpSection(false);
+                      setOtp("");
+                    }}
+                    className="text-sm text-blue-600 hover:underline"
+                  >
+                    Change Phone Number
+                  </button>
                 </form>
               )}
 
               <ul className="grid font-TitleFont !text-2xl">
-                {/* Google */}
-                <button className="btn my-3 rounded bg-gray-200 font-normal text-lg text-black border-[#e5e5e5]">
+                <button
+                  onClick={handleGoogleLogin}
+                  className="btn my-3 rounded bg-gray-200 font-normal text-lg text-black border-[#e5e5e5]"
+                >
                   <FcGoogle />
                   Login with Google
                 </button>
-                {/* Apple */}
                 <button className="btn bg-black hover:bg-gray-950 rounded font-normal text-lg text-white border-black">
                   <BsApple className="text-xl" />
                   Login with Apple
                 </button>
               </ul>
-              <p className="text-sm mt-1 text-body-color dark:text-dark-6">
-                <span className="pr-0.5">Not a member yet?</span>
-                <Link to="/signup" className="text-primary hover:underline">
-                  Sign Up
-                </Link>
-              </p>
             </div>
           </div>
         </div>

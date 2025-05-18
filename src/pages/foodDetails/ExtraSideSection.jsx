@@ -14,7 +14,6 @@ const ExtraSideSection = ({
 }) => {
   const [selectedSides, setSelectedSides] = useState([]);
   const [sideQuantities, setSideQuantities] = useState({});
-  const allSides = sides.data;
   const selectedCount = selectedSides.length;
 
   const handleSelectSide = (side) => {
@@ -81,7 +80,7 @@ const ExtraSideSection = ({
   return (
     <div className="w-full lg:w-10/12 mx-auto my-1 p-2 bg-white">
       <Disclosure>
-        {({open}) => (
+        {({ open }) => (
           <>
             <Disclosure.Button className="grid items-center w-full rounded-lg bg-blue-50 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition ease-in-out duration-300">
               <div className="flex justify-between items-center w-full">
@@ -126,8 +125,26 @@ const ExtraSideSection = ({
             {loading && <LoadingComponent />}
             <Disclosure.Panel className="px-4 pt-6 pb-4 text-sm text-gray-700">
               <div className="flavor-selection grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                <div className="w-full">
+                  <label className="block border border-gray-300 px-4 py-[33px] mt-2 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <RxCross2 className="text-4xl text-red-600" />
+                        <h1 className="text-2xl font-TitleFont text-black">
+                          NO SIDE
+                        </h1>
+                      </div>
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-primary rounded"
+                        checked={selectedSides.length === 0}
+                        onChange={() => setSelectedSides([])}
+                      />
+                    </div>
+                  </label>
+                </div>
                 {!loading &&
-                  allSides.map((category, index) => (
+                  sides.map((category, index) => (
                     <div key={index} className="w-full">
                       <h3 className="text-md font-semibold mb-2 text-blue-600">
                         {category.category}
@@ -199,22 +216,6 @@ const ExtraSideSection = ({
                       </label>
                     </div>
                   ))}
-                <div className="w-full">
-                  <label className="block border border-gray-300 px-4 py-[33px] mt-2 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <RxCross2 className="text-4xl text-red-600" />
-                        <h1 className="text-2xl font-TitleFont text-black">NO SIDE</h1>
-                      </div>
-                      <input
-                        type="checkbox"
-                        className="checkbox checkbox-primary rounded"
-                        checked={selectedSides.length === 0}
-                        onChange={() => setSelectedSides([])}
-                      />
-                    </div>
-                  </label>
-                </div>
               </div>
             </Disclosure.Panel>
           </>

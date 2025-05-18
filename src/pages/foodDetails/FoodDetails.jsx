@@ -1,12 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import FlavorSelection from "./FlavorSelection";
-import {
-  API,
-  useFoodDetails,
-  useGuestUser,
-  useUserProfile,
-} from "../../api/api";
+
 import SideSection from "./SideSection";
 import DipSection from "./DipSection";
 import BakerySection from "./BakerySection";
@@ -25,6 +20,13 @@ import ExtraSideSection from "./ExtraSideSection";
 import { Helmet } from "react-helmet-async";
 import { FiMinus, FiPlus } from "react-icons/fi";
 import SauceSection from "./SauceSection";
+import FishSection from "./FishSection";
+import {
+  API,
+  useFoodDetails,
+  useGuestUser,
+  useUserProfile,
+} from "../../api/api";
 
 const FoodDetails = () => {
   const queryClient = useQueryClient();
@@ -40,7 +42,9 @@ const FoodDetails = () => {
   const [extraSideSelects, setExtraSideSelects] = useState([]);
   const [ricePlattarSelects, setRicePlattarSelects] = useState([]);
   const [drinkId, setDrinkId] = useState(null);
+  const [extraDrinkId, setExtraDrinkId] = useState(null);
   const [bakerySelects, setBakerySelects] = useState([]);
+  const [fishSelects, setFishSelects] = useState([]);
   const [toppingsData, setToppingsData] = useState([]);
   const [sauceData, setSauceData] = useState([]);
   const [sandCustData, setSandCustData] = useState([]);
@@ -53,6 +57,7 @@ const FoodDetails = () => {
   const [unitPrice, setUnitPrice] = useState(0);
   const [sidePrice, setSidePrice] = useState(0);
   const [bakeryPrice, setBakeryPrice] = useState(0);
+  const [fishPrice, setFishPrice] = useState(0);
   const [drinkPrice, setDrinkPrice] = useState(0);
   const [drinkRegulerPrice, setDrinkRegulerPrice] = useState(0);
   const [dipPrice, setDipPrice] = useState(0);
@@ -110,6 +115,7 @@ const FoodDetails = () => {
         drinkRegulerPrice * quantity +
         dipPrice * quantity +
         bakeryPrice * quantity +
+        fishPrice * quantity +
         toppingPrice * quantity +
         saucePrice * quantity +
         sandwichPrice * quantity
@@ -122,6 +128,7 @@ const FoodDetails = () => {
     drinkPrice,
     dipPrice,
     bakeryPrice,
+    fishPrice,
     toppingPrice,
     saucePrice,
     sandwichPrice,
@@ -136,6 +143,7 @@ const FoodDetails = () => {
         drinkPrice +
         dipPrice +
         bakeryPrice +
+        fishPrice +
         toppingPrice +
         saucePrice +
         sandwichPrice
@@ -147,6 +155,7 @@ const FoodDetails = () => {
     drinkPrice,
     dipPrice,
     bakeryPrice,
+    fishPrice,
     toppingPrice,
     saucePrice,
     sandwichPrice,
@@ -164,6 +173,7 @@ const FoodDetails = () => {
       setIsScrolled(scrollPosition > 400); // example value for small screens
     }
   };
+
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => {
@@ -186,6 +196,9 @@ const FoodDetails = () => {
   };
   const handleBakeryPriceChange = (price) => {
     setBakeryPrice(price);
+  };
+  const handleFishPriceChange = (price) => {
+    setFishPrice(price);
   };
 
   const handleExtraDrinkPriceChange = (price) => {
@@ -221,6 +234,9 @@ const FoodDetails = () => {
   const handleDrinkSelected = (drinkId) => {
     setDrinkId(drinkId);
   };
+  const handleExtraDrinkSelected = (drinkId) => {
+    setExtraDrinkId(drinkId);
+  };
 
   const onToppingsChange = (selectedToppingId) => {
     setToppingsData(selectedToppingId);
@@ -240,6 +256,9 @@ const FoodDetails = () => {
   const handleBakerySelected = (selectedBakery) => {
     setBakerySelects(selectedBakery); // Store the formatted data
   };
+  const handleFishSelected = (selectedFish) => {
+    setFishSelects(selectedFish); // Store the formatted data
+  };
 
   const handleFlavorSelected = (selectFlavorId) => {
     setFlavorData(selectFlavorId);
@@ -251,125 +270,197 @@ const FoodDetails = () => {
   const handleSelectedExtraDrinksChange = (drinks) => {
     setSelectedExtraDrinks(drinks);
   };
+  const flavorRef = useRef(null);
+  const dipRef = useRef(null);
+  const sideRef = useRef(null);
+  const drinkRef = useRef(null);
+  const sandwichRef = useRef(null);
+  const toppingRef = useRef(null);
+  const sauceRef = useRef(null);
+  const fishRef = useRef(null);
+  const bakeryRef = useRef(null);
+  const ricePlatterRef = useRef(null);
   const components = [
     {
       component:
         foodDetails?.flavor?.how_many_select > 0 ? (
-          <FlavorSelection
-            flavor={foodDetails.flavor}
-            loading={loading}
-            sendFlavorData={handleFlavorSelected}
-          />
+          <div ref={flavorRef}>
+            <FlavorSelection
+              flavor={foodDetails.flavor}
+              loading={loading}
+              sendFlavorData={handleFlavorSelected}
+            />
+          </div>
         ) : null,
       sn_number: foodDetails?.flavor?.sn_number,
+      ref: flavorRef,
+      key: "flavor",
     },
     {
       component:
         foodDetails?.dip?.how_many_select > 0 ? (
-          <DipSection
-            dips={foodDetails.dip}
-            loading={loading}
-            error={error}
-            onDipSelected={handleDipSelected}
-          />
+          <div ref={dipRef}>
+            <DipSection
+              dips={foodDetails.dip}
+              loading={loading}
+              error={error}
+              onDipSelected={handleDipSelected}
+            />
+          </div>
         ) : null,
       sn_number: foodDetails?.dip?.sn_number,
+      ref: dipRef,
+      key: "dip",
     },
     {
       component:
         foodDetails?.side?.how_many_select > 0 ? (
-          <SideSection
-            sides={foodDetails.side}
-            loading={loading}
-            error={error}
-            onSideSelected={handleSideSelected}
-          />
+          <div ref={sideRef}>
+            <SideSection
+              sides={foodDetails.side}
+              loading={loading}
+              error={error}
+              onSideSelected={handleSideSelected}
+            />
+          </div>
         ) : null,
       sn_number: foodDetails?.side?.sn_number,
+      ref: sideRef,
+      key: "side",
     },
     {
       component:
         foodDetails?.drink?.data?.length > 0 ? (
-          <DrinkSection
-            myDrink={foodDetails.drink}
-            loading={loading}
-            error={error}
-            onDrinkSelected={handleDrinkSelected}
-            onDrinkRegulerPrice={handleDrinkRegularPrice}
-            onSelectedDrinksChange={handleSelectedDrinksChange}
-          />
+          <div ref={drinkRef}>
+            <DrinkSection
+              myDrink={foodDetails.drink}
+              loading={loading}
+              error={error}
+              onDrinkSelected={handleDrinkSelected}
+              onDrinkRegulerPrice={handleDrinkRegularPrice}
+              onSelectedDrinksChange={handleSelectedDrinksChange}
+            />
+          </div>
         ) : null,
       sn_number: foodDetails?.drink?.sn_number,
+      ref: drinkRef,
+      key: "drink",
     },
     {
       component:
         foodDetails?.topping?.data?.length > 0 ? (
-          <ToppingSection
-            myTopping={foodDetails.topping}
-            loading={loading}
-            error={error}
-            onToppingsChange={onToppingsChange}
-            onToppingsPriceChnge={handleToppingsPriceChnge}
-          />
+          <div ref={toppingRef}>
+            <ToppingSection
+              myTopping={foodDetails.topping}
+              loading={loading}
+              error={error}
+              onToppingsChange={onToppingsChange}
+              onToppingsPriceChnge={handleToppingsPriceChnge}
+            />
+          </div>
         ) : null,
       sn_number: foodDetails?.topping?.sn_number,
+      ref: toppingRef,
+      key: "topping",
     },
     {
       component:
         foodDetails?.sandwichCustomize?.data.length > 0 ? (
-          <SanwichSection
-            mySandwich={foodDetails.sandwichCustomize}
-            loading={loading}
-            error={error}
-            onSandCustChange={onSandCustChange}
-            onSandCustPriceChnge={onSandCustPriceChnge}
-          />
+          <div ref={sandwichRef}>
+            <SanwichSection
+              mySandwich={foodDetails.sandwichCustomize}
+              loading={loading}
+              error={error}
+              onSandCustChange={onSandCustChange}
+              onSandCustPriceChnge={onSandCustPriceChnge}
+            />
+          </div>
         ) : null,
       sn_number: foodDetails?.sandwichCustomize?.sn_number,
+      ref: sandwichRef,
+      key: "sandwich",
     },
     {
       component:
         foodDetails?.ricePlatter?.data?.length > 0 ? (
-          <RicePlattarCostom
-            ricePlatter={foodDetails.ricePlatter}
-            loading={loading}
-            error={error}
-            onRicePlattarSelected={handleRicePlattarSelected}
-          />
+          <div ref={ricePlatterRef}>
+            <RicePlattarCostom
+              ricePlatter={foodDetails.ricePlatter}
+              loading={loading}
+              error={error}
+              onRicePlattarSelected={handleRicePlattarSelected}
+            />
+          </div>
         ) : null,
       sn_number: foodDetails?.ricePlatter?.sn_number,
+      ref: ricePlatterRef,
+      key: "ricePlatter",
     },
     {
       component:
         foodDetails?.bakery?.data?.length > 0 ? (
-          <BakerySection
-            myBakery={foodDetails.bakery}
-            loading={loading}
-            error={error}
-            onBakerySelected={handleBakerySelected}
-            onBakeryPriceChange={handleBakeryPriceChange}
-          />
+          <div ref={bakeryRef}>
+            <BakerySection
+              myBakery={foodDetails.bakery}
+              loading={loading}
+              error={error}
+              onBakerySelected={handleBakerySelected}
+              onBakeryPriceChange={handleBakeryPriceChange}
+            />
+          </div>
         ) : null,
       sn_number: foodDetails?.ricePlatter?.sn_number,
+      ref: bakeryRef,
+      key: "bakery",
     },
     {
       component:
         foodDetails?.sauce?.data?.length > 0 ? (
-          <SauceSection
-            mySauce={foodDetails.sauce}
-            loading={loading}
-            error={error}
-            onSauceSelected={handleSauceSelected}
-            onSaucePriceChange={handleSaucePriceChange}
-          />
+          <div ref={sauceRef}>
+            <SauceSection
+              mySauce={foodDetails.sauce}
+              loading={loading}
+              error={error}
+              onSauceSelected={handleSauceSelected}
+              onSaucePriceChange={handleSaucePriceChange}
+            />
+          </div>
         ) : null,
       sn_number: foodDetails?.sauce?.sn_number,
-    }
+      ref: sauceRef,
+      key: "sauce",
+    },
+    {
+      component:
+        foodDetails?.fish_choice?.data?.length > 0 ? (
+          <div ref={fishRef}>
+            <FishSection
+              myFish={foodDetails.fish_choice}
+              loading={loading}
+              error={error}
+              onFishSelected={handleFishSelected}
+              onFishPriceChange={handleFishPriceChange}
+            />
+          </div>
+        ) : null,
+      sn_number: foodDetails?.sauce?.sn_number,
+      ref: fishRef,
+      key: "fish",
+    },
   ];
 
   const sortedComponents = components
     .filter((item) => item.component !== null)
     .sort((a, b) => a.sn_number - b.sn_number);
+
+  // Helper to scroll to a ref after SweetAlert
+  const scrollToRef = (ref) => {
+    setTimeout(() => {
+      if (ref && ref.current) {
+        ref.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 700); // Wait for SweetAlert to show
+  };
 
   const handleAddToBag = async () => {
     if (
@@ -381,6 +472,8 @@ const FoodDetails = () => {
         text: "Please select at least one flavor.",
         icon: "warning",
         confirmButtonText: "OK",
+      }).then(() => {
+        scrollToRef(flavorRef);
       });
       return;
     }
@@ -393,6 +486,8 @@ const FoodDetails = () => {
         text: "Please select at least one dip.",
         icon: "warning",
         confirmButtonText: "OK",
+      }).then(() => {
+        scrollToRef(dipRef);
       });
       return;
     }
@@ -405,6 +500,8 @@ const FoodDetails = () => {
         text: "Please select at least one side.",
         icon: "warning",
         confirmButtonText: "OK",
+      }).then(() => {
+        scrollToRef(sideRef);
       });
       return;
     }
@@ -417,6 +514,8 @@ const FoodDetails = () => {
         text: "Please select at least one drink.",
         icon: "warning",
         confirmButtonText: "OK",
+      }).then(() => {
+        scrollToRef(drinkRef);
       });
       return;
     }
@@ -429,6 +528,8 @@ const FoodDetails = () => {
         text: "Please select at least one sandwich.",
         icon: "warning",
         confirmButtonText: "OK",
+      }).then(() => {
+        scrollToRef(sandwichRef);
       });
       return;
     }
@@ -441,6 +542,8 @@ const FoodDetails = () => {
         text: "Please select at least one topping.",
         icon: "warning",
         confirmButtonText: "OK",
+      }).then(() => {
+        scrollToRef(toppingRef);
       });
       return;
     }
@@ -453,6 +556,22 @@ const FoodDetails = () => {
         text: "Please select at least one Sauce.",
         icon: "warning",
         confirmButtonText: "OK",
+      }).then(() => {
+        scrollToRef(sauceRef);
+      });
+      return;
+    }
+    if (
+      foodDetails?.is_required?.is_required === 1 &&
+      (!fishSelects || fishSelects.length === 0)
+    ) {
+      Swal.fire({
+        title: "Fish is Required",
+        text: "Please select at least one Fish.",
+        icon: "warning",
+        confirmButtonText: "OK",
+      }).then(() => {
+        scrollToRef(fishRef);
       });
       return;
     }
@@ -465,6 +584,8 @@ const FoodDetails = () => {
         text: "Please select at least one bakery.",
         icon: "warning",
         confirmButtonText: "OK",
+      }).then(() => {
+        scrollToRef(bakeryRef);
       });
       return;
     }
@@ -477,6 +598,8 @@ const FoodDetails = () => {
         text: "Please select at least one rice platter.",
         icon: "warning",
         confirmButtonText: "OK",
+      }).then(() => {
+        scrollToRef(ricePlatterRef);
       });
       return;
     }
@@ -547,6 +670,12 @@ const FoodDetails = () => {
         })) || []),
         ...(bakerySelects?.map((bakery) => ({
           type: "Bakery",
+          type_id: bakery.type_id,
+          is_paid_type: bakery.is_paid_type,
+          quantity: bakery.quantity,
+        })) || []),
+        ...(fishSelects?.map((bakery) => ({
+          type: "fish_choice",
           type_id: bakery.type_id,
           is_paid_type: bakery.is_paid_type,
           quantity: bakery.quantity,
@@ -710,13 +839,6 @@ const FoodDetails = () => {
         </div>
       </div>
 
-      {/* {foodDetails?.buy_one_get_one_food?.food_menu_id && (
-        <GetOneBuyOne
-          getonebuyone={foodDetails?.buy_one_get_one_food}
-          loading={loading}
-        />
-      )} */}
-
       {foodDetails?.upgrade_food_details?.length > 0 && (
         <ExtraCombo extraPackege={foodDetails.upgrade_food_details} />
       )}
@@ -726,9 +848,9 @@ const FoodDetails = () => {
       ))}
 
       {/* // Extra Combo dip Section */}
-      {foodDetails?.dip?.is_extra_addon === 1 && (
+      {foodDetails?.extraDips?.length > 0 && (
         <ExtraDipSection
-          allDips={foodDetails.dip.data}
+          allDips={foodDetails.extraDips}
           loading={loading}
           error={error}
           onDipPriceChange={handleDipPriceChange}
@@ -736,9 +858,9 @@ const FoodDetails = () => {
         />
       )}
       {/* // Extra Combo Side Section */}
-      {foodDetails?.side?.is_extra_addon === 1 && (
+      {foodDetails?.extraSide?.length > 0 && (
         <ExtraSideSection
-          sides={foodDetails.side}
+          sides={foodDetails.extraSide}
           loading={loading}
           error={error}
           onExtraSideSelected={handleExtraSideSelected}
@@ -746,14 +868,14 @@ const FoodDetails = () => {
         />
       )}
       {/* // Extra Combo Drink Section */}
-      {foodDetails?.drink?.is_extra_addon === 1 && (
+      {foodDetails?.extraDrink?.length > 0 && (
         <ExtraDrinkSection
-          allDrinks={foodDetails.drink.data}
+          allDrinks={foodDetails.extraDrink}
           loading={loading}
           error={error}
           onExtraDrinkPriceChange={handleExtraDrinkPriceChange}
           onSelectedExtraDrinksChange={handleSelectedExtraDrinksChange}
-          onExtraDrinkSelected={handleDrinkSelected}
+          onExtraDrinkSelected={handleExtraDrinkSelected}
         />
       )}
 

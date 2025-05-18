@@ -1,275 +1,338 @@
-import { useState } from "react";
-import { IoEye, IoEyeOff } from "react-icons/io5";
+import { useState, useEffect, useRef } from "react";
+import { BsApple } from "react-icons/bs";
+import USA from "../assets/images/usa.png";
+import OtpInput from "react-otp-input";
+import { CgSpinner } from "react-icons/cg";
+import Logo from "../assets/images/Web Logo.png";
+import { useLocation, useNavigate } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
+import {
+  signInWithPhoneNumber,
+  RecaptchaVerifier,
+  signInWithPopup,
+} from "firebase/auth";
 import Swal from "sweetalert2";
+import { GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../firebase/firebase.config";
 import { API } from "../api/api";
+const provider = new GoogleAuthProvider();
 
 const SignInSignOutModal = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState("login");
-  const [signUpLoading, setSignUpLoading] = useState(false);
-  const [loginLoading, setLoginLoading] = useState(false);
-  const [loading, setLoading] = useState();
+  const [showOtpSection, setShowOtpSection] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [confirmationResult, setConfirmationResult] = useState(null);
+  const [recaptchaReady, setRecaptchaReady] = useState(false);
+  const recaptchaVerifierRef = useRef(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dialogRef = useRef(null); // Step 1: Create ref
 
-  const handleSignUp = async (e) => {
+  const from = location.state?.from?.pathname || "/";
+
+  useEffect(() => {
+    let mounted = true;
+
+    const initializeRecaptcha = async () => {
+      try {
+        if (recaptchaVerifierRef.current) {
+          recaptchaVerifierRef.current.destroy(); // Fixed
+        }
+
+        recaptchaVerifierRef.current = new RecaptchaVerifier(
+          "recaptcha-container",
+          {
+            size: "invisible",
+            callback: () => {
+              if (mounted) setRecaptchaReady(true);
+            },
+            "expired-callback": () => {
+              if (mounted) setRecaptchaReady(false);
+              initializeRecaptcha(); // Re-initialize
+            },
+          },
+          auth
+        );
+
+        await recaptchaVerifierRef.current.render();
+
+        // Ensure it fully loads before enabling button
+        setTimeout(() => {
+          if (mounted) setRecaptchaReady(true);
+        }, 300);
+      } catch (error) {
+        console.error("Recaptcha initialization error:", error);
+        if (mounted) setRecaptchaReady(false);
+      }
+    };
+
+    initializeRecaptcha();
+
+    return () => {
+      mounted = false;
+      if (recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current.destroy();
+      }
+    };
+  }, []);
+
+  const handleSendOtp = async (e) => {
     e.preventDefault();
-    setSignUpLoading(true);
-    const form = new FormData(e.currentTarget);
-    const first_name = form.get("first_name");
-    const last_name = form.get("last_name");
-    const phone = form.get("phone");
-    const email = form.get("email");
-    const password = form.get("password");
-    const confirmPassword = form.get("confirm_password");
+
+    if (!recaptchaReady || !recaptchaVerifierRef.current) {
+      alert(
+        "Security verification is still initializing. Please try again shortly."
+      );
+      return;
+    }
+
     try {
-      const response = await API.post("/user/signup", {
-        first_name,
-        last_name,
-        phone,
-        email,
-        password,
-        confirmPassword,
-      });
-      localStorage.setItem("token", response.data.token);
-      setSignUpLoading(false);
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Sign Up Successful!",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-      window.location.reload();
+      setLoading(true);
+      const confirmation = await signInWithPhoneNumber(
+        auth,
+        `+1${phoneNumber}`,
+        recaptchaVerifierRef.current
+      );
+      setConfirmationResult(confirmation);
+      setShowOtpSection(true);
     } catch (error) {
-      Swal.fire({
-        title: "Sign Up Failed",
-        text: "Please check your credentials.",
-        icon: "error",
-        confirmButtonText: "Try Again",
-      });
+      console.error("OTP send error:", error);
+      console.log(`Error: ${error.message}`);
     } finally {
-      setSignUpLoading(false);
+      setLoading(false);
     }
   };
-  const handleLogin = async (e) => {
+
+  const handleVerifyOtp = async (e) => {
     e.preventDefault();
-    setLoginLoading(true);
-    const form = new FormData(e.currentTarget);
-    const email = form.get("email");
-    const password = form.get("password");
+    if (!confirmationResult || otp.length !== 6) return;
 
+    setLoading(true);
     try {
-      const response = await API.post("/user/login", {
-        email,
-        password,
+      const result = await confirmationResult.confirm(otp);
+      console.log(result, "result");
+      const token = result.user.accessToken;
+      const first_name = "Guest";
+      const last_name = "User";
+      const response = await API.post("/user/firebase-login", {
+        first_name,
+        last_name,
+        token,
       });
-
-      // Store token in localStorage
-      localStorage.setItem("token", response.data.data.token);
+      console.log(response);
+      localStorage.setItem("token", response.data.token);
+      // Show success message and navigate home
       Swal.fire({
         title: "Login Successful!",
         text: "Welcome back!",
         icon: "success",
-        confirmButtonText: "OK",
-      });
-      window.location.reload();
+        showConfirmButton: false,
+        timer: 1500,
+      }).then(() => {
+        // modal close 
+        if (dialogRef.current) dialogRef.current.close(); // Step 3: Close modal
+      }); 
     } catch (error) {
-      Swal.fire({
-        title: "Login Failed",
-        text: "Please check your credentials.",
-        icon: "error",
-        confirmButtonText: "Try Again",
-      });
+      console.error("Error verifying OTP:", error);
     } finally {
       setLoading(false);
-      setLoginLoading(false);
     }
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log(result, "result");
+      const user = result.user;
+      const token = await user.getIdToken();
+      console.log(token, "token");
+      const displayName = user.displayName || "";
+      const [first_name, last_name] = displayName.split(" ");
+      const response = await API.post("/user/firebase-login", {
+        first_name,
+        last_name,
+        token,
+      });
+      console.log(response, "response");
+      localStorage.setItem("token", response.data.token);
+      Swal.fire({
+        title: "Login Successful!",
+        text: "Welcome back!",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1500,
+      }).then(() => {
+        if (dialogRef.current) dialogRef.current.close();
+        navigate(from, { replace: true });
+        // window.location.reload();
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div>
       <button
         className="w-full p-2 font-TitleFont px-6 rounded bg-ButtonColor lg:ml-0 hover:bg-ButtonHover text-white shadow-lg transition-transform transform hover:scale-105"
-        onClick={() => document.getElementById("my_modal_5").showModal()}
+        onClick={() => document.getElementById("login-modal").showModal()}
       >
         Please Login or Sign Up
       </button>
-
-      <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
-        <div className="modal-box bg-white !rounded p-8 shadow-xl relative">
-          <button
-            onClick={() => document.getElementById("my_modal_5").close()}
-            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-gray-600 hover:text-red-500"
-          >
-            ✕
-          </button>
-
-          <div className=" top-0 flex justify-center mb-6 space-x-6">
-            <button
-              onClick={() => setActiveTab("login")}
-              className={`tab pb-2 ${
-                activeTab === "login"
-                  ? "text-blue-600 border-b-2 border-blue-600 font-semibold"
-                  : "text-gray-500"
-              }`}
-            >
-              Login
+      <dialog id="login-modal" className="modal" ref={dialogRef}> {/* Step 2: Attach ref */}
+        <div className="modal-box rounded">
+          <form method="dialog">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
             </button>
-            <button
-              onClick={() => setActiveTab("signup")}
-              className={`tab pb-2 ${
-                activeTab === "signup"
-                  ? "text-blue-600 border-b-2 border-blue-600 font-semibold"
-                  : "text-gray-500"
-              }`}
-            >
-              Sign Up
-            </button>
+          </form>
+          <div className="container mx-auto">
+            <div className="flex flex-wrap">
+              <div className="w-full">
+                <div className="relative mx-auto max-w-[470px] overflow-hidden  px-10 py-3 text-center sm:px-12 md:px-[10px]">
+                  <div className="text-center md:mb">
+                    <a className="mx-auto inline-block max-w-[200px]">
+                      <img src={Logo} alt="logo" />
+                    </a>
+                  </div>
+
+                  {/* reCAPTCHA container - invisible */}
+                  <div id="recaptcha-container"></div>
+
+                  {!showOtpSection ? (
+                    <form onSubmit={handleSendOtp}>
+                      <div className="mb-5 relative">
+                        <label className="text-sm font-medium text-gray-700 block mb-2">
+                          Phone Number
+                        </label>
+                        <div className="flex items-center border border-gray-300 rounded py-1 overflow-hidden bg-white">
+                          <div className="flex items-center px-3 bg-gray-100 border-r border-gray-300">
+                            <img src={USA} alt="USA" className="w-6 h-4 mr-2" />
+                            <span className="text-sm text-gray-700">+1</span>
+                          </div>
+                          <input
+                            type="tel"
+                            placeholder="1234567890"
+                            required
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            className="w-full px-3 py-2 !text-gray-900 focus:outline-none focus:ring-0 placeholder-gray-400 rounded"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="my-3">
+                        {!recaptchaReady && (
+                          <div className="text-sm text-yellow-600 mb-4">
+                            Initializing security verification...
+                          </div>
+                        )}
+
+                        <button
+                          type="submit"
+                          className={`w-full cursor-pointer font-TitleFont text-lg rounded px-5 py-3 font-medium transition ${
+                            recaptchaReady
+                              ? "bg-ButtonColor text-white hover:bg-opacity-90"
+                              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          }`}
+                          disabled={!recaptchaReady || loading}
+                        >
+                          {loading ? (
+                            <CgSpinner className="animate-spin mx-auto text-xl" />
+                          ) : (
+                            "Send OTP"
+                          )}
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <form
+                      onSubmit={handleVerifyOtp}
+                      className="bg-white space-y-6"
+                    >
+                      <div className="relative">
+                        <label className="block text-base text-gray-800 text-start mb-2">
+                          Please Check Your Phone for OTP
+                        </label>
+                        <div className="flex justify-center gap-2 font-TitleFont">
+                          <OtpInput
+                            value={otp}
+                            onChange={setOtp}
+                            numInputs={6}
+                            isInputNum={true}
+                            renderSeparator={
+                              <span style={{ width: "20px" }}></span>
+                            }
+                            shouldAutoFocus={true}
+                            inputStyle={{
+                              border: "1px solid transparent",
+                              borderRadius: "3px",
+                              width: "41px",
+                              height: "40px",
+                              backgroundColor: "#d1d5db",
+                              fontSize: "20px",
+                              color: "#000",
+                              fontWeight: "400",
+                              caretColor: "blue",
+                            }}
+                            focusStyle={{
+                              border: "none",
+                              outline: "none",
+                            }}
+                            renderInput={(props) => (
+                              <input
+                                {...props}
+                                className="w-12 h-12 md:w-14 md:h-14 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-center text-lg md:text-xl text-gray-800 transition duration-150"
+                              />
+                            )}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <button
+                          type="submit"
+                          className="btn bg-ButtonColor hover:bg-ButtonHover w-full text-white font-TitleFont font-normal text-lg rounded md:text-lg flex items-center justify-center gap-2"
+                          disabled={loading}
+                        >
+                          {loading && (
+                            <CgSpinner className="animate-spin text-xl" />
+                          )}
+                          <span>Verify OTP</span>
+                        </button>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowOtpSection(false);
+                          setOtp("");
+                        }}
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        Change Phone Number
+                      </button>
+                    </form>
+                  )}
+
+                  <ul className="grid font-TitleFont !text-2xl">
+                    <button
+                      onClick={handleGoogleLogin}
+                      className="btn my-3 rounded bg-gray-200 font-normal text-lg text-black border-[#e5e5e5]"
+                    >
+                      <FcGoogle />
+                      Login with Google
+                    </button>
+                    <button className="btn bg-black hover:bg-gray-950 rounded font-normal text-lg text-white border-black">
+                      <BsApple className="text-xl" />
+                      Login with Apple
+                    </button>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
-
-          {activeTab === "login" ? (
-            <form className="space-y-5" onSubmit={handleLogin}>
-              <div>
-                <label className="block text-md font-TitleFont text-black">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter Your Email..."
-                  required
-                  className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-              <div className="relative">
-                <label className="block text-md font-TitleFont text-black">
-                  Password
-                </label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  placeholder="Enter Your Password..."
-                  name="password"
-                  className="input-field w-full mt-1 p-2 border placeholder:text-sm rounded bg-gray-100 focus:ring-2 focus:ring-blue-400"
-                />
-                <span
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3  mt-[27px] transform -translate-y-1/2 text-gray-500 cursor-pointer"
-                >
-                  {showPassword ? <IoEyeOff /> : <IoEye />}
-                </span>
-              </div>
-              <div className="modal-action">
-                <input
-                  type="submit"
-                  value="Sign In"
-                  htmlFor="my_modal_5"
-                  disabled={loginLoading}
-                  className={`w-full cursor-pointer font-TitleFont rounded-md bg-ButtonColor hover:bg-ButtonHover px-5 py-2 text-xl text-white transition hover:bg-opacity-90 ${
-                    loginLoading ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                />
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={handleSignUp} className="space-y-5">
-              <div className="grid lg:flex gap-1 justify-between">
-                <div>
-                  <label className="block text-md font-TitleFont text-black">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    name="first_name"
-                    placeholder="Enter First Name..."
-                    required
-                    className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-md  font-TitleFont text-black">
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    name="last_name"
-                    placeholder="Enter Last Name..."
-                    required
-                    className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-md font-TitleFont text-black">
-                  Phone Number
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter Your Phone..."
-                  name="phone"
-                  required
-                  className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-              <div>
-                <label className="block text-md font-TitleFont text-black">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter Your Email...."
-                  required
-                  className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
-                />
-              </div>
-              <div className="relative">
-                <label className="block text-md font-TitleFont text-black">
-                  Password
-                </label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  placeholder="Enter Password..."
-                  name="password"
-                  className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
-                />
-                <span
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 mt-[24px] transform -translate-y-1/2 text-gray-500 cursor-pointer"
-                >
-                  {showPassword ? <IoEyeOff /> : <IoEye />}
-                </span>
-              </div>
-              <div className="relative">
-                <label className="block text-md font-TitleFont text-black">
-                  Confirm Password
-                </label>
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  required
-                  placeholder="Retype Password..."
-                  name="confirm_password"
-                  className="input-field w-full mt-1 p-2 border rounded placeholder:text-sm bg-gray-100 focus:ring-2 focus:ring-blue-400"
-                />
-                <span
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 mt-[24px] transform -translate-y-1/2 text-gray-500 cursor-pointer"
-                >
-                  {showConfirmPassword ? <IoEyeOff /> : <IoEye />}
-                </span>
-              </div>
-              <button
-                type="submit"
-                disabled={signUpLoading}
-                className={`w-full cursor-pointer rounded-md bg-ButtonColor hover:bg-ButtonHover px-5 py-3 text-base font-medium text-white transition hover:bg-opacity-90 ${
-                  signUpLoading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                SIGN UP
-              </button>
-            </form>
-          )}
         </div>
       </dialog>
     </div>

@@ -3,35 +3,36 @@ import { BiSolidError } from "react-icons/bi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useCategory, useCategoryWithFood } from "../../api/api";
-import LocationModal from "../../components/LocationModal";
 import "react-multi-carousel/lib/styles.css";
-import FoodMenuAbout from "./FoodMenuAbout";
 import { Helmet } from "react-helmet-async";
 import LoadingComponent from "../../components/LoadingComponent";
+import FoodMenuAbout from "./FoodMenuAbout";
+import LocationModal from "../../components/LocationModal";
 
-const FoodMenu = () => {
-  // Set first category as default active tab
+const FoodMenuTest = () => {
   const { category } = useCategory();
   const categoryId = category?.[0]?.id || 0;
   const [isActive, setIsActive] = useState(categoryId);
-
   const sectionsRef = useRef({});
   const tabRefs = useRef({});
+  const tabsContainerRef = useRef(null);
   const { allwithfood, isLoading } = useCategoryWithFood();
-  const [selectedItem, setSelectedItem] = useState(null);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [foodId, setFoodId] = useState(0);
   const navigate = useNavigate();
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const handleSelectItem = (item) => {
+    setSelectedItem(item);
+    document.getElementById("select_cal").showModal();
+  };
 
   const handleScrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
+    if (!section) return;
 
-    if (!section) {
-      console.warn(`Section with ID '${sectionId}' not found.`);
-      return;
-    }
-    const header = document.querySelector(".sticky-header"); // Give your header a class
-    const offset = header ? header.offsetHeight + 40 : 80; // fallback offset
+    const header = document.querySelector(".sticky-header");
+    const offset = header ? header.offsetHeight + 40 : 80;
 
     const sectionTop =
       section.getBoundingClientRect().top + window.pageYOffset - offset;
@@ -44,6 +45,28 @@ const FoodMenu = () => {
     setIsActive(sectionId);
   };
 
+  // Center the active tab in the tab bar
+  const centerActiveTab = (activeTabId) => {
+    if (!tabsContainerRef.current) return;
+
+    const activeTab = tabRefs.current[activeTabId];
+    if (!activeTab) return;
+
+    const container = tabsContainerRef.current;
+    const containerWidth = container.offsetWidth;
+    const containerScrollLeft = container.scrollLeft;
+    const tabOffsetLeft = activeTab.offsetLeft;
+    const tabWidth = activeTab.offsetWidth;
+
+    // Calculate the position to scroll to
+    const scrollTo = tabOffsetLeft - containerWidth / 2 + tabWidth / 2;
+
+    container.scrollTo({
+      left: scrollTo,
+      behavior: "smooth",
+    });
+  };
+
   useEffect(() => {
     if (!category.length) return;
 
@@ -51,17 +74,19 @@ const FoodMenu = () => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setIsActive(entry.target.id);
+            const sectionId = entry.target.id;
+            setIsActive(sectionId);
+            centerActiveTab(sectionId);
           }
         });
       },
       {
         root: null,
-        rootMargin: "0px",
+        rootMargin: "-50% 0px -50% 0px", // Adjust this to change when the tab becomes active
+        threshold: 0,
       }
     );
 
-    // Observe all sections
     Object.values(sectionsRef.current).forEach((section) => {
       if (section) observer.observe(section);
     });
@@ -71,47 +96,16 @@ const FoodMenu = () => {
         if (section) observer.unobserve(section);
       });
     };
-  }, [allwithfood, category]); // Re-run when data changes
-
-  // useEffect(() => {
-  //   const activeTabEl = tabRefs.current[isActive];
-  //   if (activeTabEl && typeof activeTabEl.scrollIntoView === "function") {
-  //     activeTabEl.scrollIntoView({
-  //       behavior: "smooth",
-  //       inline: "center",
-  //       block: "nearest",
-  //     });
-  //   }
-  // }, [isActive]);
+  }, [allwithfood, category]);
 
   useEffect(() => {
-    const activeTabEl = tabRefs.current[isActive];
-    if (activeTabEl && typeof activeTabEl.scrollIntoView === "function") {
-      const isMobile = window.innerWidth <= 768;
-      if (isMobile) {
-        const header = document.querySelector(".sticky-header");
-        const offset = header ? header.offsetHeight + 40 : 80; // fallback offset
-        const sectionTop =
-          activeTabEl.getBoundingClientRect().top + window.pageYOffset - offset;
-        window.scrollTo({
-          top: sectionTop,
-          behavior: "smooth",
-        });
-      }
-
-      activeTabEl.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest",
-      });
+    // Center the initial active tab on load
+    if (isActive) {
+      setTimeout(() => {
+        centerActiveTab(isActive);
+      }, 300);
     }
   }, [isActive]);
-
-  // Rest of your existing functions remain the same...
-  const handleSelectItem = (item) => {
-    setSelectedItem(item);
-    document.getElementById("select_cal").showModal();
-  };
 
   const handleLinkClick = (value) => {
     const savedAddress = localStorage.getItem("orderStatus");
@@ -124,48 +118,55 @@ const FoodMenu = () => {
   };
 
   const location = useLocation();
+  // console.log(location.hash); #BURGER
 
-useEffect(() => {
-  const hash = location.hash;
-  if (hash) {
-    const id = hash.replace("#", "");
-    setTimeout(() => {
-      handleScrollToSection(id);
-    }, 500);
-  }
-}, [location, allwithfood]);
+  useEffect(() => {
+    const target = location.hash;
+    if (target && allwithfood.length > 0) {
+      const id = target.replace("#", "");
+      setTimeout(() => {
+        handleScrollToSection(id);
+      }, 300);
+    }
+  }, [location.hash, allwithfood]);
 
   return (
-    <div className="">
+    <div>
       <Helmet>
         <title>Menu | Wingsblast</title>
       </Helmet>
-      {/* Menu Section */}
+
       <h1 className="text-3xl font-TitleFont ml-[10px] lg:ml-[140px] py-4">
         MENU
       </h1>
-      {/* tab menu section - updated with better active state */}
+
       <div
+        ref={tabsContainerRef}
         role="tablist"
-        className="tabs w-full lg:w-10/12 mx-auto overflow-x-scroll scrollbar-hide border-b-2 sticky bg-white shadow-2xl"
+        className="tabs w-full lg:w-10/12 mx-auto overflow-x-auto scrollbar-hide border-b-2 sticky-header bg-white shadow-2xl"
       >
-        {category.map((catgr) => (
-          <a
-            key={catgr.id}
-            ref={(el) => (tabRefs.current[catgr.id] = el)}
-            data-id={catgr.id}
-            role="tab"
-            className={`tab whitespace-nowrap text-xl font-TitleFont px-4 transition-all duration-300 ease-in-out
-           ${isActive == catgr.id ? "text-green-600" : "text-black"}
-         `}
-            onClick={() => handleScrollToSection(catgr.id)}
-          >
-            {catgr.category_name.toUpperCase()}
-          </a>
-        ))}
+        <div className="flex">
+          {category.map((catgr) => (
+            <a
+              key={catgr.id}
+              ref={(el) => (tabRefs.current[catgr.id] = el)}
+              role="tab"
+              className={`tab whitespace-nowrap text-xl font-TitleFont px-4 transition-all duration-300 ease-in-out flex-shrink-0
+                ${
+                  isActive == catgr.id
+                    ? "text-green-600 border-b-2 border-green-600"
+                    : "text-black"
+                }
+              `}
+              onClick={() => handleScrollToSection(catgr.id)}
+            >
+              {catgr.category_name.toUpperCase()}
+            </a>
+          ))}
+        </div>
       </div>
 
-      {/* Rest of your existing JSX remains the same... */}
+      {/* Rest of your component remains the same */}
       {allwithfood.length === 0 && !isLoading ? (
         <div className="flex items-center justify-center h-screen">
           <h1 className="text-2xl font-semibold text-gray-500">
@@ -181,15 +182,18 @@ useEffect(() => {
           <section
             key={foodMenu.id}
             id={foodMenu.id}
-            ref={(el) => (sectionsRef.current[foodMenu.category_name.toUpperCase()] = el)}
+            ref={(el) => (sectionsRef.current[foodMenu.id] = el)}
           >
-            <div id={foodMenu.category_name} className="container px-3 lg:px-5 py-2 w-full lg:w-10/12 mx-auto">
+            <div
+              id={foodMenu.category_name}
+              className="container px-3 lg:px-5 py-7 w-full lg:w-10/12 mx-auto"
+            >
               <h1 className="text-3xl lg:text-4xl font-TitleFont mb-5 text-black">
                 {foodMenu.food_menus.length > 0 &&
                   foodMenu.category_name.toUpperCase()}
               </h1>
-              <div id={foodMenu.category_name}></div>
-              <div id={foodMenu.category_name} className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+
+              <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {foodMenu.food_menus.map((food) => (
                   <div
                     key={food.id}
@@ -237,9 +241,8 @@ useEffect(() => {
           </section>
         ))
       )}
-
       <FoodMenuAbout />
-
+       {/* product id modal */}
       <dialog id="select_cal" className="modal">
         <div className="modal-box !p-5 max-w-[350px] !rounded">
           <form method="dialog">
@@ -248,7 +251,7 @@ useEffect(() => {
             </button>
           </form>
           <h3 className="text-3xl font-TitleFont text-black">
-            CHO0SE AN OPTION
+            CHOOSE AN OPTION
           </h3>
           {!isLoading && selectedItem && (
             <div>
@@ -267,7 +270,7 @@ useEffect(() => {
                       <h3 className="font-TitleFont text-lg text-black">
                         {food.food_menu_name.toUpperCase()}
                       </h3>
-                      <span className="flex items-center text-lg font-TitleFont text-black ">
+                      <span className="flex items-center text-lg font-TitleFont text-black">
                         $ {food.price} <MdOutlineKeyboardArrowRight />
                       </span>
                     </div>
@@ -281,7 +284,6 @@ useEffect(() => {
           )}
         </div>
       </dialog>
-
       <LocationModal
         isOpen={isLocationModalOpen}
         onClose={() => setIsLocationModalOpen(false)}
@@ -291,4 +293,4 @@ useEffect(() => {
   );
 };
 
-export default FoodMenu;
+export default FoodMenuTest;

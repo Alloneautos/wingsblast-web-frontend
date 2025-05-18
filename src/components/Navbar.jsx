@@ -20,7 +20,6 @@ import { VscChromeClose } from "react-icons/vsc";
 import Logo from "../assets/images/website Logo.png";
 import LocationModal from "./LocationModal";
 import Notification from "./Notification";
-// import SideDrawer from "./SideDrawer";
 import { BiSearch } from "react-icons/bi";
 
 function Navbar() {
@@ -66,7 +65,6 @@ function Navbar() {
         {/* Left side: Logo */}
         <div className="flex justify-between items-center space-x-4">
           {/* Mobile Menu Button */}
-          {/* <SideDrawer /> */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden text-black text-3xl focus:outline-none"

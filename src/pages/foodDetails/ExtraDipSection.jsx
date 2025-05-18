@@ -89,7 +89,7 @@ const ExtraDipSection = ({
   return (
     <div className="w-full lg:w-10/12 mx-auto my-1 p-2 bg-white">
       <Disclosure>
-        {({open}) => (
+        {({ open }) => (
           <>
             <Disclosure.Button className="grid md:flex lg:flex justify-between items-center w-full rounded-lg bg-blue-50 px-6 py-3 text-left text-sm font-medium text-black hover:bg-blue-100 focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition ease-in-out duration-300">
               <div>
@@ -121,6 +121,24 @@ const ExtraDipSection = ({
             {loading && <p className="text-gray-500 mt-4">Loading Dips...</p>}
             <Disclosure.Panel className="px-4 pt-6 pb-4 text-sm text-gray-700">
               <div className="flavor-selection grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                <div className="w-full">
+                  <label className="block border border-gray-300 px-4 py-[33px] mt-2 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <RxCross2 className="text-4xl text-red-600" />
+                        <h1 className="text-2xl font-TitleFont text-black">
+                          NO DIP
+                        </h1>
+                      </div>
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-primary rounded"
+                        checked={selectedDips.length === 0}
+                        onChange={() => setSelectedDips([])}
+                      />
+                    </div>
+                  </label>
+                </div>
                 {!loading &&
                   allDips.map((category, index) => (
                     <div key={index} className="w-full">
@@ -194,22 +212,6 @@ const ExtraDipSection = ({
                       </label>
                     </div>
                   ))}
-                <div className="w-full">
-                  <label className="block border border-gray-300 px-4 py-[33px] mt-2 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <RxCross2 className="text-4xl text-red-600" />
-                        <h1 className="text-2xl font-TitleFont text-black">NO DIP</h1>
-                      </div>
-                      <input
-                        type="checkbox"
-                        className="checkbox checkbox-primary rounded"
-                        checked={selectedDips.length === 0}
-                        onChange={() => setSelectedDips([])}
-                      />
-                    </div>
-                  </label>
-                </div>
               </div>
             </Disclosure.Panel>
           </>

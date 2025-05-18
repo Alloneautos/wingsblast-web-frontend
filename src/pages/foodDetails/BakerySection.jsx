@@ -117,7 +117,8 @@ const BakerySection = ({
                   CHOOSE REGULAR BAKERY
                 </span>
                 <span>
-                  {myBakery.is_required === 1 && selectedBakeries.length === 0 ? (
+                  {myBakery.is_required === 1 &&
+                  selectedBakeries.length === 0 ? (
                     <span className="text-red-700">
                       <span className="text-sm font-semibold">Required</span>
                     </span>
@@ -130,12 +131,12 @@ const BakerySection = ({
                   )}
                 </span>
               </div>
-                <h2 className="font-semibold mt-2 text-xs text-gray-900">
-                  <span>Up To Select: </span>
-                  <span className="text-black">
-                    {selectedBakeries.length} selected
-                  </span>
-                </h2>
+              <h2 className="font-semibold mt-2 text-xs text-gray-900">
+                <span>Up To Select: </span>
+                <span className="text-black">
+                  {selectedBakeries.length} selected
+                </span>
+              </h2>
             </Disclosure.Button>
             {error && (
               <p className="text-red-500 mt-4">
@@ -145,6 +146,27 @@ const BakerySection = ({
             {loading && <LoadingComponent />}
             <Disclosure.Panel className="px-4 pt-6 pb-4 text-sm text-gray-700">
               <div className="flavor-selection grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                <div className="w-full">
+                  <label className="block border border-gray-300 px-4 py-[30px] mt-2 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <RxCross2 className="text-4xl text-red-600" />
+                        <h1 className="text-2xl font-TitleFont text-black">
+                          No Bakery
+                        </h1>
+                      </div>
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-primary rounded"
+                        checked={selectedBakeries.length === 0}
+                        onChange={() => {
+                          setSelectedBakeries([]);
+                          setBakeryQuantities({});
+                        }}
+                      />
+                    </div>
+                  </label>
+                </div>
                 {!loading &&
                   bakery.map((category, index) => (
                     <div key={index} className="w-full">
@@ -213,25 +235,6 @@ const BakerySection = ({
                       </label>
                     </div>
                   ))}
-                <div className="w-full">
-                  <label className="block border border-gray-300 px-4 py-[30px] mt-2 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <RxCross2 className="text-4xl text-red-600" />
-                        <h1 className="text-2xl font-TitleFont text-black">No Bakery</h1>
-                      </div>
-                      <input
-                        type="checkbox"
-                        className="checkbox checkbox-primary rounded"
-                        checked={selectedBakeries.length === 0}
-                        onChange={() => {
-                          setSelectedBakeries([]);
-                          setBakeryQuantities({});
-                        }}
-                      />
-                    </div>
-                  </label>
-                </div>
               </div>
             </Disclosure.Panel>
           </>

@@ -151,7 +151,7 @@ const NewFoodAddCard = () => {
                         </span>
                       </div>
                       <div className="p-2 space-y-1">
-                        <h2 className="text-gray-900 text-xl h-[33px] font-TitleFont leading-tight line-clamp-2">
+                        <h2 className="text-gray-900 text-xl h-[28px] font-TitleFont leading-tight line-clamp-2">
                           {foodMenu.name}
                         </h2>
                         <p className="text-black text-xs line-clamp-2 h-[48px]">

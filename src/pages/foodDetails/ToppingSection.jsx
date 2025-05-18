@@ -19,7 +19,7 @@ const ToppingSection = ({
       type: "Topping",
       id: topping.id,
       is_paid_type: 1,
-      quantity : 1
+      quantity: 1,
     }));
   }, [selectedToppings]);
 
@@ -76,6 +76,28 @@ const ToppingSection = ({
             {loading && <LoadingComponent />}
             <Disclosure.Panel className="px-4 pt-6 pb-4 text-sm text-gray-700">
               <div className="flavor-selection grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                <div className="w-full">
+                  <label className="block border border-gray-300 px-4 py-[30px] mt-2 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <RxCross2 className="text-4xl text-red-600" />
+                        <h1 className="text-2xl font-TitleFont text-black">
+                          No Topping
+                        </h1>
+                      </div>
+                      <input
+                        type="checkbox"
+                        name="noTopping"
+                        className="checkbox checkbox-success rounded text-white bg-white"
+                        checked={selectedToppings.length === 0}
+                        onChange={() => {
+                          setSelectedToppings([]);
+                          onToppingsChange([]); // Clear all selections
+                        }}
+                      />
+                    </div>
+                  </label>
+                </div>
                 {!loading &&
                   toppings.map((category, index) => (
                     <div key={index} className="w-full">
@@ -105,7 +127,7 @@ const ToppingSection = ({
                           <input
                             type="checkbox"
                             name="topping"
-                            className="checkbox checkbox-primary"
+                            className="checkbox checkbox-success rounded !text-white !bg-white"
                             checked={selectedToppings.includes(category)}
                             onChange={() => handleSelectTopping(category)}
                           />
@@ -113,26 +135,6 @@ const ToppingSection = ({
                       </label>
                     </div>
                   ))}
-                <div className="w-full">
-                  <label className="block border border-gray-300 px-4 py-[30px] mt-2 rounded-lg shadow-md hover:shadow-lg transition duration-300 cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <RxCross2 className="text-4xl text-red-600" />
-                        <h1 className="text-2xl font-TitleFont text-black">No Topping</h1>
-                      </div>
-                      <input
-                        type="checkbox"
-                        name="noTopping"
-                        className="checkbox checkbox-primary"
-                        checked={selectedToppings.length === 0}
-                        onChange={() => {
-                          setSelectedToppings([]);
-                          onToppingsChange([]); // Clear all selections
-                        }}
-                      />
-                    </div>
-                  </label>
-                </div>
               </div>
             </Disclosure.Panel>
           </>

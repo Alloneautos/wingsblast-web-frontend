@@ -1,18 +1,18 @@
-// Import the functions you need from the SDKs you need
+// firebase.js
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getAuth } from "firebase/auth";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAGkDOATueJpWqqlaIdDLlCH-VeWK3tVEQ",
-  authDomain: "wings-blast.firebaseapp.com",
-  projectId: "wings-blast",
-  storageBucket: "wings-blast.appspot.com",
-  messagingSenderId: "609170393614",
-  appId: "1:609170393614:web:8e093092bcd5cdde1f0a5f"
+  apiKey: "AIzaSyDxCKTVWFPGSpyevVxehJsjxMMQn39LvrY",
+  authDomain: "wings-blast-38456.firebaseapp.com",
+  projectId: "wings-blast-38456",
+  storageBucket: "wings-blast-38456.firebasestorage.app",
+  messagingSenderId: "13340238628",
+  appId: "1:13340238628:web:4805966ce63c71fa88c9b1",
+  measurementId: "G-JYQLVDF66Q"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export default app;
+const auth = getAuth(app);
+
+export { auth };
