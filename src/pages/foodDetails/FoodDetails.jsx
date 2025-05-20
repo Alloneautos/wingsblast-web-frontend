@@ -20,6 +20,7 @@ import ExtraSideSection from "./ExtraSideSection";
 import { Helmet } from "react-helmet-async";
 import { FiMinus, FiPlus } from "react-icons/fi";
 import SauceSection from "./SauceSection";
+import GetOneBuy from "../../assets/images/getonefree.png";
 import FishSection from "./FishSection";
 import {
   API,
@@ -280,6 +281,7 @@ const FoodDetails = () => {
   const fishRef = useRef(null);
   const bakeryRef = useRef(null);
   const ricePlatterRef = useRef(null);
+  // all components
   const components = [
     {
       component:
@@ -443,7 +445,7 @@ const FoodDetails = () => {
             />
           </div>
         ) : null,
-      sn_number: foodDetails?.sauce?.sn_number,
+      sn_number: foodDetails?.fish_choice?.sn_number,
       ref: fishRef,
       key: "fish",
     },
@@ -738,11 +740,20 @@ const FoodDetails = () => {
       <Helmet>
         <title>{`${foodDetails?.name || "Loading"} | Wingsblast`}</title>
       </Helmet>
-      <div className="flex flex-col w-full lg:w-10/12 mx-auto my-7">
+      <div className="flex flex-col w-full lg:w-10/12 mx-auto my-7 p-2">
         <div className="container mx-auto px-6 py-1 bg-white -mt-[15px] lg:mt-6">
           <div className="flex flex-col md:flex-row lg:flex-row items-center lg:gap-2">
             <div className="w-full lg:w-1/2 flex justify-center items-center">
-              <div className="bg-white rounded-lg">
+              <div className="bg-white rounded-lg relative">
+                {/* Buy one get one free image  */}
+                {foodDetails?.buy_one_get_one_food?.food_menu_id > 0 && (
+                  <img
+                    src={GetOneBuy}
+                    alt=""
+                    className="absolute -bottom-0 lg:-bottom-[60px] -left-[50px] lg:-left-[100px] w-[170px] lg:w-[240px] h-[230px] lg:h-[320px] z-30"
+                  />
+                )}
+                {/* product image */}
                 <img
                   src={foodDetails?.image}
                   alt={foodDetails.name}
@@ -750,14 +761,10 @@ const FoodDetails = () => {
                 />
               </div>
             </div>
-
+            {/* Product onther info  */}
             <div className="w-auto py-1 px-5 ">
               <h1 className="font-TitleFont text-4xl md:text-4xl lg:text-5xl font-s mb-2 text-black">
                 {foodDetails.name}{" "}
-                <span className="font-sans text-3xl">
-                  {foodDetails?.buy_one_get_one_food?.food_menu_id > 0 &&
-                    "(Buy One Get One Free)"}
-                </span>
               </h1>
               {foodDetails.is_discount_amount === 1 ? (
                 <p className="text-black text-4xl font-TitleFont">
@@ -795,7 +802,7 @@ const FoodDetails = () => {
                   </span>
                 </span>
               )}
-
+                {/* product description */}
               <p className="text-black w-[80%] mb-0.5 font-paragraphFont leading-relaxed text-sm md:text-base lg:text-base">
                 {foodDetails.description}
               </p>
@@ -839,14 +846,14 @@ const FoodDetails = () => {
         </div>
       </div>
 
+      {/* Upgrate Food component section */}
       {foodDetails?.upgrade_food_details?.length > 0 && (
         <ExtraCombo extraPackege={foodDetails.upgrade_food_details} />
       )}
-
+      {/* All Components section */}
       {sortedComponents.map((item, index) => (
         <div key={index}>{item.component}</div>
       ))}
-
       {/* // Extra Combo dip Section */}
       {foodDetails?.extraDips?.length > 0 && (
         <ExtraDipSection
@@ -878,16 +885,16 @@ const FoodDetails = () => {
           onExtraDrinkSelected={handleExtraDrinkSelected}
         />
       )}
-
+      {/* Other food section */}
       <AddMoreFood categoryID={foodDetails.category_id} />
 
-      {/* scroll section */}
+      {/* scroll to Quentity and add to bag section */}
       <div
         className={`${
           isScrolled
             ? "fixed bottom-0 left-0 right-0 bg-white text-black z-50 transition-all duration-300 shadow-lg"
             : "relative"
-        } border-t border-gray-200 px-3 py-2 shadow-lg rounded-md flex gap-3 justify-center items-center`}
+        } border-t border-gray-200 px-3 py-2 shadow-lg flex gap-3 justify-center items-center`}
       >
         <div className="flex items-center border border-gray-300 rounded">
           <button

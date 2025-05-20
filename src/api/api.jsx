@@ -387,6 +387,7 @@ export const useGuestUser = () => {
 export const useUserProfile = () => {
   const getUser = async () => {
     const response = await API.get("/user/me");
+    console.log(response, "response");
     return response.data;
   };
 

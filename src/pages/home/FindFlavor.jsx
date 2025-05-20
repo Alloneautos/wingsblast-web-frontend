@@ -115,7 +115,7 @@ const FlavorSelector = () => {
               ))
             : filteredFlavors?.map((item, index) => (
                 <div className="px-2" key={index}>
-                  <div className="bg-[#CCCCCC] text-black py-6 px-2 rounded text-center shadow-lg">
+                  <div className="bg-[#CCCCCC] text-black py-2 px-2 rounded text-center shadow-lg">
                     {/* Image */}
                     <div className="w-20 h-20 inline-flex items-center justify-center border rounded-full mb-2 flex-shrink-0 mx-auto overflow-hidden">
                       <img

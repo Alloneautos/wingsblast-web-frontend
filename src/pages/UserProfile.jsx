@@ -186,9 +186,9 @@ const UserProfile = () => {
       </Helmet>
       <div className="bg-white shadow-lg rounded-xl w-full lg:w-8/12 overflow-hidden">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white p-8 flex flex-col items-center rounded-lg shadow-lg">
+        <div className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white p-8 flex flex-col items-center rounded-t-lg">
           {/* Profile Picture Container */}
-          <div className="relative w-32 h-32 mb-4">
+          <div className="relative w-40 h-40 mb-4">
             <img
               src={user?.profile_pic || Profile}
               alt="Profile"
@@ -209,10 +209,10 @@ const UserProfile = () => {
 
           {/* User Info */}
           <h1 className="text-2xl font-bold mt-4">{`${
-            user?.first_name || "John"
-          } ${user?.last_name || "Doe"}`}</h1>
+            user?.first_name || "No"
+          } ${user?.last_name || "Name"}`}</h1>
           <p className="text-sm text-blue-100">
-            {user?.email || "john.doe@example.com"}
+            {user?.email || ""}
           </p>
         </div>
 
@@ -339,7 +339,7 @@ const UserProfile = () => {
         <div className=" text-center md:text-end lg:text-end">
           <button
             onClick={() => handleAccountDelete(user.id)}
-            className="btn bg-ButtonColor hover:bg-ButtonHover text-white m-3"
+            className="btn font-normal text-xl bg-ButtonColor hover:bg-ButtonHover rounded font-TitleFont text-white m-3"
           >
             <RiDeleteBinLine /> ACCOUNT DELETE
           </button>

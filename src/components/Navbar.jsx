@@ -17,7 +17,7 @@ import { LuUserCog } from "react-icons/lu";
 import { CgLogOut } from "react-icons/cg";
 import { RiMenu2Fill } from "react-icons/ri";
 import { VscChromeClose } from "react-icons/vsc";
-import Logo from "../assets/images/website Logo.png";
+import Logo from "../assets/logobywingsblast.png";
 import LocationModal from "./LocationModal";
 import Notification from "./Notification";
 import { BiSearch } from "react-icons/bi";
@@ -75,7 +75,7 @@ function Navbar() {
             {/* Logo for mobile view */}
             <Link to="/">
               <img
-                className="w-[175px] lg:w-[175px] h-[50px] lg:h-[60px] ml-[50px] md:ml-0 lg:ml-0"
+                className="w-[175px] lg:w-[165px] h-[50px] lg:h-[60px] ml-[45px] md:ml-0 lg:ml-0"
                 src={Logo}
                 alt="WingsBlast Logo"
               />

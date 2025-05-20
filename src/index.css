@@ -96,7 +96,7 @@ body{
 @media (max-width: 768px) {
   .sticky-header {
     position: sticky;
-    top: 0;
+    top: 60px;
     z-index: 100;
     background: white;
     padding: 8px 0;

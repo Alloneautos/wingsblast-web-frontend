@@ -120,9 +120,9 @@ const FlavorSelection = ({ flavor: myFlavor, loading, sendFlavorData }) => {
   }, [wingsDistribution]);
 
   const categorizedFlavors = {
-    dry: flavor?.filter((item) => item.isDry),
     wet: flavor?.filter((item) => item.isWet),
     honey: flavor?.filter((item) => item.isHoney),
+    dry: flavor?.filter((item) => item.isDry),
   };
 
   if (loading) {

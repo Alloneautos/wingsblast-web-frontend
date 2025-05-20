@@ -31,13 +31,18 @@ const Signin = () => {
 
   const from = location.state?.from?.pathname || "/";
 
-  useEffect(() => {
+ useEffect(() => {
     let mounted = true;
 
     const initializeRecaptcha = async () => {
       try {
+        // Remove destroy() call, just clear the reference if needed
         if (recaptchaVerifierRef.current) {
-          recaptchaVerifierRef.current.destroy(); // Fixed
+          // If clear() exists, call it, otherwise just set to null
+          if (typeof recaptchaVerifierRef.current.clear === "function") {
+            recaptchaVerifierRef.current.clear();
+          }
+          recaptchaVerifierRef.current = null;
         }
 
         recaptchaVerifierRef.current = new RecaptchaVerifier(
@@ -71,9 +76,8 @@ const Signin = () => {
 
     return () => {
       mounted = false;
-      if (recaptchaVerifierRef.current) {
-        recaptchaVerifierRef.current.destroy();
-      }
+      // Remove destroy() call, just clear the reference
+      recaptchaVerifierRef.current = null;
     };
   }, []);
 
@@ -121,7 +125,7 @@ const Signin = () => {
         token,
       });
       console.log(response);
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", response.data.data.token);
       // Show success message and navigate home
       Swal.fire({
         title: "Login Successful!",
@@ -142,20 +146,23 @@ const Signin = () => {
 
   const handleGoogleLogin = async () => {
     try {
+      // get token in firebase 
       const result = await signInWithPopup(auth, provider);
       console.log(result, "result");
       const user = result.user;
       const token = await user.getIdToken();
       console.log(token, "token");
-      const displayName = user.displayName || "";
-      const [first_name, last_name] = displayName.split(" ");
+      const first_name = "Guest";
+      const last_name = "User";
       const response = await API.post("/user/firebase-login", {
         first_name,
         last_name,
         token,
       });
       console.log(response, "response");
-      localStorage.setItem("token", response.data.token);
+      // save token in localstorage
+      localStorage.setItem("token", response.data.data.token);
+      // show sweet2 alart 
       Swal.fire({
         title: "Login Successful!",
         text: "Welcome back!",
@@ -310,10 +317,10 @@ const Signin = () => {
                   <FcGoogle />
                   Login with Google
                 </button>
-                <button className="btn bg-black hover:bg-gray-950 rounded font-normal text-lg text-white border-black">
+                {/* <button className="btn bg-black hover:bg-gray-950 rounded font-normal text-lg text-white border-black">
                   <BsApple className="text-xl" />
                   Login with Apple
-                </button>
+                </button> */}
               </ul>
             </div>
           </div>

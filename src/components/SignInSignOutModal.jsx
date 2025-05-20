@@ -4,7 +4,6 @@ import USA from "../assets/images/usa.png";
 import OtpInput from "react-otp-input";
 import { CgSpinner } from "react-icons/cg";
 import Logo from "../assets/images/Web Logo.png";
-import { useLocation, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import {
   signInWithPhoneNumber,
@@ -17,7 +16,7 @@ import { auth } from "../firebase/firebase.config";
 import { API } from "../api/api";
 const provider = new GoogleAuthProvider();
 
-const SignInSignOutModal = () => {
+const SignInSignOutModal = ({ userRefetch }) => {
   const [showOtpSection, setShowOtpSection] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
@@ -25,19 +24,20 @@ const SignInSignOutModal = () => {
   const [confirmationResult, setConfirmationResult] = useState(null);
   const [recaptchaReady, setRecaptchaReady] = useState(false);
   const recaptchaVerifierRef = useRef(null);
-  const location = useLocation();
-  const navigate = useNavigate();
   const dialogRef = useRef(null); // Step 1: Create ref
-
-  const from = location.state?.from?.pathname || "/";
 
   useEffect(() => {
     let mounted = true;
 
     const initializeRecaptcha = async () => {
       try {
+        // Remove destroy() call, just clear the reference if needed
         if (recaptchaVerifierRef.current) {
-          recaptchaVerifierRef.current.destroy(); // Fixed
+          // If clear() exists, call it, otherwise just set to null
+          if (typeof recaptchaVerifierRef.current.clear === "function") {
+            recaptchaVerifierRef.current.clear();
+          }
+          recaptchaVerifierRef.current = null;
         }
 
         recaptchaVerifierRef.current = new RecaptchaVerifier(
@@ -71,9 +71,8 @@ const SignInSignOutModal = () => {
 
     return () => {
       mounted = false;
-      if (recaptchaVerifierRef.current) {
-        recaptchaVerifierRef.current.destroy();
-      }
+      // Remove destroy() call, just clear the reference
+      recaptchaVerifierRef.current = null;
     };
   }, []);
 
@@ -111,7 +110,6 @@ const SignInSignOutModal = () => {
     setLoading(true);
     try {
       const result = await confirmationResult.confirm(otp);
-      console.log(result, "result");
       const token = result.user.accessToken;
       const first_name = "Guest";
       const last_name = "User";
@@ -120,8 +118,8 @@ const SignInSignOutModal = () => {
         last_name,
         token,
       });
-      console.log(response);
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", response.data.data.token);
+      userRefetch();
       // Show success message and navigate home
       Swal.fire({
         title: "Login Successful!",
@@ -130,9 +128,9 @@ const SignInSignOutModal = () => {
         showConfirmButton: false,
         timer: 1500,
       }).then(() => {
-        // modal close 
+        // modal close
         if (dialogRef.current) dialogRef.current.close(); // Step 3: Close modal
-      }); 
+      });
     } catch (error) {
       console.error("Error verifying OTP:", error);
     } finally {
@@ -143,10 +141,8 @@ const SignInSignOutModal = () => {
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log(result, "result");
       const user = result.user;
       const token = await user.getIdToken();
-      console.log(token, "token");
       const displayName = user.displayName || "";
       const [first_name, last_name] = displayName.split(" ");
       const response = await API.post("/user/firebase-login", {
@@ -154,19 +150,18 @@ const SignInSignOutModal = () => {
         last_name,
         token,
       });
-      console.log(response, "response");
-      localStorage.setItem("token", response.data.token);
-      Swal.fire({
-        title: "Login Successful!",
-        text: "Welcome back!",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 1500,
-      }).then(() => {
-        if (dialogRef.current) dialogRef.current.close();
-        navigate(from, { replace: true });
-        // window.location.reload();
-      });
+      localStorage.setItem("token", response.data.data.token);
+      if (dialogRef.current) dialogRef.current.close();
+      userRefetch();
+      setTimeout(() => {
+        Swal.fire({
+          title: "Login Successful!",
+          text: "Welcome back!",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }, 300);
     } catch (error) {
       console.error(error);
     }
@@ -179,7 +174,9 @@ const SignInSignOutModal = () => {
       >
         Please Login or Sign Up
       </button>
-      <dialog id="login-modal" className="modal" ref={dialogRef}> {/* Step 2: Attach ref */}
+      <dialog id="login-modal" className="modal" ref={dialogRef}>
+        {" "}
+        {/* Step 2: Attach ref */}
         <div className="modal-box rounded">
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
@@ -324,10 +321,10 @@ const SignInSignOutModal = () => {
                       <FcGoogle />
                       Login with Google
                     </button>
-                    <button className="btn bg-black hover:bg-gray-950 rounded font-normal text-lg text-white border-black">
+                    {/* <button className="btn bg-black hover:bg-gray-950 rounded font-normal text-lg text-white border-black">
                       <BsApple className="text-xl" />
                       Login with Apple
-                    </button>
+                    </button> */}
                   </ul>
                 </div>
               </div>

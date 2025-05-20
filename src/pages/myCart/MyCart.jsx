@@ -30,7 +30,7 @@ const MyCart = () => {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [isASAP, setIsASAP] = useState(true);
   const { guestUser } = useGuestUser();
-  const { user } = useUserProfile();
+  const { user, refetch: userRefetch } = useUserProfile();
   const { mycard, isLoading, isError, refetch } = useMyCart(guestUser);
   const [quantities, setQuantities] = useState({});
   const [dates, setDates] = useState([]);
@@ -459,8 +459,6 @@ const MyCart = () => {
     };
   }, [openNotes]);
 
-  console.log(mycard)
-
   return (
     <section className="text-gray-600 body-font mx-auto">
       <Helmet>
@@ -820,13 +818,20 @@ const MyCart = () => {
               ))
             ) : (
               <div className="text-center mt-5">
-                <h2 className="font-semibold text-2xl">Your Cart is Empty</h2>
-                <p>Looks like you do not have any items in your order.</p>
-                <Link to="/foodmenu" className="w-full">
-                  <button className=" mx-auto btn bg-ButtonColor hover:bg-ButtonHover text-white block">
-                    Browse The Menu
-                  </button>
-                </Link>
+                <div className="max-w-md w-full bg-white p-6 text-center border-gray-300">
+                  <div className="text-5xl mb-4">🛒</div>
+                  <h2 className="text-xl font-TitleFont text-gray-800 mb-2">
+                    Your cart is empty
+                  </h2>
+                  <p className="text-gray-600">
+                    Looks like you do not have any items in your order.
+                  </p>
+                  <Link to="/foodmenu" className="w-full">
+                    <button className=" mx-auto btn rounded bg-ButtonColor hover:bg-ButtonHover text-white block font-TitleFont font-medium text-lg mt-2 lg:text-xl">
+                      Continue Shopping
+                    </button>
+                  </Link>
+                </div>
               </div>
             )}
             {isError && (
@@ -1083,7 +1088,7 @@ const MyCart = () => {
             // Sign In Sign Out Modal
             <div className="">
               <p className="pb-2">Please Login to Get Offer</p>
-              <SignInSignOutModal />
+              <SignInSignOutModal userRefetch={userRefetch} />
             </div>
           )}
 
@@ -1116,11 +1121,11 @@ const MyCart = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 w-full bg-white p-4 shadow-lg z-50 block md:hidden lg:hidden">
+      <div className="fixed bottom-0 left-0 w-full bg-white p-1.5 shadow-lg z-50 block md:hidden lg:hidden">
         <button
           onClick={handleToCheckout}
           disabled={!isASAP && (!selectedDate || !selectedTime)}
-          className={`w-full py-3 rounded-lg shadow-lg transition font-TitleFont text-2xl text-white ${
+          className={`w-full py-3 rounded shadow-lg transition font-TitleFont text-xl text-white ${
             !isASAP && (!selectedDate || !selectedTime)
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-ButtonColor hover:bg-ButtonHover"
