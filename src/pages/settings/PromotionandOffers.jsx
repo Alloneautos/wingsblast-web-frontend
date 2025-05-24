@@ -20,7 +20,7 @@ const PromotionandOffers = () => {
 
   return (
     <div className="bg-gray-100 w-full lg:w-10/12 mx-auto p-6">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+      <h1 className="text-4xl font-TitleFont text-center text-black mb-6">
         Promotions & Offers
       </h1>
       {promotions.map((promo, index) => (

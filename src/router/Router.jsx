@@ -6,11 +6,9 @@ import Flavors from "../pages/Flavors";
 import MyCart from "../pages/myCart/MyCart";
 import CheckOut from "../pages/checkOut/CheckOut";
 import UserProfile from "../pages/UserProfile";
-import MobileLogin from "../components/MobileLogin";
 import FoodDetailsError from "../pages/FoodDetailsError";
 import MyOrder from "../pages/MyOrder/MyOrder";
 import InvoiceOrder from "../pages/MyOrder/InvoiceOrder";
-import Text from "../Text";
 import EmailVerify from "../pages/ForgetPassword/EmailVerify";
 import EmailOTP from "../pages/ForgetPassword/EmailOTP";
 import NewPassword from "../pages/ForgetPassword/NewPassword";
@@ -25,9 +23,16 @@ import WingsBlastFAQ from "../pages/settings/WingsBlastFAQ";
 import PromotionandOffers from "../pages/settings/PromotionandOffers";
 import Signin from "../pages/auth/Signin";
 import Signup from "../pages/auth/Signup";
-import SignInTest from "../pages/auth/SignInText";
 
 const Router = createBrowserRouter([
+    {
+    path: "/signin",
+    element: <Signin></Signin>,
+  },
+  {
+    path: "/signup",
+    element: <Signup></Signup>,
+  },
   {
     path: "/",
     element: <Main></Main>,
@@ -101,11 +106,6 @@ const Router = createBrowserRouter([
         element: <PromotionandOffers />,
       },
       {
-        path: "/mobile",
-        element: <MobileLogin></MobileLogin>,
-      },
-
-      {
         path: "/orderdetails/:detailsID",
         element: <InvoiceOrder></InvoiceOrder>,
       },
@@ -122,26 +122,10 @@ const Router = createBrowserRouter([
         element: <NewPassword />,
       },
       {
-        path: "/text",
-        element: <Text />,
-      },
-      {
         path: "/*",
         element: <FoodDetailsError />,
       },
     ],
-  },
-  {
-    path: "/signin",
-    element: <Signin></Signin>,
-  },
-  {
-    path: "/signup",
-    element: <Signup></Signup>,
-  },
-  {
-    path: "/signintest",
-    element: <SignInTest />
   }
 ]);
 export default Router;

@@ -6,7 +6,6 @@ import Banner from "./Banner";
 import BestFood from "./BestFood";
 import FindFlavor from "./FindFlavor";
 import OtherCompany from "./OtherCompany";
-import DelivaryLocation from "./DelivaryLocation";
 import { Helmet } from "react-helmet-async";
 
 const Home = () => {
@@ -26,9 +25,6 @@ const Home = () => {
         <link rel="canonical" href="/" />
       </Helmet>
       <Banner />
-      {/* <div className="hidden">
-        <DelivaryLocation />
-      </div> */}
       <BestFood />
       <FindFlavor />
       <div className="hidden lg:block">

@@ -161,12 +161,14 @@ const CheckOut = () => {
               <div key={foodIndex} className="p-4 text-black">
                 <div className="divider"></div>
                 <h3 className="text-2xl font-TitleFont">{food.name}</h3>
-                <p>
-                  <strong className="font-TitleFont text-lg font-normal">
-                    NOTE:
-                  </strong>
-                  {""} {food.note}
-                </p>
+                {food.note && (
+                  <p>
+                    <strong className="font-TitleFont text-lg font-normal">
+                      NOTE:
+                    </strong>
+                    {""} {food.note}
+                  </p>
+                )}
                 {/* Flavor Addons */}
                 {food?.addons?.flavor?.length > 0 && (
                   <h1 className="font-TitleFont">Flavor:</h1>

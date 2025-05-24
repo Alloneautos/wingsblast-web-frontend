@@ -4,11 +4,13 @@ const WingsBlastFAQ = () => {
   return (
     <div>
       <div className="bg-gradient-to-r from-sky-100 to-indigo-100 h-36 text-center">
-        <h1 className="text-4xl font-bold pt-12 text-black">Wings Blast FAQ</h1>
+        <h1 className="text-5xl font-TitleFont pt-12 text-black">
+          Wings Blast FAQ
+        </h1>
       </div>
       <div className="w-full lg:w-8/12 mx-auto px-3 mt-5">
-        <h1 className="font-bold text-3xl">ORDERING </h1>
-        <h3 className="font-semibold text-xl my-3">
+        <h1 className="font-TitleFont text-3xl">ORDERING </h1>
+        <h3 className="font-TitleFont text-xl my-3">
           Can I schedule my order for later?
         </h3>
         <p>
@@ -17,7 +19,7 @@ const WingsBlastFAQ = () => {
           Now." If you change your mind, you can also change the pickup date and
           time during the order review screen.
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           Do I have to create an account to place an online order?
         </h3>
         <p>
@@ -25,7 +27,7 @@ const WingsBlastFAQ = () => {
           creating an account will make the ordering process faster, allow you
           to save payment information, and provide visibility of past orders.
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           How do I find the status of my order?
         </h3>
         <p>
@@ -33,7 +35,7 @@ const WingsBlastFAQ = () => {
           order confirmation email or by clicking/tapping the floating button on
           the bottom right corner of the screen.
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           How do I change or cancel my pickup order once I’ve placed my order?
         </h3>
         <p>
@@ -52,8 +54,8 @@ const WingsBlastFAQ = () => {
           If you are encountering issues, for assistance please 718-313-9199 if
           you would like to make changes to your order or cancel it.
         </p>
-        <h1 className="font-bold text-3xl my-5">PICKUP</h1>
-        <h3 className="font-semibold text-xl my-3">
+        <h1 className="font-TitleFont text-3xl my-5">PICKUP</h1>
+        <h3 className="font-TitleFont text-xl my-3">
           How do I pick up my order once I arrive at the restaurant?
         </h3>
         <div className="ml-10 lg:ml-24">
@@ -66,8 +68,8 @@ const WingsBlastFAQ = () => {
             name. Ask the cashier will be availed to serve your order.
           </li>
         </div>
-        <h1 className="font-bold text-3xl my-5">WINGS BLAST APP </h1>
-        <h3 className="font-semibold text-xl my-3">
+        <h1 className="font-TitleFont text-3xl my-5">WINGS BLAST APP </h1>
+        <h3 className="font-TitleFont text-xl my-3">
           The WINGS BLAST app won't download or update (Apple)
         </h3>
         <p>
@@ -75,7 +77,7 @@ const WingsBlastFAQ = () => {
           are experiencing issues with downloading or updating the WINGS BLAST
           app, please refer to the Apple support page: (apple app link……)
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           The WINGS BLAST app won't download or update (Google)
         </h3>
         <p>
@@ -84,8 +86,8 @@ const WingsBlastFAQ = () => {
           app, please refer to the Google Play app support page:(google app
           link……)
         </p>
-        <h1 className="font-bold text-3xl my-5">MANAGING ACCOUNT </h1>
-        <h3 className="font-semibold text-xl my-3">
+        <h1 className="font-TitleFont text-3xl my-5">MANAGING ACCOUNT </h1>
+        <h3 className="font-TitleFont text-xl my-3">
           How do I check my order history?
         </h3>
         <p>
@@ -93,7 +95,7 @@ const WingsBlastFAQ = () => {
           the upper right-hand corner of the screen, and then selecting “order
           history” while on the account screen.
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           How can I update my phone number or personal information?
         </h3>
         <p>
@@ -102,7 +104,7 @@ const WingsBlastFAQ = () => {
           settings,” entering in your new phone number or other information that
           needs to be updated, and pressing “save.
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           I can’t log into my account. What do I need to do?
         </h3>
         <p>
@@ -111,7 +113,7 @@ const WingsBlastFAQ = () => {
           the password field and follow the instructions to reset your account
           password so you can get back to the good stua.
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           How do I change my payment method?
         </h3>
         <p>
@@ -120,32 +122,32 @@ const WingsBlastFAQ = () => {
           Choose payment card, and select "Edit" or "Delete". Proceed as
           prompted.
         </p>
-        <h1 className="font-bold text-3xl my-5">PAYMENT </h1>
-        <h3 className="font-semibold text-xl my-3">
+        <h1 className="font-TitleFont text-3xl my-5">PAYMENT </h1>
+        <h3 className="font-TitleFont text-xl my-3">
           Do I have to add my debit/credit card, or can I pay in-store?
         </h3>
         <p>
           A valid billing card does need to be added during the checkout process
           to place an order.
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           How long until a credit is posted to my payment method?
         </h3>
         <p>
           Please allow at least 72 hours for adjustments to post to the payment
           method used for your order.
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           Do you accept Apple Pay or Google Pay?
         </h3>
         <p>
           Yes, we oaer both options, this payment method is available at
           checkout.
         </p>
-        <h1 className="font-bold text-3xl my-5">
+        <h1 className="font-TitleFont text-3xl my-5">
           POST-ORDER / CHARGES TO ORDER
         </h1>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           How do I report a problem with my WINGS BLAST delivery order?
         </h3>
         <p>
@@ -158,8 +160,8 @@ const WingsBlastFAQ = () => {
           If your delivery was placed through a delivery partners website or
           app, please contact the delivery partner that you ordered from
         </p>
-        <h1 className="font-bold text-3xl my-5">REWARDS / OFFERS </h1>
-        <h3 className="font-semibold text-xl my-3">
+        <h1 className="font-TitleFont text-3xl my-5">REWARDS / OFFERS </h1>
+        <h3 className="font-TitleFont text-xl my-3">
           What are the benefits of joining Wings Blast Rewards?
         </h3>
         <p>
@@ -172,7 +174,7 @@ const WingsBlastFAQ = () => {
           as an upcoming rollout of seasonal merch and other added surprises
           just waiting to be unlocked.
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           How do I join Wings Blast Rewards?
         </h3>
         <p>
@@ -184,7 +186,7 @@ const WingsBlastFAQ = () => {
           link. Account registration is required. For full details, please visit
           https://www. wingsblast.com/ wings blast -rewards-terms-of-use.
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           How do I make updates to my Wings Blast Rewards account?
         </h3>
         <p>
@@ -193,8 +195,8 @@ const WingsBlastFAQ = () => {
           this page, you can view and update your profile information. Your
           birthday and email address cannot be changed.
         </p>
-        <h1 className="font-bold text-3xl my-5">NOTIFICATIONS / EMAILS</h1>
-        <h3 className="font-semibold text-xl my-3">
+        <h1 className="font-TitleFont text-3xl my-5">NOTIFICATIONS / EMAILS</h1>
+        <h3 className="font-TitleFont text-xl my-3">
           How do I opt out of or unsubscribe from Promotions & Rewards emails?
         </h3>
         <p className="my-4">
@@ -208,7 +210,7 @@ const WingsBlastFAQ = () => {
           communication preferences by navigating to "Profile" and clicking on
           "My Info"
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           Will I receive any notifications if I sign up for an account?
         </h3>
         <p>
@@ -225,7 +227,7 @@ const WingsBlastFAQ = () => {
           it’s ready.
         </p>
         <p className="my-4">Confirmation email questions/issues</p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           I didn’t receive an order confirmation email.
         </h3>
         <p>
@@ -233,7 +235,7 @@ const WingsBlastFAQ = () => {
           .com to your contact list to make sure our emails do not go into your
           spam filter
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           I cannot find my confirmation email.
         </h3>
         <p>
@@ -241,23 +243,27 @@ const WingsBlastFAQ = () => {
           your emailed receipt, please visit https://www.wingsblast .com/contact
           to report the issue to guest care.
         </p>
-        <h3 className="font-semibold text-xl my-3">
+        <h3 className="font-TitleFont text-xl my-3">
           How do I request a receipt?{" "}
         </h3>
         <p>
-          Head to "My Account" and click "Order History", this will display
-          previous and current orders. Just click on the appropriate order and
-          click "view receipt"
+          Head to My Account and click Order History, this will display previous
+          and current orders. Just click on the appropriate order and click view
+          receipt
         </p>
         <p className="my-4">
-        If you don't have an account, please visit https://www.wingsblast .com/contact to connect
-        with guest care for assistance.
+          If you don't have an account, please visit https://www.wingsblast
+          .com/contact to connect with guest care for assistance.
         </p>
         <p className="mt-12">
-        If you didn't find your answer in our FAQs, please feel free to contact us. Send us your
-        questions, concerns, and/or feedback.
+          If you didn't find your answer in our FAQs, please feel free to
+          contact us. Send us your questions, concerns, and/or feedback.
         </p>
-        <Link to='/contactUs'><button className="btn btn-error my-7 text-white">Contact Us</button></Link>
+        <Link to="/contactUs">
+          <button className="btn bg-ButtonColor hover:bg-ButtonHover my-7 font-TitleFont font-medium text-xl rounded text-white">
+            Contact Us
+          </button>
+        </Link>
       </div>
     </div>
   );

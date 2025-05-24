@@ -3,7 +3,7 @@ import { BsApple } from "react-icons/bs";
 import USA from "../../assets/images/usa.png";
 import OtpInput from "react-otp-input";
 import { CgSpinner } from "react-icons/cg";
-import Logo from "../../assets/images/Web Logo.png";
+import Logo from "../../assets/logobywingsblast.png";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { FcGoogle } from "react-icons/fc";
@@ -188,7 +188,7 @@ const Signin = () => {
           <div className="w-full">
             <div className="relative mx-auto max-w-[470px] shadow-md overflow-hidden rounded bg-white px-10 py-3 text-center sm:px-12 md:px-[60px]">
               <div className="text-center md:mb">
-                <a className="mx-auto inline-block max-w-[200px]">
+                <a className="mx-auto inline-block max-w-[170px]">
                   <img src={Logo} alt="logo" />
                 </a>
               </div>

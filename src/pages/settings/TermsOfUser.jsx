@@ -19,7 +19,7 @@ const TermsOfUse = () => {
   return (
     <div>
       <div className="bg-gradient-to-r from-sky-100 to-indigo-100 h-36 text-center">
-        <h1 className="text-5xl font-bold pt-12 text-black">
+        <h1 className="text-5xl font-TitleFont pt-12 text-black">
           Terms of Service
         </h1>
       </div>

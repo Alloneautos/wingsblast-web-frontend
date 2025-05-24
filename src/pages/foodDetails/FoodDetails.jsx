@@ -45,7 +45,7 @@ const FoodDetails = () => {
   const [drinkId, setDrinkId] = useState(null);
   const [extraDrinkId, setExtraDrinkId] = useState(null);
   const [bakerySelects, setBakerySelects] = useState([]);
-  const [fishSelects, setFishSelects] = useState([]);
+  const [fishData, setFishData] = useState([]);
   const [toppingsData, setToppingsData] = useState([]);
   const [sauceData, setSauceData] = useState([]);
   const [sandCustData, setSandCustData] = useState([]);
@@ -258,7 +258,7 @@ const FoodDetails = () => {
     setBakerySelects(selectedBakery); // Store the formatted data
   };
   const handleFishSelected = (selectedFish) => {
-    setFishSelects(selectedFish); // Store the formatted data
+    setFishData(selectedFish); // Store the formatted data
   };
 
   const handleFlavorSelected = (selectFlavorId) => {
@@ -564,8 +564,8 @@ const FoodDetails = () => {
       return;
     }
     if (
-      foodDetails?.is_required?.is_required === 1 &&
-      (!fishSelects || fishSelects.length === 0)
+      foodDetails?.fish_choice?.is_required === 1 &&
+      (!fishData || fishData.length === 0)
     ) {
       Swal.fire({
         title: "Fish is Required",
@@ -676,7 +676,7 @@ const FoodDetails = () => {
           is_paid_type: bakery.is_paid_type,
           quantity: bakery.quantity,
         })) || []),
-        ...(fishSelects?.map((bakery) => ({
+        ...(fishData?.map((bakery) => ({
           type: "fish_choice",
           type_id: bakery.type_id,
           is_paid_type: bakery.is_paid_type,
@@ -750,7 +750,7 @@ const FoodDetails = () => {
                   <img
                     src={GetOneBuy}
                     alt=""
-                    className="absolute -bottom-0 lg:-bottom-[60px] -left-[50px] lg:-left-[100px] w-[170px] lg:w-[240px] h-[230px] lg:h-[320px] z-30"
+                    className="absolute -bottom-0 lg:-bottom-[60px] -left-[30px] lg:-left-[100px] w-[170px] lg:w-[230px] h-[230px] lg:h-[320px] z-30"
                   />
                 )}
                 {/* product image */}

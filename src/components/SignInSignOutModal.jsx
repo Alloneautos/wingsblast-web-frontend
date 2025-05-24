@@ -3,7 +3,7 @@ import { BsApple } from "react-icons/bs";
 import USA from "../assets/images/usa.png";
 import OtpInput from "react-otp-input";
 import { CgSpinner } from "react-icons/cg";
-import Logo from "../assets/images/Web Logo.png";
+import Logo from "../assets/logobywingsblast.png";
 import { FcGoogle } from "react-icons/fc";
 import {
   signInWithPhoneNumber,
@@ -189,7 +189,7 @@ const SignInSignOutModal = ({ userRefetch }) => {
               <div className="w-full">
                 <div className="relative mx-auto max-w-[470px] overflow-hidden  px-10 py-3 text-center sm:px-12 md:px-[10px]">
                   <div className="text-center md:mb">
-                    <a className="mx-auto inline-block max-w-[200px]">
+                    <a className="mx-auto inline-block max-w-[170px]">
                       <img src={Logo} alt="logo" />
                     </a>
                   </div>

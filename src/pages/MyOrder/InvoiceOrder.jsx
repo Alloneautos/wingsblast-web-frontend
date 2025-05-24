@@ -10,7 +10,7 @@ const InvoiceOrder = () => {
   const { orderDetails } = useOrderDetails(detailsID);
   const [downloadLoading, setDownloadLoading] = useState(false);
   const [printLoading, setPrintLoading] = useState(false);
-  console.log(orderDetails, "orderDetails");
+  console.log(orderDetails);
   const {
     order_id,
     first_name,
@@ -297,7 +297,13 @@ const InvoiceOrder = () => {
                                 <p>
                                   {addon.name} X{addon.quantity}{" "}
                                   {addon.isPaid === 1 && (
-                                    <span>(${addon.price})</span>
+                                    <span>
+                                      ($
+                                      {(addon.price * addon.quantity).toFixed(
+                                        2
+                                      )}
+                                      )
+                                    </span>
                                   )}
                                 </p>
                               ) : (
@@ -320,7 +326,13 @@ const InvoiceOrder = () => {
                                   {addon.name}{" "}
                                   {addon.quantity ? ` X ${addon.quantity}` : ""}
                                   {addon.isPaid === 1 && (
-                                    <span>(${addon.price})</span>
+                                    <span>
+                                      ($
+                                      {(addon.price * addon.quantity).toFixed(
+                                        2
+                                      )}
+                                      )
+                                    </span>
                                   )}
                                 </p>
                               ) : (
@@ -343,7 +355,13 @@ const InvoiceOrder = () => {
                                   {addon.name}{" "}
                                   {addon.quantity ? ` X ${addon.quantity}` : ""}
                                   {addon.isPaid === 1 && (
-                                    <span>(${addon.price})</span>
+                                    <span>
+                                      ($
+                                      {(addon.price * addon.quantity).toFixed(
+                                        2
+                                      )}
+                                      )
+                                    </span>
                                   )}
                                 </p>
                               ) : (
@@ -366,30 +384,13 @@ const InvoiceOrder = () => {
                                   {addon.name}{" "}
                                   {addon.quantity ? ` X ${addon.quantity}` : ""}
                                   {addon.isPaid === 1 && (
-                                    <span>(${addon.price})</span>
-                                  )}
-                                </p>
-                              ) : (
-                                ""
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      {/* Drink Addon */}
-                      {food.addons?.drink && (
-                        <div>
-                          <h1 className="font-semibold text-black">
-                            {food.addons.drink.length > 0 && "Drink:"}
-                          </h1>
-                          {food.addons.drink.map((addon, idx) => (
-                            <div key={idx} className="ml-4">
-                              {addon.name ? (
-                                <p>
-                                  {addon.name} ({addon.child_item_name})
-                                  {addon.quantity ? ` X ${addon.quantity}` : ""}
-                                  {addon.isPaid === 1 && (
-                                    <span>(${addon.price})</span>
+                                    <span>
+                                      ($
+                                      {(addon.price * addon.quantity).toFixed(
+                                        2
+                                      )}
+                                      )
+                                    </span>
                                   )}
                                 </p>
                               ) : (
@@ -412,7 +413,42 @@ const InvoiceOrder = () => {
                                   {addon.name}{" "}
                                   {addon.quantity ? ` X${addon.quantity}` : ""}
                                   {addon.isPaid === 1 && (
-                                    <span>(${addon.price})</span>
+                                    <span>
+                                      ($
+                                      {(addon.price * addon.quantity).toFixed(
+                                        2
+                                      )}
+                                      )
+                                    </span>
+                                  )}
+                                </p>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {/* Drink Addon */}
+                      {food.addons?.drink && (
+                        <div>
+                          <h1 className="font-semibold text-black">
+                            {food.addons.drink.length > 0 && "Drink:"}
+                          </h1>
+                          {food.addons.drink.map((addon, idx) => (
+                            <div key={idx} className="ml-4">
+                              {addon.name ? (
+                                <p>
+                                  {addon.name} ({addon.child_item_name})
+                                  {addon.quantity ? ` X ${addon.quantity}` : ""}
+                                  {addon.isPaid === 1 && (
+                                    <span>
+                                      ($
+                                      {(addon.price * addon.quantity).toFixed(
+                                        2
+                                      )}
+                                      )
+                                    </span>
                                   )}
                                 </p>
                               ) : (
@@ -436,7 +472,13 @@ const InvoiceOrder = () => {
                                   {addon.name}{" "}
                                   {addon.quantity ? ` X ${addon.quantity}` : ""}
                                   {addon.isPaid === 1 && (
-                                    <span>(${addon.price})</span>
+                                    <span>
+                                      ($
+                                      {(addon.price * addon.quantity).toFixed(
+                                        2
+                                      )}
+                                      )
+                                    </span>
                                   )}
                                 </p>
                               ) : (
@@ -450,8 +492,7 @@ const InvoiceOrder = () => {
                       {food.addons?.sauce && (
                         <div>
                           <h1 className="font-semibold text-black">
-                            {food.addons.sauce.length > 0 &&
-                              "Sauce:"}
+                            {food.addons.sauce.length > 0 && "Sauce:"}
                           </h1>
                           {food.addons.sauce.map((addon, idx) => (
                             <div key={idx} className="ml-4">
@@ -460,7 +501,13 @@ const InvoiceOrder = () => {
                                   {addon.name}{" "}
                                   {addon.quantity ? ` X ${addon.quantity}` : ""}
                                   {addon.isPaid === 1 && (
-                                    <span>(${addon.price})</span>
+                                    <span>
+                                      ($
+                                      {(addon.price * addon.quantity).toFixed(
+                                        2
+                                      )}
+                                      )
+                                    </span>
                                   )}
                                 </p>
                               ) : (
@@ -471,11 +518,10 @@ const InvoiceOrder = () => {
                         </div>
                       )}
                       {/* Fish Addon */}
-                      {food.addons?.sauce && (
+                      {food.addons?.fishChoice && (
                         <div>
                           <h1 className="font-semibold text-black">
-                            {food.addons.fishChoice.length > 0 &&
-                              "Fish:"}
+                            {food.addons.fishChoice.length > 0 && "Fish:"}
                           </h1>
                           {food.addons.fishChoice.map((addon, idx) => (
                             <div key={idx} className="ml-4">
@@ -484,7 +530,13 @@ const InvoiceOrder = () => {
                                   {addon.name}{" "}
                                   {addon.quantity ? ` X ${addon.quantity}` : ""}
                                   {addon.isPaid === 1 && (
-                                    <span>(${addon.price})</span>
+                                    <span>
+                                      ($
+                                      {(addon.price * addon.quantity).toFixed(
+                                        2
+                                      )}
+                                      )
+                                    </span>
                                   )}
                                 </p>
                               ) : (

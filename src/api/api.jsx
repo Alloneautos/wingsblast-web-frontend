@@ -108,7 +108,6 @@ export const useFlavor = () => {
   return { flavor, isLoading, isError, error, refetch };
 };
 
-// kaj korte hobe
 // food menu
 export const useFoodAllMenu = () => {
   const getFoodAllMenu = async () => {
@@ -215,7 +214,6 @@ export const useFoodSearch = (searchText) => {
   return { foodSearch, loading, error };
 };
 
-// kaj korte hobe
 //  Food Details
 export const useFoodDetails = (foodDetailsID) => {
   const getFoodDetails = async () => {
@@ -343,7 +341,6 @@ export const useOrderDetails = (detailsID) => {
   return { orderDetails, isLoading, isError, error, refetch };
 };
 
-// kaj korte hobe
 // guest user
 export const useGuestUser = () => {
   const [guestUser, setGuestUser] = useState(null);
@@ -677,7 +674,6 @@ export const useAllDips = () => {
   return { allDips, isLoading, isError, error, refetch };
 };
 
-
 // get Promotions
 export const useAllPromotions = () => {
   const getAllPromotion = async () => {
@@ -739,5 +735,23 @@ export const useAllDiscountFood = () => {
 
   return { allDiscountFood, isLoading, isError, error, refetch };
 };
+// get Promotions
+export const useOpeningClosingTime = () => {
+  const getOpeningClosingTime = async () => {
+    const response = await API.get(`/opening`);
+    return response.data;
+  };
 
+  const {
+    data: allOpeningClosingTime = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["allOpeningClosingTime"],
+    queryFn: getOpeningClosingTime,
+  });
 
+  return { allOpeningClosingTime, isLoading, isError, error, refetch };
+};

@@ -3,7 +3,6 @@ import { FaSearch } from "react-icons/fa";
 import { FaBagShopping } from "react-icons/fa6";
 import { MdOutlineBorderColor, MdRestaurantMenu } from "react-icons/md";
 import { Link } from "react-router-dom";
-import Language from "./Language";
 import Search from "./Search";
 import ProfileIcon from "../assets/images/profile.png";
 import {
@@ -71,16 +70,14 @@ function Navbar() {
           >
             {isOpen ? <VscChromeClose /> : <RiMenu2Fill />}
           </button>
-          <div className="flex items-center justify-center mx-auto ml-[80px] lg:ml-0">
-            {/* Logo for mobile view */}
-            <Link to="/">
-              <img
-                className="w-[175px] lg:w-[165px] h-[50px] lg:h-[60px] ml-[45px] md:ml-0 lg:ml-0"
-                src={Logo}
-                alt="WingsBlast Logo"
-              />
-            </Link>
-          </div>
+          {/* Logo for mobile view */}
+          <Link to="/" className="ml-[60px]">
+            <img
+              className="w-[155px] lg:w-[155px] h-[50px] lg:h-[60px] ml-[70px] lg:ml-0"
+              src={Logo}
+              alt="WingsBlast Logo"
+            />
+          </Link>
           <div className="hidden md:flex space-x-5 text-lg lg:text-xl">
             <Link to="/foodmenu">
               <span className="text-black text-2xl font-TitleFont hover:text-green-500">
@@ -295,7 +292,6 @@ function Navbar() {
           </div>
         </div>
       )}
-      <Language />
       <Search />
       <LocationModal
         isOpen={isLocationModalOpen}

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import LoadingComponent from "../../components/LoadingComponent";
 import PercentisImage from "../../assets/images/purcentes.svg";
 import DiscountImage from "../../assets/images/discount.png";
+import GetOneBuyOne from "../../assets/images/buyone.png";
 
 const AddMoreFood = ({ categoryID }) => {
   const { reletiveFood, isLoading } = useReletiveFood(categoryID);
@@ -63,6 +64,7 @@ const AddMoreFood = ({ categoryID }) => {
                       src={foodMenu.image}
                       alt={foodMenu.category_name}
                     />
+                    {/* Show Food Discount image  */}
                     {foodMenu.is_discount_amount === 1 && (
                       <span className="absolute top-4 right-4 text-white text-md font-TitleFont p-0.5 rounded-l-3xl">
                         <div
@@ -84,6 +86,7 @@ const AddMoreFood = ({ categoryID }) => {
                         </div>
                       </span>
                     )}
+                    {/* Show Food Discount Percentage */}
                     {foodMenu.is_discount_percentage === 1 && (
                       <span className="absolute top-4 right-4 text-white text-md font-TitleFont p-0.5 rounded-l-3xl">
                         <div
@@ -101,6 +104,23 @@ const AddMoreFood = ({ categoryID }) => {
                               {foodMenu.discount_percentage}
                             </div>
                           </div>
+                        </div>
+                      </span>
+                    )}
+                    {/* Get one buy one */}
+                    {foodMenu.is_buy_one_get_one === 1 && (
+                      <span className="absolute top-3 right-3 text-white text-md font-TitleFont p-0.5 rounded-l-3xl">
+                        <div
+                          style={{
+                            backgroundImage: `url(${GetOneBuyOne})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                          }}
+                          className="w-[70px] h-[70px] flex flex-col items-center justify-center relative overflow-hidden"
+                        >
+                          <div className="absolute inset-0 rounded-full"></div>{" "}
+                          {/* Red overlay for readability */}
+                          <div className="relative z-10 text-center leading-tight"></div>
                         </div>
                       </span>
                     )}
@@ -144,7 +164,6 @@ const AddMoreFood = ({ categoryID }) => {
                               </span>
                             </div>
                           )}
-                          {/* ${foodMenu.price} */}
                         </span>
                         <span className="text-[9px] text-black">
                           {foodMenu.cal}

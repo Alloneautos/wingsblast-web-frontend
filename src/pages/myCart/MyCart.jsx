@@ -8,6 +8,7 @@ import {
   useFees,
   useGuestUser,
   useMyCart,
+  useOpeningClosingTime,
   useTax,
   useUserProfile,
 } from "../../api/api";
@@ -21,7 +22,6 @@ import { MdEdit, MdOutlineClose } from "react-icons/md";
 import LoadingComponent from "../../components/LoadingComponent";
 import SignInSignOutModal from "../../components/SignInSignOutModal";
 import { Helmet } from "react-helmet-async";
-import { IoIosClose } from "react-icons/io";
 
 const MyCart = () => {
   const { tax, isTaxLoading } = useTax();
@@ -32,8 +32,10 @@ const MyCart = () => {
   const { guestUser } = useGuestUser();
   const { user, refetch: userRefetch } = useUserProfile();
   const { mycard, isLoading, isError, refetch } = useMyCart(guestUser);
+  const { allOpeningClosingTime, isLoading: timeLoading } = useOpeningClosingTime();
   const [quantities, setQuantities] = useState({});
   const [dates, setDates] = useState([]);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState([]); // <-- new state
   const [savedAddress, setSavedAddress] = useState("");
   const [time, setTime] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState("");
@@ -74,21 +76,38 @@ const MyCart = () => {
   };
 
   const checkASAPAvailability = () => {
-    const currentHour = time.getHours();
-    return currentHour >= 10 && currentHour < 23;
+    // Get today's day name
+    if(timeLoading){
+      return <LoadingComponent />
+    }
+    const today = new Date();
+    const dayName = today.toLocaleDateString("en-US", { weekday: "long" });
+
+    // Find today's opening/closing info
+    const todayData = allOpeningClosingTime?.data?.find(
+      (d) => d.day_info.day === dayName
+    );
+
+    // If not found, fallback to previous logic
+    if (!todayData || todayData.day_info.is_day_on !== 1) return false;
+
+    // Parse start_time and end_time (format: "HH:mm:ss")
+    const [startHour, startMin] = todayData.day_info.start_time
+      .split(":")
+      .map(Number);
+    const [endHour, endMin] = todayData.day_info.end_time
+      .split(":")
+      .map(Number);
+
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const startMinutes = startHour * 60 + startMin;
+    const endMinutes = endHour * 60 + endMin;
+
+    return currentMinutes >= startMinutes && currentMinutes < endMinutes;
   };
 
-  // set delivery fee
-  useEffect(() => {
-    if (orderStatus === "Delivery") {
-      setDeliveryFee(delivaryFee);
-      setFeesData(fees);
-    } else {
-      setDeliveryFee(0);
-      setFeesData([]);
-    }
-  }, [orderStatus, delivaryFee, fees]);
-
+ 
   // Set `isLater` based on the value of `isASAP`
   useEffect(() => {
     if (isASAP && !checkASAPAvailability()) {
@@ -103,6 +122,18 @@ const MyCart = () => {
       setIsLater(!isASAP);
     }
   }, [isASAP]);
+
+   // set delivery fee
+  useEffect(() => {
+    if (orderStatus === "Delivery") {
+      setDeliveryFee(delivaryFee);
+      setFeesData(fees);
+    } else {
+      setDeliveryFee(0);
+      setFeesData([]);
+    }
+  }, [orderStatus, delivaryFee, fees]);
+
 
   // set quantity
   useEffect(() => {
@@ -245,18 +276,52 @@ const MyCart = () => {
 
   // handle dates
   useEffect(() => {
+    // Helper to get day name from Date object
+    const getDayName = (date) => {
+      return date.toLocaleDateString("en-US", { weekday: "long" });
+    };
+
     const generateNext7Days = () => {
+      if (!allOpeningClosingTime?.data) return;
       const today = new Date();
       const daysArray = [];
       for (let i = 0; i < 7; i++) {
         const nextDate = new Date(today);
         nextDate.setDate(today.getDate() + i);
-        daysArray.push(nextDate.toDateString());
+        const dayName = getDayName(nextDate);
+
+        // Find the corresponding day_info from allOpeningClosingTime
+        const dayData = allOpeningClosingTime.data.find(
+          (d) => d.day_info.day === dayName
+        );
+        daysArray.push({
+          label: nextDate.toDateString(),
+          value: nextDate.toDateString(),
+          dayName,
+          is_day_on: dayData ? dayData.day_info.is_day_on : 0,
+          timeSlots: dayData ? dayData.timeSlots : [],
+        });
       }
       setDates(daysArray);
     };
     generateNext7Days();
-  }, []);
+  }, [allOpeningClosingTime]);
+
+  // Update available time slots when selectedDate changes
+  useEffect(() => {
+    if (!selectedDate || !dates.length) {
+      setAvailableTimeSlots([]);
+      return;
+    }
+    const selectedDay = dates.find((d) => d.value === selectedDate);
+    setAvailableTimeSlots(
+      selectedDay && selectedDay.is_day_on === 1
+        ? selectedDay.timeSlots
+        : []
+    );
+    // Reset selectedTime if not available
+    setSelectedTime("");
+  }, [selectedDate, dates]);
 
   // handle time
   useEffect(() => {
@@ -320,7 +385,7 @@ const MyCart = () => {
       description: "Hand-breaded boneless wings",
       buy_one_get_one_id: item.buy_one_get_one.id || "",
       buy_one_get_one_name: item.buy_one_get_one.name || "",
-      note: note[item.id] || "No Requerments",
+      note: note[item.id] || "",
       addons: {
         flavor: item?.flavors?.map((flavor) => ({
           name: flavor.flavor_name,
@@ -905,49 +970,58 @@ const MyCart = () => {
                 <label className="block font-TitleFont text-lg text-black mb-1">
                   Date :
                 </label>
-                <select
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="select w-full border rounded border-red-900 focus:border-red-800 px-3 py-2 text-black"
-                  value={selectedDate || ""}
-                >
-                  <option disabled value="" className="">
-                    Select Date
-                  </option>
-                  {dates.map((date, index) => {
-                    return (
-                      <option key={index} value={date} className="text-black">
-                        {date}
+                {timeLoading ? (
+                  <div className="py-2 text-center">
+                    <span className="loading loading-spinner"></span>
+                  </div>
+                ) : (
+                  <select
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="select w-full border rounded border-red-900 focus:border-red-800 px-3 py-2 text-black"
+                    value={selectedDate || ""}
+                    disabled={timeLoading}
+                  >
+                    <option disabled value="" className="">
+                      Select Date
+                    </option>
+                    {dates.map((date, index) => (
+                      <option
+                        key={index}
+                        value={date.value}
+                        className="text-black"
+                        disabled={date.is_day_on !== 1}
+                      >
+                        {date.label} {date.is_day_on !== 1 ? "(Closed)" : ""}
                       </option>
-                    );
-                  })}
-                </select>
+                    ))}
+                  </select>
+                )}
               </div>
               <div className="w-full">
                 <label className="block text-lg font-TitleFont text-black mb-1">
                   Time :
                 </label>
-                <select
-                  onChange={(e) => setSelectedTime(e.target.value)}
-                  className="select w-full border text-black border-red-900 focus:border-red-800 rounded px-3 py-2"
-                  value={selectedTime || ""}
-                >
-                  <option disabled value="">
-                    Select Time
-                  </option>
-                  <option>10:00 AM - 11:00 AM</option>
-                  <option>11:00 AM - 12:00 PM</option>
-                  <option>12:00 PM - 1:00 PM</option>
-                  <option>1:00 PM - 2:00 PM</option>
-                  <option>2:00 PM - 3:00 PM</option>
-                  <option>3:00 PM - 4:00 PM</option>
-                  <option>4:00 PM - 5:00 PM</option>
-                  <option>5:00 PM - 6:00 PM</option>
-                  <option>6:00 PM - 7:00 PM</option>
-                  <option>7:00 PM - 8:00 PM</option>
-                  <option>8:00 PM - 9:00 PM</option>
-                  <option>9:00 PM - 10:00 PM</option>
-                  <option>10:00 PM - 11:00 PM</option>
-                </select>
+                {timeLoading ? (
+                  <div className="py-2 text-center">
+                    <span className="loading loading-spinner"></span>
+                  </div>
+                ) : (
+                  <select
+                    onChange={(e) => setSelectedTime(e.target.value)}
+                    className="select w-full border text-black border-red-900 focus:border-red-800 rounded px-3 py-2"
+                    value={selectedTime || ""}
+                    disabled={timeLoading || !selectedDate || !availableTimeSlots.length}
+                  >
+                    <option disabled value="">
+                      Select Time
+                    </option>
+                    {availableTimeSlots.map((slot, idx) => (
+                      <option key={idx} value={slot}>
+                        {slot}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
             </div>
           )}
